@@ -1,0 +1,31 @@
+spring:
+  application.name: @name@
+
+server:
+  port: 8484
+#  servlet:
+#    context-path: /client
+
+info:
+  name: integrator
+  description: 'Integrador de servicos para o ERP Protheus'
+  version: @project.version@-@project.build-number@
+  environment: @active.profile@
+
+logging:
+  level:
+    root: INFO
+    org.hibernate: TRACE
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.springframework.security: TRACE
+    org.springframework.context.support: TRACE
+
+# configs do eureka server
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    hostname: localhost
+    appname: test
