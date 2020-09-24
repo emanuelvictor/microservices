@@ -2,24 +2,27 @@ import {User} from "../../domain/entity/user.model";
 
 export class Access extends User {
 
+  private _access_token: string;
   private _expires_in: number;
-  private _date_to_expire: string;
+  private _date_to_expire: Date;
   private _integrator: any; // TODO
+  private _refresh_token: string;
   private _scope: any;
   private _token_type: any;
-  private _access_token: string;
+
 
   /**
    *
    * @param access
    */
   public constructor(access?: Access) {
+    super(access.id);
     if (access) {
-      super(access.id);
       this.refresh_token = access.refresh_token;
       this.access_token = access.access_token;
       this.expires_in = access.expires_in;
-      this.date_to_expire = (new Date().getTime() + (this.expires_in * 1000));
+      this._date_to_expire = new Date();
+      this._date_to_expire = new Date(this._date_to_expire.getTime() + (this.expires_in * 1000));
       this.integrator = access.integrator;
       this.scope = access.scope;
       this.token_type = access.token_type;
@@ -28,27 +31,12 @@ export class Access extends User {
     }
   }
 
-  get date_to_expire(): any {
-    if (this._date_to_expire)
-      return this._date_to_expire;
-    return localStorage.getItem('date_to_expire');
-  }
-
-  set date_to_expire(value: any) {
-    this._date_to_expire = value;
-    localStorage.setItem('date_to_expire', value);
-  }
-
   get refresh_token(): string {
-    const refresh_token = localStorage.getItem('refresh_token');
-
-    if (refresh_token && refresh_token !== "null")
-      return refresh_token;
-    return null;
+    return this._refresh_token;
   }
 
   set refresh_token(value: string) {
-    localStorage.setItem('refresh_token', value);
+    this._refresh_token = value;
   }
 
   get access_token(): string {
@@ -92,8 +80,8 @@ export class Access extends User {
   }
 
   get isInvalidAccessToken(): boolean {
-    console.log('_date_to_expire', new Date(this._date_to_expire));
-    return Access.isDateBeforeToday(new Date(this._date_to_expire))
+    console.log('_date_to_expire',this._date_to_expire);
+    return Access.isDateBeforeToday(this._date_to_expire)
   }
 
   private static isDateBeforeToday(date: Date): boolean {

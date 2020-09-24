@@ -7,8 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtAccessTokenConverter;
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
 
 /**
  * @author Emanuel Victor

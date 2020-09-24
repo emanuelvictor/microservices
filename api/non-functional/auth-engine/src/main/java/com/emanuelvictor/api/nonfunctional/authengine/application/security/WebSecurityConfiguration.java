@@ -27,6 +27,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     private final UserDetailsService userDetailsService;
 
+    /**
+     *
+     */
+    private final CustomLogoutHandler customLogoutHandler;
 
     /**
      * {@inheritDoc}
@@ -69,6 +73,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout()
                 .logoutUrl("/logout")
+                .addLogoutHandler(customLogoutHandler)
                 .permitAll().and().logout().permitAll();
     }
 }

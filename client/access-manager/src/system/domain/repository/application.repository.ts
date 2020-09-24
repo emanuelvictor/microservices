@@ -36,7 +36,7 @@ export class ApplicationRepository extends BaseRepository<Application> {
    * @returns {Observable<{}>}
    */
   public changePassword(application: Application, newPassword: string): Promise<Application> {
-    application.password = newPassword;
+    application.clientSecret = newPassword;
 
     const params: HttpParams = new HttpParams().set('newPassword', newPassword);
 

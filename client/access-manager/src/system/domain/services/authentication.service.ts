@@ -17,7 +17,7 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
 
   public user: User;
 
-  public access: Access = new Access();
+  public access: Access;
 
   /**
    * Utilized for the transaction control.
@@ -80,23 +80,21 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
     this.getPromiseLoggedUserInstance = this.getPromiseLoggedUserInstance ? this.getPromiseLoggedUserInstance : new Promise<UserDetails>((resolve, reject) => {
 
       const authorizationCode: string = getParameterByName('code');
+      console.log(authorizationCode);
+      if (this.access && this.access.isInvalidAccessToken) { // Have the access token and it is invalid, but have the refresh token, get the access token by refresh token
 
-      if (/*this.access && */(!this.access.access_token || this.access.isInvalidAccessToken) && this.access.refresh_token) { // Have the access token and it is invalid, but have the refresh token, get the access token by refresh token
-
-        console.log('Making refresh token');
         this.getAccessTokenByRefreshToken(this.access.refresh_token).subscribe(result => {
           this.access = new Access(result);
           this.user = AuthenticationService.extractUserFromAccessToken(this.access);
           resolve(this.user)
         })
 
-      } else if (!this.access.refresh_token && !authorizationCode) { // No have access token and no have code, must return null and redirect to SSO
+      } else if (!this.access && !authorizationCode) { // No have access token and no have code, must return null and redirect to SSO
 
         resolve(null)
 
-      } else if (/*(!this.access.access_token) && */ authorizationCode) { // No have access token but have code, must get the access token by authorization code.
+      } else if ((!this.access || !this.access.access_token) && authorizationCode) { // No have access token but have code, must get the access token by authorization code.
 
-        console.log('Making authorization code');
         this.getAccessTokenByAuthorizationCode(authorizationCode).then(result => {
           this.access = new Access(result);
           console.log('access_token', this.access.access_token);
@@ -105,7 +103,7 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
           resolve(this.user)
         }).catch(err => reject(err))
 
-      } else if (/*this.access && */this.access.access_token) {
+      } else if (this.access && this.access.access_token) {
         this.user = AuthenticationService.extractUserFromAccessToken(this.access);
         resolve(this.user)
       }
@@ -156,11 +154,9 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
    */
   public logout(): void {
 
-    this.access.access_token = null;
-    this.access.refresh_token = null;
-    this.access.date_to_expire = null;
+    const tokens: string = btoa(`access_token=${this.access.access_token}&refresh_token=${this.access.refresh_token}`);
 
-    this.toSSO(`/logout`)
+    this.toSSO(`/logout?${tokens}`)
   }
 
   /**
