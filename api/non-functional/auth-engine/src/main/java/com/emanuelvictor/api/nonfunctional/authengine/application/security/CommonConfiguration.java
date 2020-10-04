@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.CustomTokenServices;
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.validation.Validator;
@@ -48,18 +49,18 @@ public class CommonConfiguration {
         return converter;
     }
 
-    /**
-     * @return DefaultTokenServices
-     */
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        defaultTokenServices.setSupportRefreshToken(true);
-        defaultTokenServices.setTokenEnhancer(tokenEnhancer()); //TODO non necessary
-        return defaultTokenServices;
-    }
+//    /**
+//     * @return CustomTokenServices
+//     */
+//    @Bean
+//    @Primary
+//    public CustomTokenServices tokenServices() {
+//        final CustomTokenServices customTokenServices = new CustomTokenServices();
+//        customTokenServices.setTokenStore(tokenStore()); ok
+//        customTokenServices.setSupportRefreshToken(true); ok
+//        customTokenServices.setTokenEnhancer(tokenEnhancer()); //TODO non necessary
+//        return customTokenServices;
+//    }
 
     /**
      * TokenEnhancer
@@ -69,6 +70,7 @@ public class CommonConfiguration {
      */
     @Bean
     public TokenEnhancer tokenEnhancer() {
+
         return (accessToken, authentication) -> {
 
             final Map<String, Object> additionalInfo = new HashMap<>();

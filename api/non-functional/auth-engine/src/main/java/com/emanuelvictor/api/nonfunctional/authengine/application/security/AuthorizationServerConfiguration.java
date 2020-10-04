@@ -4,6 +4,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.services.ClientService;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.CustomTokenServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+
+
+    private final CustomTokenServices customTokenServices;
 
     /**
      *
@@ -79,7 +83,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         endpoints.tokenStore(tokenStore)
                 .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService).tokenServices(customTokenServices);
 
     }
 
