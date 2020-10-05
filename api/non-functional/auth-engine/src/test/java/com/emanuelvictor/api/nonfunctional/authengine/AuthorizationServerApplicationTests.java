@@ -1,11 +1,12 @@
 package com.emanuelvictor.api.nonfunctional.authengine;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.RefreshToken;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
 
+import java.util.Optional;
 import java.util.Set;
 
 import static com.emanuelvictor.api.nonfunctional.authengine.domain.services.ServiceToken.extractClientsId;
@@ -38,51 +39,51 @@ class AuthorizationServerApplicationTests {
     void recursiveTokensHanlder() {
 
         //Creates two composites containing the tokens
-        final RefreshToken token1 = new RefreshToken("token1");
-        final RefreshToken token2 = new RefreshToken("token2");
-        token1.add(token2);
+        final Optional<IToken> token1 = Optional.of(new Token("token1"));
+        final Optional<IToken> token2 = Optional.of(new Token("token2"));
+        token1.orElseThrow().add(token2);
 
-        final RefreshToken token3 = new RefreshToken("token3");
-        token1.add(token3);
+        final Optional<IToken> token3 = Optional.of(new Token("token3"));
+        token1.orElseThrow().add(token3);
 
-        final RefreshToken token4 = new RefreshToken("token4");
-        token3.add(token4);
-        final RefreshToken token5 = new RefreshToken("token6");
-        token4.add(token5);
-        final RefreshToken token7 = new RefreshToken("token7");
-        token4.add(token7);
+        final Optional<IToken> token4 = Optional.of(new Token("token4"));
+        token3.orElseThrow().add(token4);
+        final Optional<IToken> token5 = Optional.of(new Token("token6"));
+        token4.orElseThrow().add(token5);
+        final Optional<IToken> token7 = Optional.of(new Token("token7"));
+        token4.orElseThrow().add(token7);
 
 
-        final RefreshToken token6 = new RefreshToken("token5");
-        token3.add(token6);
-        final RefreshToken token8 = new RefreshToken("token8");
-        token6.add(token8);
-        final RefreshToken token9 = new RefreshToken("token9");
-        token6.add(token9);
+        final Optional<IToken> token6 = Optional.of(new Token("token5"));
+        token3.orElseThrow().add(token6);
+        final Optional<IToken> token8 = Optional.of(new Token("token8"));
+        token6.orElseThrow().add(token8);
+        final Optional<IToken> token9 = Optional.of(new Token("token9"));
+        token6.orElseThrow().add(token9);
 
-        Assert.isTrue(!token1.isRevoked());
-        Assert.isTrue(!token2.isRevoked());
-        Assert.isTrue(!token3.isRevoked());
-        Assert.isTrue(!token4.isRevoked());
-        Assert.isTrue(!token5.isRevoked());
-        Assert.isTrue(!token7.isRevoked());
-        Assert.isTrue(!token6.isRevoked());
-        Assert.isTrue(!token8.isRevoked());
-        Assert.isTrue(!token9.isRevoked());
+        Assert.isTrue(!token1.orElseThrow().isRevoked());
+        Assert.isTrue(!token2.orElseThrow().isRevoked());
+        Assert.isTrue(!token3.orElseThrow().isRevoked());
+        Assert.isTrue(!token4.orElseThrow().isRevoked());
+        Assert.isTrue(!token5.orElseThrow().isRevoked());
+        Assert.isTrue(!token7.orElseThrow().isRevoked());
+        Assert.isTrue(!token6.orElseThrow().isRevoked());
+        Assert.isTrue(!token8.orElseThrow().isRevoked());
+        Assert.isTrue(!token9.orElseThrow().isRevoked());
 
-        token5.printPrevious();
+        token5.orElseThrow().printPrevious();
 
-        token5.revoke();
+        token5.orElseThrow().revoke();
 
-        Assert.isTrue(token1.isRevoked());
-        Assert.isTrue(token2.isRevoked());
-        Assert.isTrue(token3.isRevoked());
-        Assert.isTrue(token4.isRevoked());
-        Assert.isTrue(token6.isRevoked());
-        Assert.isTrue(token7.isRevoked());
-        Assert.isTrue(token5.isRevoked());
-        Assert.isTrue(token8.isRevoked());
-        Assert.isTrue(token9.isRevoked());
+        Assert.isTrue(token1.orElseThrow().isRevoked());
+        Assert.isTrue(token2.orElseThrow().isRevoked());
+        Assert.isTrue(token3.orElseThrow().isRevoked());
+        Assert.isTrue(token4.orElseThrow().isRevoked());
+        Assert.isTrue(token6.orElseThrow().isRevoked());
+        Assert.isTrue(token7.orElseThrow().isRevoked());
+        Assert.isTrue(token5.orElseThrow().isRevoked());
+        Assert.isTrue(token8.orElseThrow().isRevoked());
+        Assert.isTrue(token9.orElseThrow().isRevoked());
 
     }
 
@@ -90,28 +91,70 @@ class AuthorizationServerApplicationTests {
      *
      */
     @Test
-    void addTokenMustPass(){
-        final RefreshToken token1 = new RefreshToken("token1");
+    void addTokenMustPass() {
+        final Optional<IToken> token1 = Optional.of(new Token("token1"));
 
-        final RefreshToken token2 = new RefreshToken("token2");
-        token1.add(token2);
+        final Optional<IToken> token2 = Optional.of(new Token("token2"));
+        token1.orElseThrow().add(token2);
 
-        final RefreshToken token3 = new RefreshToken("token3");
-        token1.add(token3);
+        final Optional<IToken> token3 = Optional.of(new Token("token3"));
+        token1.orElseThrow().add(token3);
 
-        final RefreshToken token4 = new RefreshToken("token4");
-        token2.add(token4);
+        final Optional<IToken> token4 = Optional.of(new Token("token4"));
+        token2.orElseThrow().add(token4);
 
-        final RefreshToken token5 = new RefreshToken("token5");
-        token1.add(token5);
+        final Optional<IToken> token5 = Optional.of(new Token("token5"));
+        token1.orElseThrow().add(token5);
 
-        Assert.notNull(token4.getNext(), "The next token must be non null");
-        Assert.isTrue(token4.getNext().equals(token5), "The next token must be equals to token5");
+        Assert.notNull(token4.orElseThrow().getNext(), "The next token must be non null");
+        Assert.isTrue(token4.orElseThrow().getNext().equals(token5), "The next token must be equals to token5");
 
-        Assert.notNull(token2.getNext(), "The next token must be non null");
-        Assert.isTrue(token2.getNext().equals(token3), "The next token must be equals to token3");
-        Assert.notNull(token2.getNext().getNext().getNext(), "The next token must be non null");
-        Assert.isTrue(token2.getNext().getNext().getNext().equals(token5), "The next token must be equals to token5");
+        Assert.notNull(token2.orElseThrow().getNext(), "The next token must be non null");
+        Assert.isTrue(token2.orElseThrow().getNext().equals(token3), "The next token must be equals to token3");
+        Assert.notNull(token2.orElseThrow().getNext().orElseThrow().getNext().orElseThrow().getNext(), "The next token must be non null");
+        Assert.isTrue(token2.orElseThrow().getNext().orElseThrow().getNext().orElseThrow().getNext().equals(token5), "The next token must be equals to token5");
+    }
+
+    /**
+     *
+     */
+    @Test
+    void findByValue() {
+
+        Assert.notNull(dataSet().stream().findFirst().orElseThrow().orElseThrow().findByValue("token2"));
+
+        Assert.notNull(dataSet().stream().findFirst().orElseThrow().orElseThrow().findByValue("token3"));
+
+    }
+
+
+    public static Set<Optional<IToken>> dataSet() {
+
+        //Creates two composites containing the tokens
+        final Optional<IToken> token1 = Optional.of(new Token("token1"));
+        final Optional<IToken> token2 = Optional.of(new Token("token2"));
+        token1.orElseThrow().add(token2);
+
+        final Optional<IToken> token3 = Optional.of(new Token("token3"));
+        token1.orElseThrow().add(token3);
+
+        final Optional<IToken> token4 = Optional.of(new Token("token4"));
+        token3.orElseThrow().add(token4);
+        final Optional<IToken> token5 = Optional.of(new Token("token6"));
+        token4.orElseThrow().add(token5);
+        final Optional<IToken> token7 = Optional.of(new Token("token7"));
+        token4.orElseThrow().add(token7);
+
+
+        final Optional<IToken> token6 = Optional.of(new Token("token5"));
+        token3.orElseThrow().add(token6);
+        final Optional<IToken> token8 = Optional.of(new Token("token8"));
+        token6.orElseThrow().add(token8);
+        final Optional<IToken> token9 = Optional.of(new Token("token9"));
+        token6.orElseThrow().add(token9);
+
+        return Set.of(token1);
+
     }
 
 }

@@ -1,15 +1,15 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
+
+import java.util.Optional;
 
 @Data
-public abstract class AbstractToken implements Token {
+public abstract class AbstractToken implements IToken {
 
-    public Token next;
+    public Optional<IToken> next = Optional.empty();
 
-    protected Token previous;
+    protected Optional<IToken> previous = Optional.empty();
 
     protected boolean revoked = false;
 
@@ -20,7 +20,7 @@ public abstract class AbstractToken implements Token {
     }
 
     @Override
-    public void setPrevious(final Token previous) {
+    public void setPrevious(final Optional<IToken> previous) {
         this.previous = previous;
     }
 }
