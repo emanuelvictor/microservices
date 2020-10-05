@@ -50,7 +50,7 @@ public class TokenTests extends ITokenStoreImplTestsAbstract {
         Assert.isTrue(!token8.isRevoked());
         Assert.isTrue(!token9.isRevoked());
 
-        token5.printPrevious();
+        token5.printFromRoot();
 
         token5.revoke();
 
@@ -106,7 +106,9 @@ public class TokenTests extends ITokenStoreImplTestsAbstract {
 
     }
 
-
+    /**
+     * @return Set<IToken>
+     */
     public static Set<IToken> dataSet() {
 
         //Creates two composites containing the tokens

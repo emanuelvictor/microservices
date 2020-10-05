@@ -45,10 +45,13 @@ public class ITokenStoreImpl implements ITokenStore {
      */
     public Optional<IToken> findTokenByValue(final String tokenValue) {
 
-        return this.tokens.stream()
-                .map(iToken -> iToken.findByValue(tokenValue))
-                .filter(Objects::nonNull)
-                .findAny().orElse(Optional.empty());
+        for (final IToken iToken: this.tokens) {
+            final Optional<IToken> founded = iToken.findByValue(tokenValue);
+            if(founded.isPresent())
+                return founded;
+        }
+
+        return Optional.empty();
 
     }
 }

@@ -19,7 +19,10 @@ public class Token extends AbstractToken {
      * @param next
      * @return
      */
-    public Optional<IToken> add(final IToken next) { /// TODO MUDAR
+    public Optional<IToken> add(final IToken next) {
+
+        if (this.getValue().equals(next.getValue()))
+            throw new RuntimeException("Token already exits for this session");
 
         this.getNext().ifPresentOrElse(present -> {
             present.add(next);
@@ -29,13 +32,7 @@ public class Token extends AbstractToken {
         });
 
         return Optional.of(next);
-//        if (this.next.isPresent()) {
-//            return this.next.add(next);
-//        } else {
-//            next.setPrevious(this);
-//            this.next = next;
-//            return this.next;
-//        }
+
     }
 
     // ------------- Revoke
@@ -78,17 +75,21 @@ public class Token extends AbstractToken {
      *
      */
     @Override
-    public void printPrevious() {
-        this.getPrevious().ifPresentOrElse(IToken::printPrevious, this::print);
+    public void print() {
+        if (getPrevious().isPresent())
+            System.out.print(" --> ");
+        System.out.print(this.getValue());
+        if (getNext().isEmpty())
+            System.out.print("\n");
+        this.printNext();
     }
 
     /**
      *
      */
     @Override
-    public void print() {
-        System.out.println(this.getValue());
-        this.printNext();
+    public void printFromRoot() {
+        this.getPrevious().ifPresentOrElse(IToken::printFromRoot, this::print);
     }
 
     /**
@@ -112,14 +113,12 @@ public class Token extends AbstractToken {
         if (this.getValue().equals(value))
             return Optional.of(this);
 
-
         return this.getRoot().orElseThrow().recursiveFindByValue(value);
 
     }
 
     @Override
     public Optional<IToken> recursiveFindByValue(final String value) {
-
 
         if (this.getValue().equals(value))
             return Optional.of(this);

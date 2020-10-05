@@ -16,7 +16,7 @@ public interface IToken {
 
     void print();
 
-    void printPrevious();
+    void printFromRoot();
 
     void printNext();
 

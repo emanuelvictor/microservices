@@ -14,6 +14,7 @@ public class ITokenStoreImplTestsAbstract {
     /**
      *
      */
+//    @Before before to junit
     @BeforeEach
     public void beforeTests() {
         tokenStore = new ITokenStoreImpl();

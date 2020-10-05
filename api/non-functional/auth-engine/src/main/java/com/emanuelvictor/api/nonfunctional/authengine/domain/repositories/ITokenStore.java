@@ -6,10 +6,10 @@ import java.util.Optional;
 
 public interface ITokenStore {
 
-    public Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate);
+    Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate);
 
-    public Optional<IToken> create(final String tokenValueToCreate);
+    Optional<IToken> create(final String tokenValueToCreate);
 
-    public Optional<IToken> findTokenByValue(final String tokenValue);
+    Optional<IToken> findTokenByValue(final String tokenValue);
 
 }
