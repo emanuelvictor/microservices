@@ -12,7 +12,7 @@ public interface IToken {
 
     boolean isRevoked();
 
-    Optional<IToken> add(final Optional<IToken> token);
+    Optional<IToken> add(final IToken token);
 
     void print();
 
@@ -20,7 +20,7 @@ public interface IToken {
 
     void printNext();
 
-    void setPrevious(final Optional<IToken> token);
+    void setPrevious(final IToken token);
 
     Optional<IToken> recursiveFindByValue(final String value);
 

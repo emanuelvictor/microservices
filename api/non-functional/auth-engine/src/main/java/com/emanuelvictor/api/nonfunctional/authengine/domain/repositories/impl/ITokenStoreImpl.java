@@ -17,7 +17,7 @@ public class ITokenStoreImpl implements ITokenStore {
      */
     public Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate) {
 
-        final Optional<IToken> token = Optional.of(new Token(tokenValueToCreate));
+        final IToken token = new Token(tokenValueToCreate);
 
         this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(token), () -> this.create(tokenValueToCreate));
 

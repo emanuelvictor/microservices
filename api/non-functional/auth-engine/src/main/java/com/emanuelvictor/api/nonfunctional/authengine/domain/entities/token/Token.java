@@ -19,16 +19,16 @@ public class Token extends AbstractToken {
      * @param next
      * @return
      */
-    public Optional<IToken> add(final Optional<IToken> next) {
+    public Optional<IToken> add(final IToken next) { /// TODO MUDAR
 
-        this.next.ifPresentOrElse(present -> {
+        this.getNext().ifPresentOrElse(present -> {
             present.add(next);
         }, () -> {
-            next.orElseThrow().setPrevious(Optional.of(this));
-            this.next = next;
+            next.setPrevious(this);
+            this.setNext(next);
         });
 
-        return next;
+        return Optional.of(next);
 //        if (this.next.isPresent()) {
 //            return this.next.add(next);
 //        } else {
@@ -46,9 +46,9 @@ public class Token extends AbstractToken {
     @Override
     public void revoke() {
         this.revokePrevious();
-        if (!this.revoked) {
-            this.revoked = true;
-            System.out.println("Revoke token " + this.value);
+        if (!this.isRevoked()) {
+            this.setRevoked(true);
+            System.out.println("Revoke token " + this.getValue());
         }
         this.revokeNext();
     }
@@ -58,7 +58,7 @@ public class Token extends AbstractToken {
      */
     @Override
     public void revokeNext() {
-        this.next.ifPresent(IToken::revoke);
+        this.getNext().ifPresent(IToken::revoke);
     }
 
     /**
@@ -66,7 +66,7 @@ public class Token extends AbstractToken {
      */
     @Override
     public void revokePrevious() {
-        this.previous.ifPresent(present -> {
+        this.getPrevious().ifPresent(present -> {
             if (!present.isRevoked())
                 present.revoke();
         });
@@ -79,7 +79,7 @@ public class Token extends AbstractToken {
      */
     @Override
     public void printPrevious() {
-        this.previous.ifPresentOrElse(IToken::printPrevious, this::print);
+        this.getPrevious().ifPresentOrElse(IToken::printPrevious, this::print);
     }
 
     /**
@@ -87,7 +87,7 @@ public class Token extends AbstractToken {
      */
     @Override
     public void print() {
-        System.out.println(value);
+        System.out.println(this.getValue());
         this.printNext();
     }
 
@@ -96,7 +96,7 @@ public class Token extends AbstractToken {
      */
     @Override
     public void printNext() {
-        this.next.ifPresent(IToken::print);
+        this.getNext().ifPresent(IToken::print);
     }
 
 
@@ -109,7 +109,7 @@ public class Token extends AbstractToken {
     @Override
     public Optional<IToken> findByValue(final String value) {
 
-        if (this.value.equals(value))
+        if (this.getValue().equals(value))
             return Optional.of(this);
 
 
@@ -121,11 +121,11 @@ public class Token extends AbstractToken {
     public Optional<IToken> recursiveFindByValue(final String value) {
 
 
-        if (this.value.equals(value))
+        if (this.getValue().equals(value))
             return Optional.of(this);
 
-        if (this.next.isPresent()) //TODO
-            return this.next.orElseThrow().recursiveFindByValue(value);
+        if (this.getNext().isPresent()) //TODO
+            return this.getNext().orElseThrow().recursiveFindByValue(value);
 
         return Optional.empty();
     }
@@ -135,10 +135,10 @@ public class Token extends AbstractToken {
      */
     @Override
     public Optional<IToken> getRoot() {
-        if (this.previous.isEmpty()) //TODO
+        if (this.getPrevious().isEmpty()) //TODO
             return Optional.of(this);
         else {
-            return this.previous.orElseThrow().getRoot();
+            return this.getPrevious().orElseThrow().getRoot();
         }
     }
 }
