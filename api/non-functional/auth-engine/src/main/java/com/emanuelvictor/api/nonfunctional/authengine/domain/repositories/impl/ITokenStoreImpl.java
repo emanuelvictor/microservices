@@ -8,20 +8,32 @@ import java.util.*;
 
 public class ITokenStoreImpl implements ITokenStore {
 
-
-    private Set<IToken> tokens = new HashSet<>();
+    /**
+     *
+     */
+    private final Set<IToken> tokens = new HashSet<>();
 
     /**
-     * @param tokenValueToFind String
-     * @return IToken
+     * @param tokenValueToFind
+     * @param tokenValueToCreate
+     * @return
      */
     public Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate) {
 
+        if (tokenValueToFind == null)
+            throw new RuntimeException("Token value to find must be not null");
+
+        // Token to save and return if saved
         final IToken token = new Token(tokenValueToCreate);
 
-        this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(token), () -> this.create(tokenValueToCreate));
+        // Verify if the token to create alaredy exists
+        this.findTokenByValue(tokenValueToCreate).ifPresentOrElse(iToken -> {
+            throw new RuntimeException("Token with value: " + iToken.getValue() + " already founded");
+        }, () -> this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(token), () -> {
+            throw new RuntimeException("Token with value: " + tokenValueToFind + " not found");
+        }));
 
-        return this.findTokenByValue(tokenValueToCreate);
+        return Optional.of(token);
     }
 
     /**
@@ -45,13 +57,28 @@ public class ITokenStoreImpl implements ITokenStore {
      */
     public Optional<IToken> findTokenByValue(final String tokenValue) {
 
-        for (final IToken iToken: this.tokens) {
+        for (final IToken iToken : this.tokens) {
             final Optional<IToken> founded = iToken.findByValue(tokenValue);
-            if(founded.isPresent())
+            if (founded.isPresent())
                 return founded;
         }
 
         return Optional.empty();
 
+    }
+
+    /**
+     * @param tokenValue String
+     * @return Optional<IToken>
+     */
+    @Override
+    public Optional<IToken> revoke(final String tokenValue) {
+        final Optional<IToken> token = this.findTokenByValue(tokenValue);
+
+        token.ifPresentOrElse(IToken::revoke, () -> {
+            throw new RuntimeException("Token with value: " + tokenValue + " not found");
+        });
+
+        return token;
     }
 }

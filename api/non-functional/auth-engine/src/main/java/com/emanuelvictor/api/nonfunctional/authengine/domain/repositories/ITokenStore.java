@@ -12,4 +12,6 @@ public interface ITokenStore {
 
     Optional<IToken> findTokenByValue(final String tokenValue);
 
+    // TODO Must be return void
+    Optional<IToken> revoke(final String tokenValue);
 }

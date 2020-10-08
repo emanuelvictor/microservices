@@ -1,10 +1,14 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.repositories;
+package com.emanuelvictor.api.nonfunctional.authengine.domain;
 
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.ITokenStore;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.ITokenStoreImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.runner.RunWith;
 
-public class ITokenStoreImplTestsAbstract {
+@RunWith(JUnitPlatform.class)
+public abstract class AbstractsUnitTests {
 
     /**
      *

@@ -4,9 +4,11 @@ import java.util.Optional;
 
 public interface IToken {
 
-    void revoke();
+    // TODO Must be return void
+    Optional<IToken> revoke();
 
-    void revokeNext();
+    // TODO Must be return void
+    Optional<IToken> revokeNext();
 
     void revokePrevious();
 
@@ -32,5 +34,4 @@ public interface IToken {
 
     Optional<IToken> getRoot();
 
-//    public Token getPrevious();
 }

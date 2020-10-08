@@ -1,5 +1,6 @@
-package com.emanuelvictor.api.nonfunctional.authengine;
+package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
@@ -10,10 +11,13 @@ import static com.emanuelvictor.api.nonfunctional.authengine.domain.services.Ser
 
 
 //@SpringBootTest
-class AuthorizationServerApplicationTests {
+public class AuthoritiesTests extends AbstractsUnitTests {
 
+    /**
+     *
+     */
     @Test
-    void contextLoads() {
+    public void contextLoads() {
 
         final Set<SimpleGrantedAuthority> authorities = Set.of(
                 new SimpleGrantedAuthority("root"),

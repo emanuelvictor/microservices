@@ -2,20 +2,21 @@ package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.ITokenStoreImplTestsAbstract;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
 import java.util.Set;
 
-public class TokenTests extends ITokenStoreImplTestsAbstract {
+public class TokenTests extends AbstractsUnitTests {
 
 
     /**
-     *
+     *@Test
+     *     void
      */
     @Test
-    void recursiveTokensHanlder() {
+  public  void recursiveTokensHanlder() {
 
         //Creates two composites containing the tokens
         final IToken token1 = new Token("token1");
@@ -70,7 +71,7 @@ public class TokenTests extends ITokenStoreImplTestsAbstract {
      *
      */
     @Test
-    void addTokenMustPass() {
+  public  void addTokenMustPass() {
         final IToken token1 = new Token("token1");
 
         final IToken token2 = new Token("token2");
@@ -98,7 +99,7 @@ public class TokenTests extends ITokenStoreImplTestsAbstract {
      *
      */
     @Test
-    void findByValue() {
+  public  void findByValue() {
 
         Assert.notNull(dataSet().stream().findFirst().orElseThrow().findByValue("token2"));
 

@@ -1,12 +1,20 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Optional;
 
 /**
  * "Composite"
  */
 public class Token extends AbstractToken {
+
+    /**
+     *
+     */
+    public static final Logger LOGGER = LoggerFactory.getLogger(Token.class);
 
     /**
      * @param token String
@@ -41,21 +49,21 @@ public class Token extends AbstractToken {
      *
      */
     @Override
-    public void revoke() {
+    public Optional<IToken> revoke() {
         this.revokePrevious();
         if (!this.isRevoked()) {
             this.setRevoked(true);
-            System.out.println("Revoke token " + this.getValue());
+            LOGGER.info("Token with value " + this.getValue() + " revoked");
         }
-        this.revokeNext();
+        return this.revokeNext();
     }
 
     /**
      *
      */
     @Override
-    public void revokeNext() {
-        this.getNext().ifPresent(IToken::revoke);
+    public Optional<IToken> revokeNext() {
+        return this.getNext().flatMap(IToken::revoke);
     }
 
     /**
@@ -68,6 +76,7 @@ public class Token extends AbstractToken {
                 present.revoke();
         });
     }
+
 
     //  ------------- Print
 
