@@ -64,15 +64,11 @@ public class CommonConfiguration {
      */
     @Bean
     @Primary
-    public AbstractTokenServices tokenServices(final TokenStore tokenStore,
+    public CustomTokenServices tokenServices(final TokenStore tokenStore,
                                              final ClientDetailsService clientDetailsService,
                                              final JwtAccessTokenConverter accessTokenEnhancer) {
 
-        final AbstractTokenServices customTokenServices = new AbstractTokenServices(/*tokenStore, clientDetailsService, accessTokenEnhancer, authenticationManager*/);
-        customTokenServices.setTokenStore(tokenStore);
-        customTokenServices.setSupportRefreshToken(true);
-        customTokenServices.setTokenEnhancer(accessTokenEnhancer); //TODO non necessary
-        customTokenServices.setClientDetailsService(clientDetailsService);
+        final CustomTokenServices customTokenServices = new CustomTokenServices(tokenStore, clientDetailsService, accessTokenEnhancer);
         return customTokenServices;
     }
 

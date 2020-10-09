@@ -17,13 +17,11 @@ public class CustomTokenServices extends AbstractTokenServices {
      * @param tokenStore            TokenStore
      * @param clientDetailsService  ClientDetailsService
      * @param accessTokenEnhancer   JwtAccessTokenConverter
-     * @param authenticationManager AuthenticationManager
      */
     public CustomTokenServices(final TokenStore tokenStore,
                                   final ClientDetailsService clientDetailsService,
-                                  final JwtAccessTokenConverter accessTokenEnhancer,
-                                  final AuthenticationManager authenticationManager) {
-//        super(tokenStore, clientDetailsService, accessTokenEnhancer, authenticationManager);
+                                  final JwtAccessTokenConverter accessTokenEnhancer) {
+        super(tokenStore, clientDetailsService, accessTokenEnhancer);
     }
 
 }

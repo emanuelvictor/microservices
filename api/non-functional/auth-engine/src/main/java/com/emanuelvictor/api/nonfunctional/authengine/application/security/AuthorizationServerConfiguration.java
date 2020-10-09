@@ -74,7 +74,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     /**
      *
      */
-    private final AbstractTokenServices tokenServices;
+    private final AuthorizationServerTokenServices tokenServices;
 
     /**
      *

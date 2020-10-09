@@ -57,15 +57,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * @return AuthenticationProvider
-     */
-    private AuthenticationProvider authenticationProvider() {
-        final PreAuthenticatedAuthenticationProvider authProvider = new PreAuthenticatedAuthenticationProvider();
-        authProvider.setPreAuthenticatedUserDetailsService(new PreAuthenticatedGrantedAuthoritiesUserDetailsService());
-        return authProvider;
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @param http

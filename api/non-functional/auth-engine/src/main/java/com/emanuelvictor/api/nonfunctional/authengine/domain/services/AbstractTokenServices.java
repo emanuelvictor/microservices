@@ -1,7 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -12,8 +11,6 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.*;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.Set;
@@ -32,32 +29,52 @@ import java.util.UUID;
  * @author Luke Taylor
  * @author Dave Syer
  */
-public class AbstractTokenServices implements AuthorizationServerTokenServices, ResourceServerTokenServices, ConsumerTokenServices, InitializingBean {
+public class AbstractTokenServices implements AuthorizationServerTokenServices, ResourceServerTokenServices, ConsumerTokenServices {
 
-    private int refreshTokenValiditySeconds = 60 * 60 * 24 * 30; // default 30 days.
+    protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
+    protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
+    protected static final boolean SUPPORT_REFRESH_TOKEN = true;
+    protected static final boolean REUSE_REFRESH_TOKEN = true;
 
-    private int accessTokenValiditySeconds = 60 * 60 * 12; // default 12 hours.
+    /**
+     *
+     */
+    protected final TokenStore tokenStore;
 
-    private boolean supportRefreshToken = false;
+    /**
+     *
+     */
+    protected final ClientDetailsService clientDetailsService;
 
-    private boolean reuseRefreshToken = true;
+    /**
+     *
+     */
+    protected final JwtAccessTokenConverter accessTokenEnhancer;
 
-    private TokenStore tokenStore;
-
-    private ClientDetailsService clientDetailsService;
-
-    private TokenEnhancer accessTokenEnhancer;
-
+    /**
+     *
+     */
     private AuthenticationManager authenticationManager;
 
     /**
-     * Initialize these token services. If no random generator is set, one will be created.
+     * @param tokenStore            TokenStore
+     * @param clientDetailsService  ClientDetailsService
+     * @param accessTokenEnhancer   JwtAccessTokenConverter
      */
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(tokenStore, "tokenStore must be set");
+    public AbstractTokenServices(final TokenStore tokenStore,
+                                 final ClientDetailsService clientDetailsService,
+                                 final JwtAccessTokenConverter accessTokenEnhancer) {
+        this.tokenStore = tokenStore;
+        this.clientDetailsService = clientDetailsService;
+        this.accessTokenEnhancer = accessTokenEnhancer;
     }
 
-    @Transactional
+    /**
+     * @param authentication
+     * @return
+     * @throws AuthenticationException
+     */
+    @Override
     public OAuth2AccessToken createAccessToken(OAuth2Authentication authentication) throws AuthenticationException {
 
         OAuth2AccessToken existingAccessToken = tokenStore.getAccessToken(authentication);
@@ -72,8 +89,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     tokenStore.removeRefreshToken(refreshToken);
                 }
                 tokenStore.removeAccessToken(existingAccessToken);
-            }
-            else {
+            } else {
                 // Re-store the access token in case the authentication has changed
                 tokenStore.storeAccessToken(existingAccessToken, authentication);
                 return existingAccessToken;
@@ -108,11 +124,28 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     }
 
-    @Transactional(noRollbackFor={InvalidTokenException.class, InvalidGrantException.class})
+
+    /**
+     * @param tokenValue String
+     * @return String
+     */
+    public String getClientId(final String tokenValue) {
+        OAuth2Authentication authentication = tokenStore.readAuthentication(tokenValue);
+        if (authentication == null) {
+            throw new InvalidTokenException("Invalid access token: " + tokenValue);
+        }
+        OAuth2Request clientAuth = authentication.getOAuth2Request();
+        if (clientAuth == null) {
+            throw new InvalidTokenException("Invalid access token (no client id): " + tokenValue);
+        }
+        return clientAuth.getClientId();
+    }
+
+    @Override
     public OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
             throws AuthenticationException {
 
-        if (!supportRefreshToken) {
+        if (!SUPPORT_REFRESH_TOKEN) {
             throw new InvalidGrantException("Invalid refresh token: " + refreshTokenValue);
         }
 
@@ -147,19 +180,20 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
         authentication = createRefreshedAuthentication(authentication, tokenRequest);
 
-        if (!reuseRefreshToken) {
+        if (!REUSE_REFRESH_TOKEN) {
             tokenStore.removeRefreshToken(refreshToken);
             refreshToken = createRefreshToken(authentication);
         }
 
         OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
         tokenStore.storeAccessToken(accessToken, authentication);
-        if (!reuseRefreshToken) {
+        if (!REUSE_REFRESH_TOKEN) {
             tokenStore.storeRefreshToken(accessToken.getRefreshToken(), authentication);
         }
         return accessToken;
     }
 
+    @Override
     public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
         return tokenStore.getAccessToken(authentication);
     }
@@ -168,7 +202,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      * Create a refreshed authentication.
      *
      * @param authentication The authentication.
-     * @param request The scope for the refreshed token.
+     * @param request        The scope for the refreshed token.
      * @return The refreshed authentication.
      * @throws InvalidScopeException If the scope requested is invalid or wider than the original scope.
      */
@@ -181,8 +215,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
             if (originalScope == null || !originalScope.containsAll(scope)) {
                 throw new InvalidScopeException("Unable to narrow the scope of the client authentication to " + scope
                         + ".", originalScope);
-            }
-            else {
+            } else {
                 clientAuth = clientAuth.narrowScope(scope);
             }
         }
@@ -190,6 +223,12 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return narrowed;
     }
 
+    /**
+     * TODO For what is protected?
+     *
+     * @param refreshToken OAuth2RefreshToken
+     * @return boolean
+     */
     protected boolean isExpired(OAuth2RefreshToken refreshToken) {
         if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
             ExpiringOAuth2RefreshToken expiringToken = (ExpiringOAuth2RefreshToken) refreshToken;
@@ -199,17 +238,18 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return false;
     }
 
+    @Override
     public OAuth2AccessToken readAccessToken(String accessToken) {
         return tokenStore.readAccessToken(accessToken);
     }
 
+    @Override
     public OAuth2Authentication loadAuthentication(String accessTokenValue) throws AuthenticationException,
             InvalidTokenException {
         OAuth2AccessToken accessToken = tokenStore.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
-        }
-        else if (accessToken.isExpired()) {
+        } else if (accessToken.isExpired()) {
             tokenStore.removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
@@ -223,26 +263,14 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
             String clientId = result.getOAuth2Request().getClientId();
             try {
                 clientDetailsService.loadClientByClientId(clientId);
-            }
-            catch (ClientRegistrationException e) {
+            } catch (ClientRegistrationException e) {
                 throw new InvalidTokenException("Client not valid: " + clientId, e);
             }
         }
         return result;
     }
 
-    public String getClientId(String tokenValue) {
-        OAuth2Authentication authentication = tokenStore.readAuthentication(tokenValue);
-        if (authentication == null) {
-            throw new InvalidTokenException("Invalid access token: " + tokenValue);
-        }
-        OAuth2Request clientAuth = authentication.getOAuth2Request();
-        if (clientAuth == null) {
-            throw new InvalidTokenException("Invalid access token (no client id): " + tokenValue);
-        }
-        return clientAuth.getClientId();
-    }
-
+    @Override
     public boolean revokeToken(String tokenValue) {
         OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
         if (accessToken == null) {
@@ -281,6 +309,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     }
 
     /**
+     * TODO For what is protected?
      * The access token validity period in seconds
      *
      * @param clientAuth the current authorization request
@@ -294,7 +323,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                 return validity;
             }
         }
-        return accessTokenValiditySeconds;
+        return ACCESS_TOKEN_VALIDITY_SECONDS;
     }
 
     /**
@@ -311,12 +340,11 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                 return validity;
             }
         }
-        return refreshTokenValiditySeconds;
+        return REFRESH_TOKEN_VALIDITY_SECONDS;
     }
 
     /**
-     * Is a refresh token supported for this client (or the global setting if
-     * {@link #setClientDetailsService(ClientDetailsService) clientDetailsService} is not set.
+     * TODO For what is protected?
      *
      * @param clientAuth the current authorization request
      * @return boolean to indicate if refresh token is supported
@@ -326,84 +354,14 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
             ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
             return client.getAuthorizedGrantTypes().contains("refresh_token");
         }
-        return this.supportRefreshToken;
+        return SUPPORT_REFRESH_TOKEN;
     }
 
-    /**
-     * An access token enhancer that will be applied to a new token before it is saved in the token store.
-     *
-     * @param accessTokenEnhancer the access token enhancer to set
-     */
-    public void setTokenEnhancer(TokenEnhancer accessTokenEnhancer) {
-        this.accessTokenEnhancer = accessTokenEnhancer;
-    }
-
-    /**
-     * The validity (in seconds) of the refresh token. If less than or equal to zero then the tokens will be
-     * non-expiring.
-     *
-     * @param refreshTokenValiditySeconds The validity (in seconds) of the refresh token.
-     */
-    public void setRefreshTokenValiditySeconds(int refreshTokenValiditySeconds) {
-        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
-    }
-
-    /**
-     * The default validity (in seconds) of the access token. Zero or negative for non-expiring tokens. If a client
-     * details service is set the validity period will be read from the client, defaulting to this value if not defined
-     * by the client.
-     *
-     * @param accessTokenValiditySeconds The validity (in seconds) of the access token.
-     */
-    public void setAccessTokenValiditySeconds(int accessTokenValiditySeconds) {
-        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
-    }
-
-    /**
-     * Whether to support the refresh token.
-     *
-     * @param supportRefreshToken Whether to support the refresh token.
-     */
-    public void setSupportRefreshToken(boolean supportRefreshToken) {
-        this.supportRefreshToken = supportRefreshToken;
-    }
-
-    /**
-     * Whether to reuse refresh tokens (until expired).
-     *
-     * @param reuseRefreshToken Whether to reuse refresh tokens (until expired).
-     */
-    public void setReuseRefreshToken(boolean reuseRefreshToken) {
-        this.reuseRefreshToken = reuseRefreshToken;
-    }
-
-    /**
-     * The persistence strategy for token storage.
-     *
-     * @param tokenStore the store for access and refresh tokens.
-     */
-    public void setTokenStore(TokenStore tokenStore) {
-        this.tokenStore = tokenStore;
-    }
-
-    /**
-     * An authentication manager that will be used (if provided) to check the user authentication when a token is
-     * refreshed.
-     *
-     * @param authenticationManager the authenticationManager to set
-     */
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    /**
-     * The client details service to use for looking up clients (if necessary). Optional if the access token expiry is
-     * set globally via {@link #setAccessTokenValiditySeconds(int)}.
-     *
-     * @param clientDetailsService the client details service
-     */
-    public void setClientDetailsService(ClientDetailsService clientDetailsService) {
-        this.clientDetailsService = clientDetailsService;
-    }
-
+//    public AuthenticationManager getAuthenticationManager() {
+//        return authenticationManager;
+//    }
+//
+//    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+//        this.authenticationManager = authenticationManager;
+//    }
 }
