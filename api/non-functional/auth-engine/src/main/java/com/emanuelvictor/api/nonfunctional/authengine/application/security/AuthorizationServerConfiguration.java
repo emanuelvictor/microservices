@@ -3,6 +3,7 @@
  */
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.AbstractTokenServices;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.services.ClientService;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.services.CustomTokenServices;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -42,7 +44,7 @@ import java.util.List;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 
-    private final CustomTokenServices customTokenServices;
+//    private final CustomTokenServices customTokenServices;
 
     /**
      *
@@ -71,6 +73,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
     /**
      *
+     */
+    private final AbstractTokenServices tokenServices;
+
+    /**
+     *
      * @param endpoints AuthorizationServerEndpointsConfigurer
      */
     @Override
@@ -83,7 +90,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         endpoints.tokenStore(tokenStore)
                 .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService).tokenServices(customTokenServices);
+                .userDetailsService(userDetailsService)
+                .tokenServices(tokenServices);
 
     }
 

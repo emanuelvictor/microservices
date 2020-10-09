@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 /**
  *
  */
-@Service
+//@Service
 public class CustomTokenServices extends AbstractTokenServices {
 
     /**
@@ -19,11 +19,11 @@ public class CustomTokenServices extends AbstractTokenServices {
      * @param accessTokenEnhancer   JwtAccessTokenConverter
      * @param authenticationManager AuthenticationManager
      */
-    protected CustomTokenServices(final TokenStore tokenStore,
+    public CustomTokenServices(final TokenStore tokenStore,
                                   final ClientDetailsService clientDetailsService,
                                   final JwtAccessTokenConverter accessTokenEnhancer,
                                   final AuthenticationManager authenticationManager) {
-        super(tokenStore, clientDetailsService, accessTokenEnhancer, authenticationManager);
+//        super(tokenStore, clientDetailsService, accessTokenEnhancer, authenticationManager);
     }
 
 }

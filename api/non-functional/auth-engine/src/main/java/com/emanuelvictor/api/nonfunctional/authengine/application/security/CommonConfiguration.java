@@ -1,16 +1,21 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.services.CustomTokenServices;
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.AbstractTokenServices;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.CustomTokenServices;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.validation.Validator;
@@ -20,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
@@ -49,18 +55,26 @@ public class CommonConfiguration {
         return converter;
     }
 
-//    /**
-//     * @return CustomTokenServices
-//     */
-//    @Bean
-//    @Primary
-//    public CustomTokenServices tokenServices() {
-//        final CustomTokenServices customTokenServices = new CustomTokenServices();
-//        customTokenServices.setTokenStore(tokenStore()); ok
-//        customTokenServices.setSupportRefreshToken(true); ok
-//        customTokenServices.setTokenEnhancer(tokenEnhancer()); //TODO non necessary
-//        return customTokenServices;
-//    }
+    /**
+     *
+     * @param tokenStore TokenStore
+     * @param clientDetailsService ClientDetailsService
+     * @param accessTokenEnhancer JwtAccessTokenConverter
+     * @return
+     */
+    @Bean
+    @Primary
+    public AbstractTokenServices tokenServices(final TokenStore tokenStore,
+                                             final ClientDetailsService clientDetailsService,
+                                             final JwtAccessTokenConverter accessTokenEnhancer) {
+
+        final AbstractTokenServices customTokenServices = new AbstractTokenServices(/*tokenStore, clientDetailsService, accessTokenEnhancer, authenticationManager*/);
+        customTokenServices.setTokenStore(tokenStore);
+        customTokenServices.setSupportRefreshToken(true);
+        customTokenServices.setTokenEnhancer(accessTokenEnhancer); //TODO non necessary
+        customTokenServices.setClientDetailsService(clientDetailsService);
+        return customTokenServices;
+    }
 
     /**
      * TokenEnhancer

@@ -110,6 +110,14 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
      *
      */
     @Test
+    public void createTokenWithTokenToFindIsNullMustFail() {
+        Assertions.assertThrows(java.lang.RuntimeException.class, () -> this.tokenStore.create(null, "token13"));
+    }
+
+    /**
+     *
+     */
+    @Test
     public void creatingLinkedTokensMustPass() {
         this.tokenStore.create("token1");
         this.tokenStore.create("token1", "token2");

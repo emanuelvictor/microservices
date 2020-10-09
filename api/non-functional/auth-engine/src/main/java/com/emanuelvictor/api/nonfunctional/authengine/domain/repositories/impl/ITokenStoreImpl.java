@@ -14,9 +14,9 @@ public class ITokenStoreImpl implements ITokenStore {
     private final Set<IToken> tokens = new HashSet<>();
 
     /**
-     * @param tokenValueToFind
-     * @param tokenValueToCreate
-     * @return
+     * @param tokenValueToFind String
+     * @param tokenValueToCreate String
+     * @return Optional<IToken>
      */
     public Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate) {
 
@@ -64,7 +64,6 @@ public class ITokenStoreImpl implements ITokenStore {
         }
 
         return Optional.empty();
-
     }
 
     /**
