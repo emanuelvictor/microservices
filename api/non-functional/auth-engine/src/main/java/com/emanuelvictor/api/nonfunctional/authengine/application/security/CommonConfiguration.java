@@ -55,22 +55,22 @@ public class CommonConfiguration {
         return converter;
     }
 
-    /**
-     *
-     * @param tokenStore TokenStore
-     * @param clientDetailsService ClientDetailsService
-     * @param accessTokenEnhancer JwtAccessTokenConverter
-     * @return
-     */
-    @Bean
-    @Primary
-    public CustomTokenServices tokenServices(final TokenStore tokenStore,
-                                             final ClientDetailsService clientDetailsService,
-                                             final JwtAccessTokenConverter accessTokenEnhancer) {
-
-        final CustomTokenServices customTokenServices = new CustomTokenServices(tokenStore, clientDetailsService, accessTokenEnhancer);
-        return customTokenServices;
-    }
+//    /**
+//     *
+//     * @param tokenStore TokenStore
+//     * @param clientDetailsService ClientDetailsService
+//     * @param accessTokenEnhancer JwtAccessTokenConverter
+//     * @return
+//     */
+//    @Bean
+//    @Primary
+//    public CustomTokenServices tokenServices(final TokenStore tokenStore,
+//                                             final ClientDetailsService clientDetailsService,
+//                                             final JwtAccessTokenConverter accessTokenEnhancer) {
+//
+//        final CustomTokenServices customTokenServices = new CustomTokenServices(tokenStore, clientDetailsService, accessTokenEnhancer);
+//        return customTokenServices;
+//    }
 
     /**
      * TokenEnhancer

@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -50,11 +51,6 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      *
      */
     protected final JwtAccessTokenConverter accessTokenEnhancer;
-
-    /**
-     *
-     */
-    private AuthenticationManager authenticationManager;
 
     /**
      * @param tokenStore            TokenStore
@@ -155,15 +151,6 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         }
 
         OAuth2Authentication authentication = tokenStore.readAuthenticationForRefreshToken(refreshToken);
-        if (this.authenticationManager != null && !authentication.isClientOnly()) {
-            // The client has already been authenticated, but the user authentication might be old now, so give it a
-            // chance to re-authenticate.
-            Authentication user = new PreAuthenticatedAuthenticationToken(authentication.getUserAuthentication(), "", authentication.getAuthorities());
-            user = authenticationManager.authenticate(user);
-            Object details = authentication.getDetails();
-            authentication = new OAuth2Authentication(authentication.getOAuth2Request(), user);
-            authentication.setDetails(details);
-        }
         String clientId = authentication.getOAuth2Request().getClientId();
         if (clientId == null || !clientId.equals(tokenRequest.getClientId())) {
             throw new InvalidGrantException("Wrong client for this refresh token: " + refreshTokenValue);
@@ -357,11 +344,4 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return SUPPORT_REFRESH_TOKEN;
     }
 
-//    public AuthenticationManager getAuthenticationManager() {
-//        return authenticationManager;
-//    }
-//
-//    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-//        this.authenticationManager = authenticationManager;
-//    }
 }

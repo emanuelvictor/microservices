@@ -44,12 +44,15 @@ import java.util.List;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 
-//    private final CustomTokenServices customTokenServices;
-
     /**
      *
      */
     private final TokenStore tokenStore;
+
+    /**
+     *
+     */
+    private final CustomTokenServices tokenServices;
 
     /**
      *
@@ -70,11 +73,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
      *
      */
     private final AuthenticationManager authenticationManager;
-
-    /**
-     *
-     */
-    private final AuthorizationServerTokenServices tokenServices;
 
     /**
      *
