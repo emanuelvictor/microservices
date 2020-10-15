@@ -5,6 +5,9 @@ import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.ITok
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class ITokenStoreImplTests extends AbstractsUnitTests {
@@ -34,7 +37,7 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
      *
      */
     @Test
-    public void createTokenAnd() {
+    public void createToken() {
         final String tokenValueToFind = UUID.randomUUID().toString();
         final String tokenValueToCreate = UUID.randomUUID().toString();
         Assertions.assertTrue(this.tokenStore.findTokenByValue(tokenValueToCreate).isEmpty());
@@ -48,14 +51,42 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
      *
      */
     @Test
-    public void createRepeatedTokenInThisSessionMustFail() {
-        this.tokenStore.create("token1");
+    public void countTests() {
+
+        final IToken firstToken = this.tokenStore.create("token1").orElseThrow();
         this.tokenStore.create("token1", "token2");
         this.tokenStore.create("token2", "token3");
         this.tokenStore.create("token3", "token4");
         this.tokenStore.create("token4", "token5");
 
-        Assertions.assertThrows(java.lang.RuntimeException.class, () -> this.tokenStore.create("token2", "token3"));
+        // Original size
+        final int size = firstToken.count();
+
+        // The tokens must be have 5 tokens
+        Assertions.assertEquals(5, size);
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void createRepeatedTokenInThisSessionMustBeUpdate() {
+
+        final IToken firstToken = this.tokenStore.create("token1").orElseThrow();
+        this.tokenStore.create("token1", "token2");
+        this.tokenStore.create("token2", "token3");
+        this.tokenStore.create("token3", "token4");
+        this.tokenStore.create("token4", "token5");
+
+        // Original size
+        final int size = firstToken.count();
+
+        // Create new token
+        this.tokenStore.create("token2", "token3");
+
+        // The tokens must be have 5 tokens
+        Assertions.assertEquals(size, this.tokenStore.findTokenByValue("token4").orElseThrow().count());
 
     }
 
@@ -79,7 +110,7 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
      *
      */
     @Test
-    public void createRepeatedTokenInnerOtherSessionMustFail() {
+    public void createRepeatedTokenInnerOtherSessionBeUpdated() {
 
         this.tokenStore.create("token1");
         this.tokenStore.create("token1", "token2");
@@ -87,6 +118,7 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
         this.tokenStore.create("token3", "token4");
         this.tokenStore.create("token4", "token5");
 
+        final int firstSizeExpected = this.tokenStore.findTokenByValue("token3").orElseThrow().count();
 
         this.tokenStore.create("token11");
         this.tokenStore.create("token11", "token12");
@@ -94,7 +126,14 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
         this.tokenStore.create("token13", "token14");
         this.tokenStore.create("token14", "token15");
 
-        Assertions.assertThrows(java.lang.RuntimeException.class, () -> this.tokenStore.create("token15", "token3"));
+        final int secondSizeExpected = this.tokenStore.findTokenByValue("token11").orElseThrow().count();
+
+        // Create repeated token
+        this.tokenStore.create("token15", "token3");
+
+        Assertions.assertEquals(firstSizeExpected, this.tokenStore.findTokenByValue("token4").orElseThrow().count());
+
+        Assertions.assertEquals(secondSizeExpected, this.tokenStore.findTokenByValue("token14").orElseThrow().count());
 
     }
 
@@ -102,8 +141,17 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
      *
      */
     @Test
-    public void createTokenWithAFakePreviousMustFail() {
-        Assertions.assertThrows(java.lang.RuntimeException.class, () -> this.tokenStore.create("token15", "token13"));
+    public void createTokenWithAFakePreviousMustBeCreateTwoTokensInRoot() {
+        this.tokenStore.create("token15", "token13");
+        Assertions.assertEquals(2, this.tokenStore.findTokenByValue("token15").orElseThrow().count());
+
+        final IToken token = this.tokenStore.findTokenByValue("token15").orElseThrow();
+        Assertions.assertTrue(token.getPrevious().isEmpty());
+        Assertions.assertTrue(token.getNext().isPresent());
+        Assertions.assertEquals("token15", token.getValue());
+        Assertions.assertEquals("token13", token.getNext().orElseThrow().getValue());
+        Assertions.assertTrue(token.getNext().orElseThrow().getPrevious().isPresent());
+        Assertions.assertTrue(token.getNext().orElseThrow().getNext().isEmpty());
     }
 
     /**
@@ -227,6 +275,68 @@ public class ITokenStoreImplTests extends AbstractsUnitTests {
     @Test
     public void revokeTokenNotFoundedMustFail() {
         Assertions.assertThrows(java.lang.RuntimeException.class, () -> this.tokenStore.revoke("not inserted"));
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void createSeveralTokens() {
+
+        final int SIZE = 10;
+
+        final String[] severalTokens = new String[SIZE];
+        String root = null;
+        String leaf = null;
+        for (int i = 0; i < SIZE; i++) {
+            final String token = UUID.randomUUID().toString();
+            if (i == 0)
+                root = token;
+            else if (i == SIZE - 1)
+                leaf = token;
+            severalTokens[i] = token;
+        }
+
+        final Optional<IToken> rootToken = this.tokenStore.create(root, severalTokens);
+
+        Assertions.assertEquals(root, rootToken.orElseThrow().getValue());
+        Assertions.assertEquals(leaf, rootToken.orElseThrow().getLeaf().orElseThrow().getValue());
+
+        Assertions.assertEquals(SIZE, rootToken.orElseThrow().count());
+
+        rootToken.orElseThrow().printFromRoot();
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void createSeveralTokensWithoutTokenToFind() {
+
+        final int SIZE = 10;
+
+        final String[] severalTokens = new String[SIZE];
+        String root = null;
+        String leaf = null;
+        for (int i = 0; i < SIZE; i++) {
+            final String token = UUID.randomUUID().toString();
+            if (i == 0)
+                root = token;
+            else if (i == SIZE - 1)
+                leaf = token;
+            severalTokens[i] = token;
+        }
+
+        final Optional<IToken> rootToken = this.tokenStore.create(severalTokens);
+
+        Assertions.assertEquals(root, rootToken.orElseThrow().getValue());
+        Assertions.assertEquals(leaf, rootToken.orElseThrow().getLeaf().orElseThrow().getValue());
+
+        Assertions.assertEquals(SIZE, rootToken.orElseThrow().count());
+
+        rootToken.orElseThrow().printFromRoot();
+
     }
 }
 

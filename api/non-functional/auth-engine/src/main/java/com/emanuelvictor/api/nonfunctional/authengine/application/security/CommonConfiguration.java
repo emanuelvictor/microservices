@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Configuration
 public class CommonConfiguration {
 
-    private final static String DEFAULT_KEY = "integrator";
+    public final static String DEFAULT_KEY = "integrator";
     private final static String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
 
     /**

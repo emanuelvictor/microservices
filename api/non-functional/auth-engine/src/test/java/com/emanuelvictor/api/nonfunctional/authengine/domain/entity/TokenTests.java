@@ -3,6 +3,7 @@ package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
 
@@ -12,11 +13,10 @@ public class TokenTests extends AbstractsUnitTests {
 
 
     /**
-     *@Test
-     *     void
+     *
      */
     @Test
-  public  void recursiveTokensHanlder() {
+    public void recursiveTokensHanlder() {
 
         //Creates two composites containing the tokens
         final IToken token1 = new Token("token1");
@@ -71,7 +71,7 @@ public class TokenTests extends AbstractsUnitTests {
      *
      */
     @Test
-  public  void addTokenMustPass() {
+    public void addTokenMustPass() {
         final IToken token1 = new Token("token1");
 
         final IToken token2 = new Token("token2");
@@ -99,7 +99,38 @@ public class TokenTests extends AbstractsUnitTests {
      *
      */
     @Test
-  public  void findByValue() {
+    public void countTests() {
+        final IToken token1 = new Token("token1");
+
+        final IToken token2 = new Token("token2");
+        token1.add(token2);
+
+        final IToken token3 = new Token("token3");
+        token1.add(token3);
+
+        final IToken token4 = new Token("token4");
+        token2.add(token4);
+
+        final IToken token5 = new Token("token5");
+        token1.add(token5);
+
+        final int expected = 5;
+
+        Assertions.assertEquals(expected, token1.count());
+
+        Assertions.assertEquals(expected, token4.count());
+
+        Assertions.assertEquals(expected, token3.count());
+
+        Assertions.assertEquals(expected, token5.count());
+
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void findByValue() {
 
         Assert.notNull(dataSet().stream().findFirst().orElseThrow().findByValue("token2"));
 

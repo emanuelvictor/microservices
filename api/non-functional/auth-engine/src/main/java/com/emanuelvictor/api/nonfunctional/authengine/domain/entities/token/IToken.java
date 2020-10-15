@@ -24,6 +24,8 @@ public interface IToken {
 
     void setPrevious(final IToken token);
 
+    Optional<IToken> getPrevious();
+
     Optional<IToken> recursiveFindByValue(final String value);
 
     Optional<IToken> findByValue(final String value);
@@ -32,6 +34,13 @@ public interface IToken {
 
     String getValue();
 
+    void setValue(final String value);
+
     Optional<IToken> getRoot();
 
+    Optional<IToken> getLeaf();
+
+    int count();
+
+    int count(int count);
 }

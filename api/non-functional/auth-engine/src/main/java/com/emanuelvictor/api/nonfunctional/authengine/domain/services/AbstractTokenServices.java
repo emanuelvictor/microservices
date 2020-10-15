@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidScopeExcepti
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.util.Date;
@@ -53,9 +54,9 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     protected final JwtAccessTokenConverter accessTokenEnhancer;
 
     /**
-     * @param tokenStore            TokenStore
-     * @param clientDetailsService  ClientDetailsService
-     * @param accessTokenEnhancer   JwtAccessTokenConverter
+     * @param tokenStore           TokenStore
+     * @param clientDetailsService ClientDetailsService
+     * @param accessTokenEnhancer  JwtAccessTokenConverter
      */
     public AbstractTokenServices(final TokenStore tokenStore,
                                  final ClientDetailsService clientDetailsService,
@@ -110,6 +111,13 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         }
 
         OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
+
+        if (authentication.getUserAuthentication() != null) {
+            System.out.println("Session Token ->>> " + ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId());
+            System.out.println("Acccess Token ->>> " + accessToken.getValue());
+            System.out.println("Refresh Token ->>> " + accessToken.getRefreshToken().getValue());
+        }
+
         tokenStore.storeAccessToken(accessToken, authentication);
         // In case it was modified
         refreshToken = accessToken.getRefreshToken();

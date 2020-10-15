@@ -17,24 +17,24 @@ public class Token extends AbstractToken {
     public static final Logger LOGGER = LoggerFactory.getLogger(Token.class);
 
     /**
-     * @param token String
+     * @param value Value
      */
-    public Token(final String token) {
-        super(token);
+    public Token(final String value) {
+        super(value);
     }
 
     /**
-     * @param next
-     * @return
+     * @param next IToken
+     * @return Optional<IToken>
      */
     public Optional<IToken> add(final IToken next) {
 
-        if (this.getValue().equals(next.getValue()))
-            throw new RuntimeException("Token already exits for this session");
+        if (this.getValue().equals(next.getValue())){
+//            LOGGER.info("Token already exits for this session");
+            return Optional.of(this);
+        }
 
-        this.getNext().ifPresentOrElse(present -> {
-            present.add(next);
-        }, () -> {
+        this.getNext().ifPresentOrElse(present -> present.add(next), () -> {
             next.setPrevious(this);
             this.setNext(next);
         });
@@ -126,6 +126,10 @@ public class Token extends AbstractToken {
 
     }
 
+    /**
+     * @param value String
+     * @return Optional<IToken>
+     */
     @Override
     public Optional<IToken> recursiveFindByValue(final String value) {
 
@@ -139,14 +143,53 @@ public class Token extends AbstractToken {
     }
 
     /**
+     * Is not cover by tests TODO
+     *
      * @return IToken
      */
     @Override
     public Optional<IToken> getRoot() {
-        if (this.getPrevious().isEmpty()) //TODO
+        if (this.getPrevious().isEmpty())
             return Optional.of(this);
         else {
             return this.getPrevious().orElseThrow().getRoot();
         }
+    }
+
+    /**
+     * Is not cover by tests TODO
+     *
+     * @return IToken
+     */
+    @Override
+    public Optional<IToken> getLeaf() {
+        if (this.getNext().isEmpty()) //TODO
+            return Optional.of(this);
+        else {
+            return this.getNext().orElseThrow().getLeaf();
+        }
+    }
+
+    // ------------- Count
+
+    /**
+     * @return int
+     */
+    @Override
+    public int count() {
+        return this.getRoot().orElseThrow().count(0);
+    }
+
+    /**
+     * @param count int
+     * @return int
+     */
+    @Override
+    public int count(int count) {
+        count++;
+        if (this.getNext().isPresent()) {
+            count = this.getNext().orElseThrow().count(count);
+        }
+        return count;
     }
 }
