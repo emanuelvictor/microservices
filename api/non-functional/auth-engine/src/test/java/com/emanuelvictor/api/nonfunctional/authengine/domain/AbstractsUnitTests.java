@@ -3,17 +3,10 @@ package com.emanuelvictor.api.nonfunctional.authengine.domain;
 
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.ITokenStore;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.AbstractTokenStore;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.ITokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.emanuelvictor.api.nonfunctional.authengine.application.security.CommonConfiguration.DEFAULT_KEY;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -24,7 +17,7 @@ public abstract class AbstractsUnitTests {
     /**
      *
      */
-    protected ITokenStore tokenStore;
+    protected ITokenRepository tokenStore;
 
     /**
      *

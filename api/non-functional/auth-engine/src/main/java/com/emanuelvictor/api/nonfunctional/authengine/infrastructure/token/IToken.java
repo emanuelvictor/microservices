@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
 
 import java.util.Optional;
 

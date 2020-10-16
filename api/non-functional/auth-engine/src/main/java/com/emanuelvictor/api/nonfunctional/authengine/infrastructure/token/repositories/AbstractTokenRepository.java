@@ -1,15 +1,18 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories;
 
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.ITokenStore;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
-public abstract class AbstractTokenStore implements ITokenStore {
+@Repository
+public abstract class AbstractTokenRepository implements ITokenRepository {
 
     /**
      *
@@ -25,46 +28,20 @@ public abstract class AbstractTokenStore implements ITokenStore {
     /**
      * Create several and return the root
      *
-     * @param tokenValueToFind    String
      * @param tokensValueToCreate String
      * @return Optional<IToken>
      */
-    public Optional<IToken> create(final String tokenValueToFind, final String... tokensValueToCreate) {
-
-        if (tokenValueToFind == null)
-            throw new RuntimeException("Token value to find must be not null");
+    public Optional<IToken> save(final String... tokensValueToCreate) {
 
         if (tokensValueToCreate == null)
             throw new RuntimeException("Token value to create must be not null");
 
         // Create the root token
-        final Optional<IToken> root = this.create(tokenValueToFind, tokensValueToCreate[0]);
+        final Optional<IToken> root = this.save(tokensValueToCreate[0]);
 
         // Run the others token and add then
         for (final String tokenToCreate : tokensValueToCreate) {
-            root.orElseThrow().add(new Token(tokenToCreate));
-        }
-
-        return root;
-    }
-
-    /**
-     * Create several and return the root
-     *
-     * @param tokensValueToCreate String
-     * @return Optional<IToken>
-     */
-    public Optional<IToken> create(final String... tokensValueToCreate) {
-
-        if (tokensValueToCreate == null)
-            throw new RuntimeException("Token value to create must be not null");
-
-        // Create the root token
-        final Optional<IToken> root = this.create(tokensValueToCreate[0]);
-
-        // Run the others token and add then
-        for (final String tokenToCreate : tokensValueToCreate) {
-            root.orElseThrow().add(new Token(tokenToCreate));
+            this.save(root.orElseThrow().getValue(), tokenToCreate);
         }
 
         return root;
@@ -76,7 +53,7 @@ public abstract class AbstractTokenStore implements ITokenStore {
      * @param tokenValueToCreate String
      * @return Optional<IToken>
      */
-    public Optional<IToken> create(final String tokenValueToFind, final String tokenValueToCreate) {
+    public Optional<IToken> save(final String tokenValueToFind, final String tokenValueToCreate) {
 
         if (tokenValueToFind == null)
             throw new RuntimeException("Token value to find must be not null");
@@ -85,8 +62,8 @@ public abstract class AbstractTokenStore implements ITokenStore {
         this.findTokenByValue(tokenValueToCreate).ifPresentOrElse(iToken -> {
             LOGGER.info("Token with value: " + iToken.getValue() + " already found");
         }, () -> this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(new Token(tokenValueToCreate)), () -> {
-            this.create(tokenValueToFind);
-            this.create(tokenValueToFind, tokenValueToCreate);
+            this.save(tokenValueToFind);
+            this.save(tokenValueToFind, tokenValueToCreate);
         }));
 
         return this.findTokenByValue(tokenValueToCreate);
@@ -96,13 +73,12 @@ public abstract class AbstractTokenStore implements ITokenStore {
      * @param tokenValueToCreate String
      * @return IToken
      */
-    public Optional<IToken> create(final String tokenValueToCreate) {
+    public Optional<IToken> save(final String tokenValueToCreate) {
 
         final IToken token = new Token(tokenValueToCreate);
 
-        this.findTokenByValue(tokenValueToCreate).ifPresentOrElse(iToken -> {
-            throw new RuntimeException("Token already exists");
-        }, () -> this.tokens.add(token));
+        this.findTokenByValue(tokenValueToCreate)
+                .ifPresentOrElse(iToken -> LOGGER.info(("Token already exists")), () -> this.tokens.add(token));
 
         return Optional.of(token);
     }
@@ -135,5 +111,10 @@ public abstract class AbstractTokenStore implements ITokenStore {
         });
 
         return token;
+    }
+
+    @Override
+    public Set<IToken> findAll() {
+        return this.tokens;
     }
 }

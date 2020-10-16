@@ -1,26 +1,44 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
 
-
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-/**
- * "Composite"
- */
-public class Token extends AbstractToken {
+public abstract class AbstractToken implements IToken {
 
     /**
      *
      */
     public static final Logger LOGGER = LoggerFactory.getLogger(Token.class);
 
-    /**
-     * @param value Value
-     */
-    public Token(final String value) {
-        super(value);
+    @Setter
+    private IToken next;
+
+    @Setter
+    private IToken previous;
+
+    @Getter
+    @Setter
+    private boolean revoked = false;
+
+    @Getter
+    @Setter
+    private String value;
+
+    public AbstractToken(final String value) {
+        this.value = value;
+    }
+
+    public Optional<IToken> getNext() {
+        return Optional.ofNullable(next);
+    }
+
+    public Optional<IToken> getPrevious() {
+        return Optional.ofNullable(previous);
     }
 
     /**
@@ -192,4 +210,5 @@ public class Token extends AbstractToken {
         }
         return count;
     }
+
 }

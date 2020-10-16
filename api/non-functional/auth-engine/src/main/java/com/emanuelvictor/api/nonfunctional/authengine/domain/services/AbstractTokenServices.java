@@ -1,6 +1,9 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
+import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.ITokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -15,6 +18,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,6 +45,11 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     /**
      *
      */
+    protected final ITokenRepository tokenRepository;
+
+    /**
+     *
+     */
     protected final TokenStore tokenStore;
 
     /**
@@ -59,9 +68,11 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      * @param accessTokenEnhancer  JwtAccessTokenConverter
      */
     public AbstractTokenServices(final TokenStore tokenStore,
+                                 final ITokenRepository tokenRepository,
                                  final ClientDetailsService clientDetailsService,
                                  final JwtAccessTokenConverter accessTokenEnhancer) {
         this.tokenStore = tokenStore;
+        this.tokenRepository = tokenRepository;
         this.clientDetailsService = clientDetailsService;
         this.accessTokenEnhancer = accessTokenEnhancer;
     }
@@ -74,60 +85,86 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     @Override
     public OAuth2AccessToken createAccessToken(OAuth2Authentication authentication) throws AuthenticationException {
 
-        OAuth2AccessToken existingAccessToken = tokenStore.getAccessToken(authentication);
-        OAuth2RefreshToken refreshToken = null;
-        if (existingAccessToken != null) {
-            if (existingAccessToken.isExpired()) {
-                if (existingAccessToken.getRefreshToken() != null) {
-                    refreshToken = existingAccessToken.getRefreshToken();
-                    // The token store could remove the refresh token when the
-                    // access token is removed, but we want to
-                    // be sure...
-                    tokenStore.removeRefreshToken(refreshToken);
-                }
-                tokenStore.removeAccessToken(existingAccessToken);
-            } else {
-                // Re-store the access token in case the authentication has changed
-                tokenStore.storeAccessToken(existingAccessToken, authentication);
-                return existingAccessToken;
-            }
-        }
+        return JwtTokenStore.extractSessionID(authentication)
+                .flatMap(root -> this.tokenRepository.findTokenByValue(root).map(iToken -> {
 
-        // Only create a new refresh token if there wasn't an existing one
-        // associated with an expired access token.
-        // Clients might be holding existing refresh tokens, so we re-use it in
-        // the case that the old access token
-        // expired.
-        if (refreshToken == null) {
-            refreshToken = createRefreshToken(authentication);
-        }
-        // But the refresh token itself might need to be re-issued if it has
-        // expired.
-        else if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
-            ExpiringOAuth2RefreshToken expiring = (ExpiringOAuth2RefreshToken) refreshToken;
-            if (System.currentTimeMillis() > expiring.getExpiration().getTime()) {
-                refreshToken = createRefreshToken(authentication);
-            }
-        }
+                    // If token is not root
+                    if (!iToken.getLeaf().orElseThrow().getValue().equals(root)) {
 
-        OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
+                        final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(iToken.getLeaf().orElseThrow().getPrevious().orElseThrow().getValue());
+                        defaultOAuth2AccessToken.setRefreshToken(new DefaultOAuth2RefreshToken(iToken.getLeaf().orElseThrow().getValue()));
 
-        if (authentication.getUserAuthentication() != null) {
-            System.out.println("Session Token ->>> " + ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId());
-            System.out.println("Acccess Token ->>> " + accessToken.getValue());
-            System.out.println("Refresh Token ->>> " + accessToken.getRefreshToken().getValue());
-        }
+                        // Return the access token if it was found and is not expired
+                        if (!defaultOAuth2AccessToken.isExpired())
+                            return defaultOAuth2AccessToken;
+                        else {
+                            // TODO flux to refresh token
+                            throw new RuntimeException("Token expired");
+                        }
 
-        tokenStore.storeAccessToken(accessToken, authentication);
-        // In case it was modified
-        refreshToken = accessToken.getRefreshToken();
-        if (refreshToken != null) {
-            tokenStore.storeRefreshToken(refreshToken, authentication);
-        }
-        return accessToken;
+                        // If token is not root, a access token and refresh token must be created
+                    } else {
+                        // Create access token with refresh token associated
+                        final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
+                        // Save de root (or jsessionid), access token and refresh token
+                        this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                        return accessToken;
+                    }
+
+                    // If not found the jsessionid in repository
+                }).or(() -> {
+
+                    // Create access token with refresh token associated
+                    final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
+                    // Save de root (or jsessionid), access token and refresh token
+                    this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    return Optional.of(accessToken);
+
+                    // If the request is not a authorization code, that is no have jsessionid
+                })).or(() -> {
+
+                    // Create access token with refresh token associated
+                    final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
+                    // Save access token and refresh token
+                    this.tokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    return Optional.of(accessToken);
+                }).orElseThrow();
+
+
+////         Only create a new refresh token if there wasn't an existing one
+////         associated with an expired access token.
+////         Clients might be holding existing refresh tokens, so we re-use it in
+////         the case that the old access token
+////         expired.
+//        if (refreshToken == null) {
+//            refreshToken = createRefreshToken(authentication);
+//        }
+//        // But the refresh token itself might need to be re-issued if it has
+//        // expired.
+//        else if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
+//            ExpiringOAuth2RefreshToken expiring = (ExpiringOAuth2RefreshToken) refreshToken;
+//            if (System.currentTimeMillis() > expiring.getExpiration().getTime()) {
+//                refreshToken = createRefreshToken(authentication);
+//            }
+//        }
+//
+//        OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
+//
+//        if (authentication.getUserAuthentication() != null) {
+//            System.out.println("Session Token ->>> " + ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId());
+//            System.out.println("Acccess Token ->>> " + accessToken.getValue());
+//            System.out.println("Refresh Token ->>> " + accessToken.getRefreshToken().getValue());
+//        }
+//
+//        tokenStore.storeAccessToken(accessToken, authentication);
+//        // In case it was modified
+//        refreshToken = accessToken.getRefreshToken();
+//        if (refreshToken != null) {
+//            tokenStore.storeRefreshToken(refreshToken, authentication);
+//        }
+//        return accessToken;
 
     }
-
 
     /**
      * @param tokenValue String
@@ -289,6 +326,18 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     + (validitySeconds * 1000L)));
         }
         return new DefaultOAuth2RefreshToken(value);
+    }
+
+    private OAuth2AccessToken createAccessTokenWithRefreshToken(OAuth2Authentication authentication) {
+        final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
+        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
+        if (validitySeconds > 0) {
+            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
+        }
+        token.setRefreshToken(createRefreshToken(authentication));
+        token.setScope(authentication.getOAuth2Request().getScope());
+
+        return accessTokenEnhancer != null ? accessTokenEnhancer.enhance(token, authentication) : token;
     }
 
     private OAuth2AccessToken createAccessToken(OAuth2Authentication authentication, OAuth2RefreshToken refreshToken) {

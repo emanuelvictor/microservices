@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

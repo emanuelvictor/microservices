@@ -16,9 +16,8 @@ package com.emanuelvictor.api.nonfunctional.authengine.application.security.cust
 
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.token.Token;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.AbstractTokenStore;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.AbstractTokenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.oauth2.common.*;
@@ -38,7 +37,7 @@ import java.util.*;
  *
  * @author Dave Syer
  */
-public class JwtTokenStore extends AbstractTokenStore implements TokenStore {
+public class JwtTokenStore extends AbstractTokenRepository implements TokenStore {
 
     /**
      *
@@ -125,12 +124,11 @@ public class JwtTokenStore extends AbstractTokenStore implements TokenStore {
      * @param tokenValueToCreate String
      */
     private void storeToken(final OAuth2Authentication authentication, final String tokenValueToCreate) {
-        if (authentication.getUserAuthentication() != null && authentication.getUserAuthentication().getDetails() != null)
-            if (authentication.getUserAuthentication().getDetails() instanceof WebAuthenticationDetails)
-                if (((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId() != null) {
-                    final String root = ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId();
-                    this.create(root, tokenValueToCreate);
-                }
+        extractSessionID(authentication).ifPresentOrElse(root -> {
+            this.save(root, tokenValueToCreate);
+        }, () -> {
+
+        });
     }
 
     /**
@@ -207,5 +205,17 @@ public class JwtTokenStore extends AbstractTokenStore implements TokenStore {
     @Override
     public Collection<OAuth2AccessToken> findTokensByClientId(final String clientId) {
         return null;
+    }
+
+
+    /**
+     * @param authentication OAuth2Authentication
+     * @return Optional<String>
+     */
+    public static Optional<String> extractSessionID(final OAuth2Authentication authentication) {
+        if (authentication.getUserAuthentication() != null && authentication.getUserAuthentication().getDetails() != null)
+            if (authentication.getUserAuthentication().getDetails() instanceof WebAuthenticationDetails)
+                return Optional.ofNullable(((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId());
+        return Optional.empty();
     }
 }
