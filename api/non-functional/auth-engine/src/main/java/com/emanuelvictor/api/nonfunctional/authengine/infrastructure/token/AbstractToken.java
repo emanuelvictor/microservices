@@ -6,6 +6,9 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 
 public abstract class AbstractToken implements IToken {
@@ -14,6 +17,9 @@ public abstract class AbstractToken implements IToken {
      *
      */
     public static final Logger LOGGER = LoggerFactory.getLogger(Token.class);
+
+    @Setter
+    private LocalDateTime createdOn;
 
     @Setter
     private IToken next;
@@ -29,14 +35,24 @@ public abstract class AbstractToken implements IToken {
     @Setter
     private String value;
 
+    /**
+     * @param value String
+     */
     public AbstractToken(final String value) {
+        this.createdOn = LocalDateTime.now();
         this.value = value;
     }
 
+    /**
+     * @return Optional<IToken>
+     */
     public Optional<IToken> getNext() {
         return Optional.ofNullable(next);
     }
 
+    /**
+     * @return Optional<IToken>
+     */
     public Optional<IToken> getPrevious() {
         return Optional.ofNullable(previous);
     }
@@ -47,7 +63,7 @@ public abstract class AbstractToken implements IToken {
      */
     public Optional<IToken> add(final IToken next) {
 
-        if (this.getValue().equals(next.getValue())){
+        if (this.getValue().equals(next.getValue())) {
 //            LOGGER.info("Token already exits for this session");
             return Optional.of(this);
         }
@@ -58,7 +74,6 @@ public abstract class AbstractToken implements IToken {
         });
 
         return Optional.of(next);
-
     }
 
     // ------------- Revoke
@@ -105,9 +120,16 @@ public abstract class AbstractToken implements IToken {
     public void print() {
         if (getPrevious().isPresent())
             System.out.print(" --> ");
+        else {
+            System.out.println(" ---------- ");
+            System.out.println();
+        }
         System.out.print(this.getValue());
-        if (getNext().isEmpty())
-            System.out.print("\n");
+        if (getNext().isEmpty()) {
+            System.out.println();
+            System.out.println();
+            System.out.println(" ---------- ");
+        }
         this.printNext();
     }
 
@@ -116,7 +138,7 @@ public abstract class AbstractToken implements IToken {
      */
     @Override
     public void printFromRoot() {
-        this.getPrevious().ifPresentOrElse(IToken::printFromRoot, this::print);
+        this.getRoot().orElseThrow().print();
     }
 
     /**
@@ -211,4 +233,18 @@ public abstract class AbstractToken implements IToken {
         return count;
     }
 
+    @Override
+    public Optional<IToken> getAccess() {
+        return this.getLeaf().orElseThrow().getPrevious();
+    }
+
+    @Override
+    public Optional<IToken> getRefresh() {
+        return this.getLeaf();
+    }
+
+    @Override
+    public LocalDateTime getCreatedOn() {
+        return this.createdOn;
+    }
 }

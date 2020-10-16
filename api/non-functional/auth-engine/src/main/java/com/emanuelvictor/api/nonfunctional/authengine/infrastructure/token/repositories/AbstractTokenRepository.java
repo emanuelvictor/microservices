@@ -44,7 +44,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
             this.save(root.orElseThrow().getValue(), tokenToCreate);
         }
 
-        return root;
+        return this.findTokenByValue(root.orElseThrow().getValue());
     }
 
 

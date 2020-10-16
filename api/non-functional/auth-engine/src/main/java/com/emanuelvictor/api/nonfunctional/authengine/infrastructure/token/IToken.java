@@ -1,5 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 
 public interface IToken {
@@ -43,4 +45,10 @@ public interface IToken {
     int count();
 
     int count(int count);
+
+    Optional<IToken> getAccess();
+
+    Optional<IToken> getRefresh();
+
+    LocalDateTime getCreatedOn();
 }

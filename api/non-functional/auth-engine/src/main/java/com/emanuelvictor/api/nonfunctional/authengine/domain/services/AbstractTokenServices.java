@@ -4,9 +4,6 @@ import com.emanuelvictor.api.nonfunctional.authengine.application.security.custo
 import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.ITokenRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.*;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -14,9 +11,8 @@ import org.springframework.security.oauth2.common.exceptions.InvalidScopeExcepti
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.*;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -39,18 +35,17 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
     protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
-    protected static final boolean SUPPORT_REFRESH_TOKEN = true;
-    protected static final boolean REUSE_REFRESH_TOKEN = true;
-
-    /**
-     *
-     */
-    protected final ITokenRepository tokenRepository;
+//    protected static final boolean REUSE_REFRESH_TOKEN = true;
 
     /**
      *
      */
     protected final TokenStore tokenStore;
+
+    /**
+     *
+     */
+    protected final ITokenRepository tokenRepository;
 
     /**
      *
@@ -78,37 +73,33 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     }
 
     /**
-     * @param authentication
-     * @return
+     * @param authentication OAuth2Authentication
+     * @return OAuth2AccessToken
      * @throws AuthenticationException
      */
     @Override
-    public OAuth2AccessToken createAccessToken(OAuth2Authentication authentication) throws AuthenticationException {
+    public OAuth2AccessToken createAccessToken(final OAuth2Authentication authentication) throws AuthenticationException {
 
         return JwtTokenStore.extractSessionID(authentication)
                 .flatMap(root -> this.tokenRepository.findTokenByValue(root).map(iToken -> {
 
-                    // If token is not root
-                    if (!iToken.getLeaf().orElseThrow().getValue().equals(root)) {
+                    // Token is revoked, that is the logout has effected
+                    if (iToken.isRevoked())
+                        throw new RuntimeException("Token revoked");
 
-                        final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(iToken.getLeaf().orElseThrow().getPrevious().orElseThrow().getValue());
-                        defaultOAuth2AccessToken.setRefreshToken(new DefaultOAuth2RefreshToken(iToken.getLeaf().orElseThrow().getValue()));
+                    final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(this.readAccessToken(iToken.getAccess().orElseThrow().getValue()));
 
-                        // Return the access token if it was found and is not expired
-                        if (!defaultOAuth2AccessToken.isExpired())
-                            return defaultOAuth2AccessToken;
-                        else {
-                            // TODO flux to refresh token
-                            throw new RuntimeException("Token expired");
-                        }
+                    setRefreshToken(iToken, defaultOAuth2AccessToken, authentication);
 
-                        // If token is not root, a access token and refresh token must be created
-                    } else {
+                    // Return the access token if it was found and is not expired
+                    if (defaultOAuth2AccessToken.isExpired()) {
                         // Create access token with refresh token associated
                         final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                         // Save de root (or jsessionid), access token and refresh token
                         this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                         return accessToken;
+                    } else {
+                        return defaultOAuth2AccessToken;
                     }
 
                     // If not found the jsessionid in repository
@@ -118,7 +109,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save de root (or jsessionid), access token and refresh token
                     this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
-                    return Optional.of(accessToken);
+                    return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
                     // If the request is not a authorization code, that is no have jsessionid
                 })).or(() -> {
@@ -127,42 +118,9 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save access token and refresh token
                     this.tokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
-                    return Optional.of(accessToken);
+                    return Optional.of((DefaultOAuth2AccessToken) accessToken);
+
                 }).orElseThrow();
-
-
-////         Only create a new refresh token if there wasn't an existing one
-////         associated with an expired access token.
-////         Clients might be holding existing refresh tokens, so we re-use it in
-////         the case that the old access token
-////         expired.
-//        if (refreshToken == null) {
-//            refreshToken = createRefreshToken(authentication);
-//        }
-//        // But the refresh token itself might need to be re-issued if it has
-//        // expired.
-//        else if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
-//            ExpiringOAuth2RefreshToken expiring = (ExpiringOAuth2RefreshToken) refreshToken;
-//            if (System.currentTimeMillis() > expiring.getExpiration().getTime()) {
-//                refreshToken = createRefreshToken(authentication);
-//            }
-//        }
-//
-//        OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
-//
-//        if (authentication.getUserAuthentication() != null) {
-//            System.out.println("Session Token ->>> " + ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId());
-//            System.out.println("Acccess Token ->>> " + accessToken.getValue());
-//            System.out.println("Refresh Token ->>> " + accessToken.getRefreshToken().getValue());
-//        }
-//
-//        tokenStore.storeAccessToken(accessToken, authentication);
-//        // In case it was modified
-//        refreshToken = accessToken.getRefreshToken();
-//        if (refreshToken != null) {
-//            tokenStore.storeRefreshToken(refreshToken, authentication);
-//        }
-//        return accessToken;
 
     }
 
@@ -183,46 +141,42 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     }
 
     @Override
-    public OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
+    public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest)
             throws AuthenticationException {
 
-        if (!SUPPORT_REFRESH_TOKEN) {
-            throw new InvalidGrantException("Invalid refresh token: " + refreshTokenValue);
-        }
 
-        OAuth2RefreshToken refreshToken = tokenStore.readRefreshToken(refreshTokenValue);
-        if (refreshToken == null) {
-            throw new InvalidGrantException("Invalid refresh token: " + refreshTokenValue);
-        }
+        final IToken iToken = tokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
 
-        OAuth2Authentication authentication = tokenStore.readAuthenticationForRefreshToken(refreshToken);
-        String clientId = authentication.getOAuth2Request().getClientId();
+        final OAuth2Authentication authentication = tokenStore.readAuthentication(iToken.getAccess().orElseThrow().getValue());
+
+//        authentication = createRefreshedAuthentication(authentication, tokenRequest);
+        final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(createAccessTokenWithRefreshToken(authentication));
+
+        final String clientId = authentication.getOAuth2Request().getClientId();
         if (clientId == null || !clientId.equals(tokenRequest.getClientId())) {
             throw new InvalidGrantException("Wrong client for this refresh token: " + refreshTokenValue);
         }
 
-        // clear out any access tokens already associated with the refresh
-        // token.
-        tokenStore.removeAccessTokenUsingRefreshToken(refreshToken);
+        if (iToken.isRevoked())
+            throw new InvalidTokenException("Invalid refresh token (revoked): " + iToken);
 
-        if (isExpired(refreshToken)) {
-            tokenStore.removeRefreshToken(refreshToken);
-            throw new InvalidTokenException("Invalid refresh token (expired): " + refreshToken);
+        if (isExpired(defaultOAuth2AccessToken.getRefreshToken()))
+            throw new InvalidTokenException("Invalid refresh token (expired): " + defaultOAuth2AccessToken.getRefreshToken());
+
+        setRefreshToken(iToken, defaultOAuth2AccessToken, authentication);
+
+        // Save de root (or jsessionid), access token and refresh token
+        this.tokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+        return defaultOAuth2AccessToken;
+    }
+
+    private void setRefreshToken(IToken iToken, DefaultOAuth2AccessToken defaultOAuth2AccessToken, OAuth2Authentication authentication) {
+        final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
+        if (refreshTokenValiditySeconds > 0) {
+            final DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken = new DefaultExpiringOAuth2RefreshToken(iToken.getRefresh().orElseThrow().getValue(),
+                    new Date(iToken.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
+            defaultOAuth2AccessToken.setRefreshToken(defaultExpiringOAuth2RefreshToken);
         }
-
-        authentication = createRefreshedAuthentication(authentication, tokenRequest);
-
-        if (!REUSE_REFRESH_TOKEN) {
-            tokenStore.removeRefreshToken(refreshToken);
-            refreshToken = createRefreshToken(authentication);
-        }
-
-        OAuth2AccessToken accessToken = createAccessToken(authentication, refreshToken);
-        tokenStore.storeAccessToken(accessToken, authentication);
-        if (!REUSE_REFRESH_TOKEN) {
-            tokenStore.storeRefreshToken(accessToken.getRefreshToken(), authentication);
-        }
-        return accessToken;
     }
 
     @Override
@@ -316,9 +270,6 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     }
 
     private OAuth2RefreshToken createRefreshToken(OAuth2Authentication authentication) {
-        if (!isSupportRefreshToken(authentication.getOAuth2Request())) {
-            return null;
-        }
         int validitySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
         String value = UUID.randomUUID().toString();
         if (validitySeconds > 0) {
@@ -385,20 +336,6 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
             }
         }
         return REFRESH_TOKEN_VALIDITY_SECONDS;
-    }
-
-    /**
-     * TODO For what is protected?
-     *
-     * @param clientAuth the current authorization request
-     * @return boolean to indicate if refresh token is supported
-     */
-    protected boolean isSupportRefreshToken(OAuth2Request clientAuth) {
-        if (clientDetailsService != null) {
-            ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
-            return client.getAuthorizedGrantTypes().contains("refresh_token");
-        }
-        return SUPPORT_REFRESH_TOKEN;
     }
 
 }
