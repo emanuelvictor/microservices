@@ -60,7 +60,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
 
         // Verify if the token to create alaredy exists
         this.findTokenByValue(tokenValueToCreate).ifPresentOrElse(iToken -> {
-            LOGGER.info("Token with value: " + iToken.getValue() + " already found");
+            LOGGER.warn("Token with value: " + iToken.getValue() + " already found");
         }, () -> this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(new Token(tokenValueToCreate)), () -> {
             this.save(tokenValueToFind);
             this.save(tokenValueToFind, tokenValueToCreate);
@@ -75,12 +75,10 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      */
     public Optional<IToken> save(final String tokenValueToCreate) {
 
-        final IToken token = new Token(tokenValueToCreate);
-
         this.findTokenByValue(tokenValueToCreate)
-                .ifPresentOrElse(iToken -> LOGGER.info(("Token already exists")), () -> this.tokens.add(token));
+                .ifPresentOrElse(iToken -> LOGGER.warn(("Token already exists")), () -> this.tokens.add(new Token(tokenValueToCreate)));
 
-        return Optional.of(token);
+        return  this.findTokenByValue(tokenValueToCreate);
     }
 
     /**

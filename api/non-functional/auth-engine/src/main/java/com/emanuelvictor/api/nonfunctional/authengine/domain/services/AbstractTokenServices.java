@@ -87,9 +87,13 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     if (iToken.isRevoked())
                         throw new RuntimeException("Token revoked");
 
-                    final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(this.readAccessToken(iToken.getAccess().orElseThrow().getValue()));
-
-                    setRefreshToken(iToken, defaultOAuth2AccessToken, authentication);
+                    final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(readAccessToken(iToken.getAccess().orElseThrow().getValue()));
+                    final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
+                    if (refreshTokenValiditySeconds > 0) {
+                        final DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken = new DefaultExpiringOAuth2RefreshToken(iToken.getRefresh().orElseThrow().getValue(),
+                                new Date(iToken.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
+                        defaultOAuth2AccessToken.setRefreshToken(defaultExpiringOAuth2RefreshToken);
+                    }
 
                     // Return the access token if it was found and is not expired
                     if (defaultOAuth2AccessToken.isExpired()) {
@@ -124,33 +128,20 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     }
 
-    /**
-     * @param tokenValue String
-     * @return String
-     */
-    public String getClientId(final String tokenValue) {
-        OAuth2Authentication authentication = tokenStore.readAuthentication(tokenValue);
-        if (authentication == null) {
-            throw new InvalidTokenException("Invalid access token: " + tokenValue);
-        }
-        OAuth2Request clientAuth = authentication.getOAuth2Request();
-        if (clientAuth == null) {
-            throw new InvalidTokenException("Invalid access token (no client id): " + tokenValue);
-        }
-        return clientAuth.getClientId();
-    }
-
     @Override
-    public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest)
-            throws AuthenticationException {
-
+    public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest) throws AuthenticationException {
 
         final IToken iToken = tokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
 
         final OAuth2Authentication authentication = tokenStore.readAuthentication(iToken.getAccess().orElseThrow().getValue());
-
 //        authentication = createRefreshedAuthentication(authentication, tokenRequest);
         final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(createAccessTokenWithRefreshToken(authentication));
+        final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
+        if (refreshTokenValiditySeconds > 0) {
+            final DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken = new DefaultExpiringOAuth2RefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue(),
+                    new Date(iToken.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
+            defaultOAuth2AccessToken.setRefreshToken(defaultExpiringOAuth2RefreshToken);
+        }
 
         final String clientId = authentication.getOAuth2Request().getClientId();
         if (clientId == null || !clientId.equals(tokenRequest.getClientId())) {
@@ -163,20 +154,12 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         if (isExpired(defaultOAuth2AccessToken.getRefreshToken()))
             throw new InvalidTokenException("Invalid refresh token (expired): " + defaultOAuth2AccessToken.getRefreshToken());
 
-        setRefreshToken(iToken, defaultOAuth2AccessToken, authentication);
+        if (this.tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getValue()).isPresent() || this.tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getRefreshToken().getValue()).isPresent())
+            throw new RuntimeException("The access token and refresh token is already saved");
 
         // Save de root (or jsessionid), access token and refresh token
         this.tokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
         return defaultOAuth2AccessToken;
-    }
-
-    private void setRefreshToken(IToken iToken, DefaultOAuth2AccessToken defaultOAuth2AccessToken, OAuth2Authentication authentication) {
-        final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
-        if (refreshTokenValiditySeconds > 0) {
-            final DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken = new DefaultExpiringOAuth2RefreshToken(iToken.getRefresh().orElseThrow().getValue(),
-                    new Date(iToken.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
-            defaultOAuth2AccessToken.setRefreshToken(defaultExpiringOAuth2RefreshToken);
-        }
     }
 
     @Override
@@ -271,7 +254,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     private OAuth2RefreshToken createRefreshToken(OAuth2Authentication authentication) {
         int validitySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
-        String value = UUID.randomUUID().toString();
+        final String value = UUID.randomUUID().toString();
         if (validitySeconds > 0) {
             return new DefaultExpiringOAuth2RefreshToken(value, new Date(System.currentTimeMillis()
                     + (validitySeconds * 1000L)));

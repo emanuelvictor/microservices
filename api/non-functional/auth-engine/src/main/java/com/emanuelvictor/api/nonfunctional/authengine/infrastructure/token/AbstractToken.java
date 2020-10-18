@@ -86,7 +86,7 @@ public abstract class AbstractToken implements IToken {
         this.revokePrevious();
         if (!this.isRevoked()) {
             this.setRevoked(true);
-            LOGGER.info("Token with value " + this.getValue() + " revoked");
+            LOGGER.warn("Token with value " + this.getValue() + " revoked");
         }
         return this.revokeNext();
     }
