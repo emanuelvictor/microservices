@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.repositories;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static com.emanuelvictor.api.nonfunctional.authengine.domain.entity.TokenTests.TOKEN_VALUES;
 
-public class ITokenStoreImplTests extends AbstractsUnitTests {
+public class TokenRepositoryTests extends AbstractsTests {
 
 
     /**

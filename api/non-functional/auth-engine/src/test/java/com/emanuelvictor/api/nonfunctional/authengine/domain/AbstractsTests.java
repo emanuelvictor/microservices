@@ -12,7 +12,7 @@ import static com.emanuelvictor.api.nonfunctional.authengine.application.securit
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @RunWith(JUnitPlatform.class)
-public abstract class AbstractsUnitTests {
+public abstract class AbstractsTests {
 
     /**
      *

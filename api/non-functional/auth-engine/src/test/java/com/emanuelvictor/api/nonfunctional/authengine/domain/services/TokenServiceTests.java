@@ -1,23 +1,21 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
+package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsUnitTests;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
 
 import java.util.Set;
 
-import static com.emanuelvictor.api.nonfunctional.authengine.domain.services.ServiceToken.extractClientsId;
-
 
 //@SpringBootTest
-public class AuthoritiesTests extends AbstractsUnitTests {
+public class TokenServiceTests extends AbstractsTests {
 
     /**
      *
      */
     @Test
-    public void contextLoads() {
+    public void extractClientsId() {
 
         final Set<SimpleGrantedAuthority> authorities = Set.of(
                 new SimpleGrantedAuthority("root"),
@@ -29,7 +27,7 @@ public class AuthoritiesTests extends AbstractsUnitTests {
                 new SimpleGrantedAuthority("root/falcatrua/outra")
         );
 
-        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", extractClientsId(authorities))), "");
+        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", ServiceToken.extractClientsId(authorities))), "");
 
     }
 
