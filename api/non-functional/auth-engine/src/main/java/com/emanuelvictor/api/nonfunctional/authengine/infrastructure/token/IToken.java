@@ -1,15 +1,12 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 public interface IToken {
 
-    // TODO Must be return void
     Optional<IToken> revoke();
 
-    // TODO Must be return void
     Optional<IToken> revokeNext();
 
     void revokePrevious();
@@ -28,15 +25,11 @@ public interface IToken {
 
     Optional<IToken> getPrevious();
 
-    Optional<IToken> recursiveFindByValue(final String value);
-
     Optional<IToken> findByValue(final String value);
 
     Optional<IToken> getNext();
 
     String getValue();
-
-    void setValue(final String value);
 
     Optional<IToken> getRoot();
 
@@ -46,8 +39,14 @@ public interface IToken {
 
     int count(int count);
 
+    /**
+     * @return Optional<IToken> the last access token
+     */
     Optional<IToken> getAccess();
 
+    /**
+     * @return Optional<IToken> the last refresh token
+     */
     Optional<IToken> getRefresh();
 
     LocalDateTime getCreatedOn();

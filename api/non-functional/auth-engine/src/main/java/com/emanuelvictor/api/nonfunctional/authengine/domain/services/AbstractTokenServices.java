@@ -35,7 +35,6 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
     protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
-//    protected static final boolean REUSE_REFRESH_TOKEN = true;
 
     /**
      *
@@ -128,6 +127,12 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
     }
 
+    /**
+     * @param refreshTokenValue
+     * @param tokenRequest
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest) throws AuthenticationException {
 

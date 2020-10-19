@@ -1,14 +1,13 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.Optional;
 
 public abstract class AbstractToken implements IToken {
@@ -16,23 +15,38 @@ public abstract class AbstractToken implements IToken {
     /**
      *
      */
-    public static final Logger LOGGER = LoggerFactory.getLogger(Token.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractToken.class);
 
+    /**
+     *
+     */
     @Setter
     private LocalDateTime createdOn;
 
+    /**
+     *
+     */
     @Setter
     private IToken next;
 
+    /**
+     *
+     */
     @Setter
     private IToken previous;
 
+    /**
+     *
+     */
     @Getter
-    @Setter
+    @Setter(AccessLevel.PRIVATE)
     private boolean revoked = false;
 
+    /**
+     *
+     */
     @Getter
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     private String value;
 
     /**
@@ -79,7 +93,7 @@ public abstract class AbstractToken implements IToken {
     // ------------- Revoke
 
     /**
-     *
+     * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> revoke() {
@@ -92,7 +106,7 @@ public abstract class AbstractToken implements IToken {
     }
 
     /**
-     *
+     * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> revokeNext() {
@@ -154,7 +168,7 @@ public abstract class AbstractToken implements IToken {
 
     /**
      * @param value String
-     * @return IToken
+     * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> findByValue(final String value) {
@@ -162,30 +176,17 @@ public abstract class AbstractToken implements IToken {
         if (this.getValue().equals(value))
             return Optional.of(this);
 
-        return this.getRoot().orElseThrow().recursiveFindByValue(value);
-
-    }
-
-    /**
-     * @param value String
-     * @return Optional<IToken>
-     */
-    @Override
-    public Optional<IToken> recursiveFindByValue(final String value) {
-
-        if (this.getValue().equals(value))
-            return Optional.of(this);
-
-        if (this.getNext().isPresent()) //TODO
-            return this.getNext().orElseThrow().recursiveFindByValue(value);
+        if (this.getNext().isPresent())
+            return this.getNext().orElseThrow().findByValue(value);
 
         return Optional.empty();
+
     }
 
     /**
-     * Is not cover by tests TODO
+     * Is not covered by tests TODO
      *
-     * @return IToken
+     * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> getRoot() {
@@ -197,9 +198,9 @@ public abstract class AbstractToken implements IToken {
     }
 
     /**
-     * Is not cover by tests TODO
+     * Is not covered by tests TODO
      *
-     * @return IToken
+     * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> getLeaf() {
@@ -233,16 +234,25 @@ public abstract class AbstractToken implements IToken {
         return count;
     }
 
+    /**
+     * @return Optional<IToken> the last access token
+     */
     @Override
     public Optional<IToken> getAccess() {
         return this.getLeaf().orElseThrow().getPrevious();
     }
 
+    /**
+     * @return Optional<IToken> the last refresh token
+     */
     @Override
     public Optional<IToken> getRefresh() {
         return this.getLeaf();
     }
 
+    /**
+     * @return LocalDateTime
+     */
     @Override
     public LocalDateTime getCreatedOn() {
         return this.createdOn;
