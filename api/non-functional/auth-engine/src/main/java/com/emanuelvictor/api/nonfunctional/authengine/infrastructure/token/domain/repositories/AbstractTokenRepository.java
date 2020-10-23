@@ -1,9 +1,9 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.jwt.JwtAccessTokenConverter;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the CustomTokenServices if used).
      *
-     * @param jwtTokenEnhancer JwtAccessTokenConverter
+     * @param jwtAccessTokenConverter JwtAccessTokenConverter
      */
     public AbstractTokenRepository(final JwtAccessTokenConverter jwtAccessTokenConverter) {
         this.jwtAccessTokenConverter = jwtAccessTokenConverter;
@@ -129,11 +129,13 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
         return token;
     }
 
+    /**
+     * @return Set<IToken>
+     */
     @Override
     public Set<IToken> findAll() {
         return this.tokens;
     }
-
 
 // Is the following code is Legacy
 

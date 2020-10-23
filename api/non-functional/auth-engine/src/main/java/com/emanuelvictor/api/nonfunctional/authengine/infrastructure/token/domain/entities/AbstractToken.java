@@ -1,6 +1,5 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractToken implements IToken {
 
@@ -183,9 +184,9 @@ public abstract class AbstractToken implements IToken {
 
     }
 
+    // ------------- Retrieve
+
     /**
-     * Is not covered by tests TODO
-     *
      * @return Optional<IToken>
      */
     @Override
@@ -198,41 +199,17 @@ public abstract class AbstractToken implements IToken {
     }
 
     /**
-     * Is not covered by tests TODO
-     *
      * @return Optional<IToken>
      */
     @Override
     public Optional<IToken> getLeaf() {
-        if (this.getNext().isEmpty()) //TODO
+        if (this.getNext().isEmpty())
             return Optional.of(this);
         else {
             return this.getNext().orElseThrow().getLeaf();
         }
     }
 
-    // ------------- Count
-
-    /**
-     * @return int
-     */
-    @Override
-    public int count() {
-        return this.getRoot().orElseThrow().count(0);
-    }
-
-    /**
-     * @param count int
-     * @return int
-     */
-    @Override
-    public int count(int count) {
-        count++;
-        if (this.getNext().isPresent()) {
-            count = this.getNext().orElseThrow().count(count);
-        }
-        return count;
-    }
 
     /**
      * @return Optional<IToken> the last access token
@@ -250,11 +227,81 @@ public abstract class AbstractToken implements IToken {
         return this.getLeaf();
     }
 
+    // ------------- Count
+
+    /**
+     * @return int
+     */
+    @Override
+    public int count() {
+        return this.getAll().size();
+    }
+
+    // ------------- Created On
+
     /**
      * @return LocalDateTime
      */
     @Override
     public LocalDateTime getCreatedOn() {
         return this.createdOn;
+    }
+
+    // ------------- getAll
+
+    /**
+     * @return Set<IToken>
+     */
+    public Set<IToken> getAll() {
+        return this.getRoot().orElseThrow().getAll(new HashSet<>());
+    }
+
+    /**
+     * TODO must be cover in tests
+     *
+     * @param tokens Set<IToken>
+     * @return Set<IToken>
+     */
+    public Set<IToken> getAll(final Set<IToken> tokens) {
+
+        tokens.add(this);
+
+        getNext().ifPresent(next -> next.getAll(tokens));
+
+        return tokens;
+
+    }
+
+    /**
+     * TODO must be cover in tests
+     *
+     * @return boolean
+     */
+    public boolean isRoot() {
+        return this.value.equals(this.getRoot().orElseThrow().getValue());
+    }
+
+    // ------------- Hashcode and equals
+
+    /**
+     * @param o Object
+     * @return boolean
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractToken that = (AbstractToken) o;
+
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    /**
+     * @return int
+     */
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
     }
 }

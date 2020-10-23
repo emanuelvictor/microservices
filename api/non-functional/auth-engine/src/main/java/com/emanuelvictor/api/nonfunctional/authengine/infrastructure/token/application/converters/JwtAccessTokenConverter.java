@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.jwt;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

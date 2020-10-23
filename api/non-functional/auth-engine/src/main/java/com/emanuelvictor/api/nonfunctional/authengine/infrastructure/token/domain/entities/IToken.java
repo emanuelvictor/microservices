@@ -1,7 +1,8 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 public interface IToken {
 
@@ -37,8 +38,6 @@ public interface IToken {
 
     int count();
 
-    int count(int count);
-
     /**
      * @return Optional<IToken> the last access token
      */
@@ -50,4 +49,10 @@ public interface IToken {
     Optional<IToken> getRefresh();
 
     LocalDateTime getCreatedOn();
+
+    Set<IToken> getAll();
+
+    Set<IToken>  getAll(final Set<IToken> tokens);
+
+    boolean isRoot();
 }

@@ -1,23 +1,21 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.AbstractTokenRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Client;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.AbstractTokenRepository;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.common.*;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.*;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -32,7 +30,7 @@ import java.util.UUID;
  * @author Luke Taylor
  * @author Dave Syer
  */
-public class AbstractTokenServices implements AuthorizationServerTokenServices, ResourceServerTokenServices, ConsumerTokenServices {
+public abstract class AbstractTokenService implements ITokenService {
 
     protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
     protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
@@ -40,21 +38,21 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     /**
      *
      */
-    protected final AbstractTokenRepository tokenRepository;
+    protected final ClientDetailsService clientDetailsService;
 
     /**
      *
      */
-    protected final ClientDetailsService clientDetailsService;
+    protected final AbstractTokenRepository abstractTokenRepository;
 
     /**
-     * @param tokenRepository      ITokenRepository
-     * @param clientDetailsService ClientDetailsService
+     * @param clientDetailsService    ClientDetailsService
+     * @param abstractTokenRepository AbstractTokenRepository
      */
-    public AbstractTokenServices(final AbstractTokenRepository tokenRepository,
-                                 final ClientDetailsService clientDetailsService) {
-        this.tokenRepository = tokenRepository;
+    public AbstractTokenService(final ClientDetailsService clientDetailsService,
+                                final AbstractTokenRepository abstractTokenRepository) {
         this.clientDetailsService = clientDetailsService;
+        this.abstractTokenRepository = abstractTokenRepository;
     }
 
     /**
@@ -66,7 +64,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     public OAuth2AccessToken createAccessToken(final OAuth2Authentication authentication) throws AuthenticationException {
 
         return AbstractTokenRepository.extractSessionID(authentication)
-                .flatMap(root -> this.tokenRepository.findTokenByValue(root).map(iToken -> {
+                .flatMap(root -> this.abstractTokenRepository.findTokenByValue(root).map(iToken -> {
 
                     // Token is revoked, that is the logout has effected
                     if (iToken.isRevoked())
@@ -85,7 +83,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                         // Create access token with refresh token associated
                         final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                         // Save de root (or jsessionid), access token and refresh token
-                        this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                        this.abstractTokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                         return accessToken;
                     } else {
                         return defaultOAuth2AccessToken;
@@ -97,7 +95,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     // Create access token with refresh token associated
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save de root (or jsessionid), access token and refresh token
-                    this.tokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    this.abstractTokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
                     // If the request is not a authorization code, that is no have jsessionid
@@ -106,7 +104,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
                     // Create access token with refresh token associated
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save access token and refresh token
-                    this.tokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    this.abstractTokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
                 }).orElseThrow();
@@ -122,9 +120,9 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     @Override
     public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest) throws AuthenticationException {
 
-        final IToken iToken = tokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
+        final IToken iToken = abstractTokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
 
-        final OAuth2Authentication authentication = tokenRepository.readAuthentication(iToken.getAccess().orElseThrow().getValue());
+        final OAuth2Authentication authentication = abstractTokenRepository.readAuthentication(iToken.getAccess().orElseThrow().getValue());
 //        authentication = createRefreshedAuthentication(authentication, tokenRequest);
         final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(createAccessTokenWithRefreshToken(authentication));
         final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
@@ -145,11 +143,11 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         if (isExpired(defaultOAuth2AccessToken.getRefreshToken()))
             throw new InvalidTokenException("Invalid refresh token (expired): " + defaultOAuth2AccessToken.getRefreshToken());
 
-        if (this.tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getValue()).isPresent() || this.tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getRefreshToken().getValue()).isPresent())
+        if (this.abstractTokenRepository.findTokenByValue(defaultOAuth2AccessToken.getValue()).isPresent() || this.abstractTokenRepository.findTokenByValue(defaultOAuth2AccessToken.getRefreshToken().getValue()).isPresent())
             throw new RuntimeException("The access token and refresh token is already saved");
 
         // Save de root (or jsessionid), access token and refresh token
-        this.tokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+        this.abstractTokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
         return defaultOAuth2AccessToken;
     }
 
@@ -159,7 +157,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      */
     @Override
     public OAuth2AccessToken getAccessToken(final OAuth2Authentication authentication) {
-        return tokenRepository.getAccessToken(authentication);
+        return abstractTokenRepository.getAccessToken(authentication);
     }
 
     /**
@@ -168,7 +166,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      */
     @Override
     public OAuth2AccessToken readAccessToken(final String accessToken) {
-        return tokenRepository.readAccessToken(accessToken);
+        return abstractTokenRepository.readAccessToken(accessToken);
     }
 
     /**
@@ -180,15 +178,15 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     @Override
     public OAuth2Authentication loadAuthentication(final String accessTokenValue) throws AuthenticationException, InvalidTokenException {
 
-        final OAuth2AccessToken accessToken = tokenRepository.readAccessToken(accessTokenValue);
+        final OAuth2AccessToken accessToken = abstractTokenRepository.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
         } else if (accessToken.isExpired()) {
-            tokenRepository.removeAccessToken(accessToken);
+            abstractTokenRepository.removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
 
-        final OAuth2Authentication result = tokenRepository.readAuthentication(accessToken);
+        final OAuth2Authentication result = abstractTokenRepository.readAuthentication(accessToken);
         if (result == null) {
             // in case of race condition
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
@@ -204,18 +202,68 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return result;
     }
 
-    /**d
+    /**
+     * d
+     *
      * @param tokenValue String
      * @return boolean
      */
     @Override
     public boolean revokeToken(final String tokenValue) {
 
-        final Optional<IToken> token = tokenRepository.findTokenByValue(tokenValue);
+        final Optional<IToken> token = abstractTokenRepository.findTokenByValue(tokenValue);
 
-        token.ifPresent(iToken -> this.tokenRepository.revoke(tokenValue));
+        abstractTokenRepository.revoke(token.orElseThrow().getValue());
 
-        return token.isPresent();
+        final OAuth2Authentication oAuth2Authentication = abstractTokenRepository.readAuthentication(token.orElseThrow().getAccess().orElseThrow().getValue());
+
+        token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
+
+            if(!innerToken.isRoot()){
+                final Set<String> clients = extractClientsId(oAuth2Authentication);
+
+                clients.forEach(clientString -> {
+                    final Client client = (Client) this.clientDetailsService.loadClientByClientId(clientString);
+                    if (client != null && client.getRevokeTokenUrl() != null)
+                        // Get the access token from authentication
+                        delete(client.getRevokeTokenUrl(), innerToken.getValue());
+                });
+            }
+
+        }));
+
+        return true;
+    }
+
+    /**
+     * @param grantedAuthorities Collection<? extends GrantedAuthority>
+     * @return Set<String>
+     */
+    public static Set<String> extractClientsId(final Collection<? extends GrantedAuthority> grantedAuthorities) {
+        Objects.requireNonNull(grantedAuthorities);
+        return grantedAuthorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .map(authority -> authority.contains("/") ? authority.substring(authority.indexOf("/") + 1) : authority).map(authority -> authority.contains("/") ? authority.substring(0, authority.indexOf("/")) : authority)
+                .filter(authority -> !authority.equals("root"))
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * @param oAuth2Authentication OAuth2Authentication
+     * @return Set<String>
+     */
+    private static Set<String> extractClientsId(final OAuth2Authentication oAuth2Authentication) {
+        Objects.requireNonNull(oAuth2Authentication);
+        return extractClientsId(oAuth2Authentication.getUserAuthentication());
+    }
+
+    /**
+     * @param authentication Authentication
+     * @return Set<String>
+     */
+    private static Set<String> extractClientsId(final Authentication authentication) {
+        Objects.requireNonNull(authentication);
+        return extractClientsId(authentication.getAuthorities());
     }
 
     /**
@@ -231,7 +279,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         token.setRefreshToken(createRefreshToken(authentication));
         token.setScope(authentication.getOAuth2Request().getScope());
 
-        return this.tokenRepository.getJwtAccessTokenConverter() != null ? this.tokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
     }
 
     /**
@@ -332,7 +380,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         token.setRefreshToken(refreshToken);
         token.setScope(authentication.getOAuth2Request().getScope());
 
-        return this.tokenRepository.getJwtAccessTokenConverter() != null ? this.tokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
     }
 
 }

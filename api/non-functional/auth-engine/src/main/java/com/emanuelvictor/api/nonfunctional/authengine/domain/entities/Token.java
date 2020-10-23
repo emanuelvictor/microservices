@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities;
 
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.AbstractToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.AbstractToken;
 
 /**
  * "Composite"
@@ -14,6 +14,5 @@ public class Token extends AbstractToken {
     public Token(final String value) {
         super(value);
     }
-
 
 }

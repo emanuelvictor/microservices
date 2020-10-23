@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.jwt.JwtAccessTokenConverter;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepositoryImpl;
 import org.springframework.context.annotation.Bean;
@@ -46,23 +46,6 @@ public class CommonConfiguration {
         converter.setSigningKey(DEFAULT_KEY);
         return converter;
     }
-
-//    /**
-//     *
-//     * @param tokenStore TokenStore
-//     * @param clientDetailsService ClientDetailsService
-//     * @param accessTokenEnhancer JwtAccessTokenConverter
-//     * @return
-//     */
-//    @Bean
-//    @Primary
-//    public CustomTokenServices tokenServices(final TokenStore tokenStore,
-//                                             final ClientDetailsService clientDetailsService,
-//                                             final JwtAccessTokenConverter accessTokenEnhancer) {
-//
-//        final CustomTokenServices customTokenServices = new CustomTokenServices(tokenStore, clientDetailsService, accessTokenEnhancer);
-//        return customTokenServices;
-//    }
 
     /**
      * TokenEnhancer

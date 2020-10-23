@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.util.Assert;
@@ -71,6 +71,7 @@ public class TokenTests extends AbstractsTests {
      */
     @Test
     public void addTokenMustPass() {
+
         final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[1]);
 
         final IToken token2 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[2]);

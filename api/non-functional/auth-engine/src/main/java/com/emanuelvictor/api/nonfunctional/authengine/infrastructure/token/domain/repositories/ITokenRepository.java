@@ -1,6 +1,6 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories;
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import java.util.Optional;

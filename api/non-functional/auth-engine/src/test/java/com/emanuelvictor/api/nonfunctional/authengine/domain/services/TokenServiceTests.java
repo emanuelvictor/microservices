@@ -27,7 +27,7 @@ public class TokenServiceTests extends AbstractsTests {
                 new SimpleGrantedAuthority("root/falcatrua/outra")
         );
 
-        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", ServiceToken.extractClientsId(authorities))), "");
+        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", TokenService.extractClientsId(authorities))), "");
 
     }
 

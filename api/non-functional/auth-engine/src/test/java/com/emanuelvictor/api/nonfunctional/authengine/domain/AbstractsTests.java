@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain;
 
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.jwt.JwtAccessTokenConverter;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepositoryImpl;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.ITokenRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.ITokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
