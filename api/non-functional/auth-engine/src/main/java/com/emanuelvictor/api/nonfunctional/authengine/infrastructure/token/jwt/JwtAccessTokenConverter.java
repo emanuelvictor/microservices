@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.authengine.application.security.custom;
+package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.jwt;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +45,7 @@ public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConver
 
     private JwtClaimsSetVerifier jwtClaimsSetVerifier = new JwtAccessTokenConverter.NoOpJwtClaimsSetVerifier();
 
-    private JsonParser objectMapper = JsonParserFactory.create();
+    private final JsonParser objectMapper = JsonParserFactory.create();
 
     private String verifierKey = new RandomValueStringGenerator().generate();
 
@@ -246,7 +246,7 @@ public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConver
         return token;
     }
 
-    protected Map<String, Object> decode(String token) {
+    public Map<String, Object> decode(String token) {
         try {
             Jwt jwt = JwtHelper.decodeAndVerify(token, verifier);
             String claimsStr = jwt.getClaims();

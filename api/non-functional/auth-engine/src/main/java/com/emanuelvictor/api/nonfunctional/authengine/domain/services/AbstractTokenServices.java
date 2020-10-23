@@ -1,16 +1,17 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtAccessTokenConverter;
-import com.emanuelvictor.api.nonfunctional.authengine.application.security.custom.JwtTokenStore;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.ITokenRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.repositories.AbstractTokenRepository;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.common.*;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.InvalidScopeException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.*;
-import org.springframework.security.oauth2.provider.token.*;
+import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
+import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import java.time.ZoneId;
 import java.util.Date;
@@ -39,12 +40,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     /**
      *
      */
-    protected final TokenStore tokenStore;
-
-    /**
-     *
-     */
-    protected final ITokenRepository tokenRepository;
+    protected final AbstractTokenRepository tokenRepository;
 
     /**
      *
@@ -52,23 +48,13 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     protected final ClientDetailsService clientDetailsService;
 
     /**
-     *
-     */
-    protected final JwtAccessTokenConverter accessTokenEnhancer;
-
-    /**
-     * @param tokenStore           TokenStore
+     * @param tokenRepository      ITokenRepository
      * @param clientDetailsService ClientDetailsService
-     * @param accessTokenEnhancer  JwtAccessTokenConverter
      */
-    public AbstractTokenServices(final TokenStore tokenStore,
-                                 final ITokenRepository tokenRepository,
-                                 final ClientDetailsService clientDetailsService,
-                                 final JwtAccessTokenConverter accessTokenEnhancer) {
-        this.tokenStore = tokenStore;
+    public AbstractTokenServices(final AbstractTokenRepository tokenRepository,
+                                 final ClientDetailsService clientDetailsService) {
         this.tokenRepository = tokenRepository;
         this.clientDetailsService = clientDetailsService;
-        this.accessTokenEnhancer = accessTokenEnhancer;
     }
 
     /**
@@ -79,7 +65,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     @Override
     public OAuth2AccessToken createAccessToken(final OAuth2Authentication authentication) throws AuthenticationException {
 
-        return JwtTokenStore.extractSessionID(authentication)
+        return AbstractTokenRepository.extractSessionID(authentication)
                 .flatMap(root -> this.tokenRepository.findTokenByValue(root).map(iToken -> {
 
                     // Token is revoked, that is the logout has effected
@@ -128,9 +114,9 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
     }
 
     /**
-     * @param refreshTokenValue
-     * @param tokenRequest
-     * @return
+     * @param refreshTokenValue String
+     * @param tokenRequest      TokenRequest
+     * @return OAuth2AccessToken
      * @throws AuthenticationException
      */
     @Override
@@ -138,7 +124,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
 
         final IToken iToken = tokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
 
-        final OAuth2Authentication authentication = tokenStore.readAuthentication(iToken.getAccess().orElseThrow().getValue());
+        final OAuth2Authentication authentication = tokenRepository.readAuthentication(iToken.getAccess().orElseThrow().getValue());
 //        authentication = createRefreshedAuthentication(authentication, tokenRequest);
         final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(createAccessTokenWithRefreshToken(authentication));
         final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
@@ -167,97 +153,92 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return defaultOAuth2AccessToken;
     }
 
+    /**
+     * @param authentication OAuth2Authentication
+     * @return OAuth2AccessToken
+     */
     @Override
-    public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
-        return tokenStore.getAccessToken(authentication);
+    public OAuth2AccessToken getAccessToken(final OAuth2Authentication authentication) {
+        return tokenRepository.getAccessToken(authentication);
     }
 
     /**
-     * Create a refreshed authentication.
-     *
-     * @param authentication The authentication.
-     * @param request        The scope for the refreshed token.
-     * @return The refreshed authentication.
-     * @throws InvalidScopeException If the scope requested is invalid or wider than the original scope.
+     * @param accessToken String
+     * @return OAuth2AccessToken
      */
-    private OAuth2Authentication createRefreshedAuthentication(OAuth2Authentication authentication, TokenRequest request) {
-        OAuth2Authentication narrowed = authentication;
-        Set<String> scope = request.getScope();
-        OAuth2Request clientAuth = authentication.getOAuth2Request().refresh(request);
-        if (scope != null && !scope.isEmpty()) {
-            Set<String> originalScope = clientAuth.getScope();
-            if (originalScope == null || !originalScope.containsAll(scope)) {
-                throw new InvalidScopeException("Unable to narrow the scope of the client authentication to " + scope
-                        + ".", originalScope);
-            } else {
-                clientAuth = clientAuth.narrowScope(scope);
-            }
-        }
-        narrowed = new OAuth2Authentication(clientAuth, authentication.getUserAuthentication());
-        return narrowed;
+    @Override
+    public OAuth2AccessToken readAccessToken(final String accessToken) {
+        return tokenRepository.readAccessToken(accessToken);
     }
 
     /**
-     * TODO For what is protected?
-     *
-     * @param refreshToken OAuth2RefreshToken
-     * @return boolean
+     * @param accessTokenValue String
+     * @return OAuth2Authentication
+     * @throws AuthenticationException
+     * @throws InvalidTokenException
      */
-    protected boolean isExpired(OAuth2RefreshToken refreshToken) {
-        if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
-            ExpiringOAuth2RefreshToken expiringToken = (ExpiringOAuth2RefreshToken) refreshToken;
-            return expiringToken.getExpiration() == null
-                    || System.currentTimeMillis() > expiringToken.getExpiration().getTime();
-        }
-        return false;
-    }
-
     @Override
-    public OAuth2AccessToken readAccessToken(String accessToken) {
-        return tokenStore.readAccessToken(accessToken);
-    }
+    public OAuth2Authentication loadAuthentication(final String accessTokenValue) throws AuthenticationException, InvalidTokenException {
 
-    @Override
-    public OAuth2Authentication loadAuthentication(String accessTokenValue) throws AuthenticationException,
-            InvalidTokenException {
-        OAuth2AccessToken accessToken = tokenStore.readAccessToken(accessTokenValue);
+        final OAuth2AccessToken accessToken = tokenRepository.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
         } else if (accessToken.isExpired()) {
-            tokenStore.removeAccessToken(accessToken);
+            tokenRepository.removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
 
-        OAuth2Authentication result = tokenStore.readAuthentication(accessToken);
+        final OAuth2Authentication result = tokenRepository.readAuthentication(accessToken);
         if (result == null) {
             // in case of race condition
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
         }
         if (clientDetailsService != null) {
-            String clientId = result.getOAuth2Request().getClientId();
+            final String clientId = result.getOAuth2Request().getClientId();
             try {
                 clientDetailsService.loadClientByClientId(clientId);
-            } catch (ClientRegistrationException e) {
+            } catch (final ClientRegistrationException e) {
                 throw new InvalidTokenException("Client not valid: " + clientId, e);
             }
         }
         return result;
     }
 
+    /**d
+     * @param tokenValue String
+     * @return boolean
+     */
     @Override
-    public boolean revokeToken(String tokenValue) {
-        OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
-        if (accessToken == null) {
-            return false;
-        }
-        if (accessToken.getRefreshToken() != null) {
-            tokenStore.removeRefreshToken(accessToken.getRefreshToken());
-        }
-        tokenStore.removeAccessToken(accessToken);
-        return true;
+    public boolean revokeToken(final String tokenValue) {
+
+        final Optional<IToken> token = tokenRepository.findTokenByValue(tokenValue);
+
+        token.ifPresent(iToken -> this.tokenRepository.revoke(tokenValue));
+
+        return token.isPresent();
     }
 
-    private OAuth2RefreshToken createRefreshToken(OAuth2Authentication authentication) {
+    /**
+     * @param authentication OAuth2Authentication
+     * @return OAuth2AccessToken
+     */
+    private OAuth2AccessToken createAccessTokenWithRefreshToken(final OAuth2Authentication authentication) {
+        final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
+        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
+        if (validitySeconds > 0) {
+            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
+        }
+        token.setRefreshToken(createRefreshToken(authentication));
+        token.setScope(authentication.getOAuth2Request().getScope());
+
+        return this.tokenRepository.getJwtAccessTokenConverter() != null ? this.tokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+    }
+
+    /**
+     * @param authentication OAuth2Authentication
+     * @return OAuth2RefreshToken
+     */
+    private OAuth2RefreshToken createRefreshToken(final OAuth2Authentication authentication) {
         int validitySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
         final String value = UUID.randomUUID().toString();
         if (validitySeconds > 0) {
@@ -267,38 +248,13 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
         return new DefaultOAuth2RefreshToken(value);
     }
 
-    private OAuth2AccessToken createAccessTokenWithRefreshToken(OAuth2Authentication authentication) {
-        final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
-        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
-        if (validitySeconds > 0) {
-            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
-        }
-        token.setRefreshToken(createRefreshToken(authentication));
-        token.setScope(authentication.getOAuth2Request().getScope());
-
-        return accessTokenEnhancer != null ? accessTokenEnhancer.enhance(token, authentication) : token;
-    }
-
-    private OAuth2AccessToken createAccessToken(OAuth2Authentication authentication, OAuth2RefreshToken refreshToken) {
-        DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
-        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
-        if (validitySeconds > 0) {
-            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
-        }
-        token.setRefreshToken(refreshToken);
-        token.setScope(authentication.getOAuth2Request().getScope());
-
-        return accessTokenEnhancer != null ? accessTokenEnhancer.enhance(token, authentication) : token;
-    }
-
     /**
-     * TODO For what is protected?
      * The access token validity period in seconds
      *
      * @param clientAuth the current authorization request
      * @return the access token validity period in seconds
      */
-    protected int getAccessTokenValiditySeconds(OAuth2Request clientAuth) {
+    private int getAccessTokenValiditySeconds(OAuth2Request clientAuth) {
         if (clientDetailsService != null) {
             ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
             Integer validity = client.getAccessTokenValiditySeconds();
@@ -315,7 +271,7 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
      * @param clientAuth the current authorization request
      * @return the refresh token validity period in seconds
      */
-    protected int getRefreshTokenValiditySeconds(OAuth2Request clientAuth) {
+    private int getRefreshTokenValiditySeconds(OAuth2Request clientAuth) {
         if (clientDetailsService != null) {
             ClientDetails client = clientDetailsService.loadClientByClientId(clientAuth.getClientId());
             Integer validity = client.getRefreshTokenValiditySeconds();
@@ -324,6 +280,59 @@ public class AbstractTokenServices implements AuthorizationServerTokenServices, 
             }
         }
         return REFRESH_TOKEN_VALIDITY_SECONDS;
+    }
+
+    /**
+     * @param refreshToken OAuth2RefreshToken
+     * @return boolean
+     */
+    private boolean isExpired(OAuth2RefreshToken refreshToken) {
+        if (refreshToken instanceof ExpiringOAuth2RefreshToken) {
+            ExpiringOAuth2RefreshToken expiringToken = (ExpiringOAuth2RefreshToken) refreshToken;
+            return expiringToken.getExpiration() == null
+                    || System.currentTimeMillis() > expiringToken.getExpiration().getTime();
+        }
+        return false;
+    }
+
+    /**
+     * Create a refreshed authentication.
+     *
+     * @param authentication The authentication.
+     * @param request        The scope for the refreshed token.
+     * @return The refreshed authentication.
+     * @throws InvalidScopeException If the scope requested is invalid or wider than the original scope.
+     */
+    private OAuth2Authentication createRefreshedAuthentication(OAuth2Authentication authentication, TokenRequest request) {
+        final Set<String> scope = request.getScope();
+        OAuth2Request clientAuth = authentication.getOAuth2Request().refresh(request);
+        if (scope != null && !scope.isEmpty()) {
+            Set<String> originalScope = clientAuth.getScope();
+            if (originalScope == null || !originalScope.containsAll(scope)) {
+                throw new InvalidScopeException("Unable to narrow the scope of the client authentication to " + scope
+                        + ".", originalScope);
+            } else {
+                clientAuth = clientAuth.narrowScope(scope);
+            }
+        }
+        return new OAuth2Authentication(clientAuth, authentication.getUserAuthentication());
+    }
+
+    /**
+     * @param authentication
+     * @param refreshToken
+     * @return
+     */
+    private OAuth2AccessToken createAccessToken(OAuth2Authentication authentication, OAuth2RefreshToken refreshToken) {
+        final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
+        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
+        if (validitySeconds > 0) {
+            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
+        }
+        token.setRefreshToken(refreshToken);
+        token.setScope(authentication.getOAuth2Request().getScope());
+
+        return this.tokenRepository.getJwtAccessTokenConverter() != null ? this.tokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
     }
 
 }
