@@ -2,7 +2,7 @@ package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepositoryImpl;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,7 +34,7 @@ public class CommonConfiguration {
      */
     @Bean
     public TokenStore tokenStore() {
-        return new TokenRepositoryImpl(accessTokenConverter());
+        return new TokenRepository(accessTokenConverter());
     }
 
     /**

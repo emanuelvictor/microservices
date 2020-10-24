@@ -16,4 +16,6 @@ public interface ITokenRepository extends TokenStore {
 
     // TODO Must be return void
     Optional<IToken> revoke(final String tokenValue);
+
+    void remove(final String tokenValue);
 }

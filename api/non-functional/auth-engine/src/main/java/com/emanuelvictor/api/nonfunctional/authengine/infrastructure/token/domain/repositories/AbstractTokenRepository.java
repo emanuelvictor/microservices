@@ -130,6 +130,16 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
     }
 
     /**
+     * Must be coverred with tests
+     *
+     * @param tokenValue String
+     */
+    @Override
+    public void remove(final String tokenValue) {
+        this.findTokenByValue(tokenValue).ifPresent(this.tokens::remove);
+    }
+
+    /**
      * @return Set<IToken>
      */
     @Override

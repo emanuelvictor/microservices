@@ -2,7 +2,7 @@ package com.emanuelvictor.api.nonfunctional.authengine.domain;
 
 
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepositoryImpl;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.ITokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.platform.runner.JUnitPlatform;
@@ -25,7 +25,7 @@ public abstract class AbstractsTests {
 //    @Before before to junit
     @BeforeEach
     public void beforeTests() {
-        tokenStore = new TokenRepositoryImpl(this.accessTokenConverter());
+        tokenStore = new TokenRepository(this.accessTokenConverter());
     }
 
     /**

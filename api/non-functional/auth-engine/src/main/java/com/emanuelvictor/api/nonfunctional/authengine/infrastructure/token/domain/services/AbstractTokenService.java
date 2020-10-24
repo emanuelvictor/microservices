@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Client;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.AbstractTokenRepository;
 import org.springframework.security.core.Authentication;
@@ -64,12 +65,15 @@ public abstract class AbstractTokenService implements ITokenService {
     public OAuth2AccessToken createAccessToken(final OAuth2Authentication authentication) throws AuthenticationException {
 
         return AbstractTokenRepository.extractSessionID(authentication)
-                .flatMap(root -> this.abstractTokenRepository.findTokenByValue(root).map(iToken -> {
+                .flatMap(sessionId -> this.abstractTokenRepository.findTokenByValue(sessionId).map(iToken ->
+                // Is a authentication in the browser navigator, and Jessionid was found in repository
+                {
 
                     // Token is revoked, that is the logout has effected
                     if (iToken.isRevoked())
                         throw new RuntimeException("Token revoked");
 
+                    // Create the access token with refresh token with the new valid timouts
                     final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(readAccessToken(iToken.getAccess().orElseThrow().getValue()));
                     final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
                     if (refreshTokenValiditySeconds > 0) {
@@ -83,26 +87,44 @@ public abstract class AbstractTokenService implements ITokenService {
                         // Create access token with refresh token associated
                         final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                         // Save de root (or jsessionid), access token and refresh token
-                        this.abstractTokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                        this.abstractTokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                         return accessToken;
                     } else {
                         return defaultOAuth2AccessToken;
                     }
 
-                    // If not found the jsessionid in repository
+                    // If the authentication is a web authentication in the browser. And is not found the jsessionid in repository
+                    // It must be created.
                 }).or(() -> {
 
                     // Create access token with refresh token associated
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save de root (or jsessionid), access token and refresh token
-                    this.abstractTokenRepository.save(root, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    this.abstractTokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
-                    // If the request is not a authorization code, that is no have jsessionid
+                    // If the request is not a authorization code, or that is no have jsessionid.
+                    // Is not a Web Authentication with browser.
                 })).or(() -> {
 
-                    // Create access token with refresh token associated
+                    // Client Credentials Grant Type MUST NOT implement refresh token (https://tools.ietf.org/html/rfc6749#section-4.4.3).
+                    // So it not must be replace the old access token already saved
+                    if (authentication.getOAuth2Request().getGrantType().equals(GrantType.CLIENT_CREDENTIALS.getValue())) {
+                        // Remove the old access token associated to the clientId
+                        this.abstractTokenRepository.remove(authentication.getOAuth2Request().getClientId());
+
+                        // Create a access token without refresh, because it is note necessary
+                        final OAuth2AccessToken accessToken = createAccessTokenWithoutRefreshToken(authentication);
+
+                        // Save the new access token associated to the client Id
+                        this.abstractTokenRepository.save(authentication.getOAuth2Request().getClientId(), accessToken.getValue()).orElseThrow().printFromRoot();
+                        return Optional.of((DefaultOAuth2AccessToken) accessToken);
+                    }
+
+                    // If the grant type is different from Client Credentials, generated the access token with refresh token. Follows the flow
+                    // Create access token with refresh token associated.
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
+
                     // Save access token and refresh token
                     this.abstractTokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
@@ -138,7 +160,7 @@ public abstract class AbstractTokenService implements ITokenService {
         }
 
         if (iToken.isRevoked())
-            throw new InvalidTokenException("Invalid refresh token (revoked): " + iToken);
+            throw new InvalidTokenException("Invalid refresh token (revoked): " + iToken.getAccess().orElseThrow().getValue());
 
         if (isExpired(defaultOAuth2AccessToken.getRefreshToken()))
             throw new InvalidTokenException("Invalid refresh token (expired): " + defaultOAuth2AccessToken.getRefreshToken());
@@ -219,7 +241,7 @@ public abstract class AbstractTokenService implements ITokenService {
 
         token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
 
-            if(!innerToken.isRoot()){
+            if (!innerToken.isRoot()) {
                 final Set<String> clients = extractClientsId(oAuth2Authentication);
 
                 clients.forEach(clientString -> {
@@ -277,6 +299,21 @@ public abstract class AbstractTokenService implements ITokenService {
             token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
         }
         token.setRefreshToken(createRefreshToken(authentication));
+        token.setScope(authentication.getOAuth2Request().getScope());
+
+        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+    }
+
+    /**
+     * @param authentication OAuth2Authentication
+     * @return OAuth2AccessToken
+     */
+    private OAuth2AccessToken createAccessTokenWithoutRefreshToken(final OAuth2Authentication authentication) {
+        final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(UUID.randomUUID().toString());
+        int validitySeconds = getAccessTokenValiditySeconds(authentication.getOAuth2Request());
+        if (validitySeconds > 0) {
+            token.setExpiration(new Date(System.currentTimeMillis() + (validitySeconds * 1000L)));
+        }
         token.setScope(authentication.getOAuth2Request().getScope());
 
         return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;

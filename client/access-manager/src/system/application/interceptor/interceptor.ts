@@ -96,6 +96,12 @@ export class Interceptor implements HttpInterceptor {
           return this.innerHandler(res)
         }
 
+        // Invalid access token error
+        if (res.error.error && res.error.error === 'invalid_token' && res.error.error_description && res.error.error_description.indexOf('revoked') > 0) {
+          this.authenticationService.authorizationCode(window.location.href.substring(window.location.href.indexOf('#/') + 1, window.location.href.length))
+          return this.innerHandler(res)
+        }
+
         if (typeof res.error === 'string')
           res.error = JSON.parse(res.error)
       }

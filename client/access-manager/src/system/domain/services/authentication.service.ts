@@ -153,10 +153,7 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
    *
    */
   public logout(): void {
-
-    const tokens: string = btoa(`access_token=${this.access.access_token}&refresh_token=${this.access.refresh_token}`);
-
-    this.toSSO(`/logout?${tokens}`)
+    this.toSSO(`/logout`)
   }
 
   /**
