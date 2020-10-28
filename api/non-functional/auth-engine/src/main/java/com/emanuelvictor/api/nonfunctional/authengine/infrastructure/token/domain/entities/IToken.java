@@ -1,5 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
@@ -55,4 +57,6 @@ public interface IToken {
     Set<IToken>  getAll(final Set<IToken> tokens);
 
     boolean isRoot();
+
+    String getName();
 }

@@ -1,10 +1,10 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.AbstractToken;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
 
 import java.util.Set;
 
@@ -40,29 +40,29 @@ public class TokenTests extends AbstractsTests {
         final IToken token9 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[9]);
         token6.add(token9);
 
-        Assert.isTrue(!token1.isRevoked());
-        Assert.isTrue(!token2.isRevoked());
-        Assert.isTrue(!token3.isRevoked());
-        Assert.isTrue(!token4.isRevoked());
-        Assert.isTrue(!token5.isRevoked());
-        Assert.isTrue(!token7.isRevoked());
-        Assert.isTrue(!token6.isRevoked());
-        Assert.isTrue(!token8.isRevoked());
-        Assert.isTrue(!token9.isRevoked());
+        Assertions.assertFalse(token1.isRevoked());
+        Assertions.assertFalse(token2.isRevoked());
+        Assertions.assertFalse(token3.isRevoked());
+        Assertions.assertFalse(token4.isRevoked());
+        Assertions.assertFalse(token5.isRevoked());
+        Assertions.assertFalse(token7.isRevoked());
+        Assertions.assertFalse(token6.isRevoked());
+        Assertions.assertFalse(token8.isRevoked());
+        Assertions.assertFalse(token9.isRevoked());
 
         token5.printFromRoot();
 
         token5.revoke();
 
-        Assert.isTrue(token1.isRevoked());
-        Assert.isTrue(token2.isRevoked());
-        Assert.isTrue(token3.isRevoked());
-        Assert.isTrue(token4.isRevoked());
-        Assert.isTrue(token6.isRevoked());
-        Assert.isTrue(token7.isRevoked());
-        Assert.isTrue(token5.isRevoked());
-        Assert.isTrue(token8.isRevoked());
-        Assert.isTrue(token9.isRevoked());
+        Assertions.assertTrue(token1.isRevoked());
+        Assertions.assertTrue(token2.isRevoked());
+        Assertions.assertTrue(token3.isRevoked());
+        Assertions.assertTrue(token4.isRevoked());
+        Assertions.assertTrue(token6.isRevoked());
+        Assertions.assertTrue(token7.isRevoked());
+        Assertions.assertTrue(token5.isRevoked());
+        Assertions.assertTrue(token8.isRevoked());
+        Assertions.assertTrue(token9.isRevoked());
 
     }
 
@@ -86,13 +86,13 @@ public class TokenTests extends AbstractsTests {
         final IToken token5 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[5]);
         token1.add(token5);
 
-        Assert.notNull(token4.getNext(), "The next token must be non null");
-        Assert.isTrue(token4.getNext().orElseThrow().equals(token5), "The next token must be equals to token5");
+        Assertions.assertNotNull(token4.getNext(), "The next token must be non null");
+        Assertions.assertEquals(token5, token4.getNext().orElseThrow(), "The next token must be equals to token5");
 
-        Assert.notNull(token2.getNext(), "The next token must be non null");
-        Assert.isTrue(token2.getNext().orElseThrow().equals(token3), "The next token must be equals to token3");
-        Assert.notNull(token2.getNext().orElseThrow().getNext().orElseThrow().getNext(), "The next token must be non null");
-        Assert.isTrue(token2.getNext().orElseThrow().getNext().orElseThrow().getNext().orElseThrow().equals(token5), "The next token must be equals to token5");
+        Assertions.assertNotNull(token2.getNext(), "The next token must be non null");
+        Assertions.assertEquals(token3, token2.getNext().orElseThrow(), "The next token must be equals to token3");
+        Assertions.assertNotNull(token2.getNext().orElseThrow().getNext().orElseThrow().getNext(), "The next token must be non null");
+        Assertions.assertEquals(token5, token2.getNext().orElseThrow().getNext().orElseThrow().getNext().orElseThrow(), "The next token must be equals to token5");
     }
 
     /**
@@ -132,9 +132,9 @@ public class TokenTests extends AbstractsTests {
     @Test
     public void findByValue() {
 
-        Assert.notNull(dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[2]));
+        Assertions.assertNotNull(dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[2]));
 
-        Assert.notNull(dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[3]));
+        Assertions.assertNotNull(dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[3]));
 
     }
 
@@ -207,5 +207,14 @@ public class TokenTests extends AbstractsTests {
 
         return Set.of(token1);
 
+    }
+
+    /**
+     *
+     */
+    @Test
+    void extractNameFromTokenMustPass() {
+        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDM5MTE1MjEsInVzZXJfbmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImF1dGhvcml0aWVzIjpbInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2VycyIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyIiwicm9vdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucyJdLCJqdGkiOiIxOGJhNGE3ZC0zN2NkLTRkZTMtYmM4My1kODE2YzM3NzYwOTEiLCJjbGllbnRfaWQiOiJicm93c2VyIiwic2NvcGUiOlsicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIiLCJyb290Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zIl19.ea_AstAbyaO8019VzK0XGAWySrUJOJqq8LKuEBc-sLg");
+        Assertions.assertEquals(token1.getName(), "admin@admin.com");
     }
 }

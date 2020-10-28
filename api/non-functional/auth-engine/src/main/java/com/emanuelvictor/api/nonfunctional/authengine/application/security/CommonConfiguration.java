@@ -16,6 +16,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter.DEFAULT_KEY;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
@@ -26,26 +27,25 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Configuration
 public class CommonConfiguration {
 
-    public final static String DEFAULT_KEY = "integrator";
-    private final static String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
+    private final String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
 
     /**
      * @return TokenStore
      */
     @Bean
     public TokenStore tokenStore() {
-        return new TokenRepository(accessTokenConverter());
+        return new TokenRepository();
     }
 
-    /**
-     * @return JwtAccessTokenConverter
-     */
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(DEFAULT_KEY);
-        return converter;
-    }
+//    /**
+//     * @return JwtAccessTokenConverter
+//     */
+//    @Bean
+//    public JwtAccessTokenConverter accessTokenConverter() {
+//        final JwtAccessTokenConverter converter = JwtAccessTokenConverter.getInstance();
+//        converter.setSigningKey(DEFAULT_KEY);
+//        return converter;
+//    }
 
     /**
      * TokenEnhancer

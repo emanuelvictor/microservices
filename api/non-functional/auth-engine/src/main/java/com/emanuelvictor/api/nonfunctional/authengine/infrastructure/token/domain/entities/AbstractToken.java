@@ -1,10 +1,13 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -48,6 +51,13 @@ public abstract class AbstractToken implements IToken {
      */
     @Getter
     @Setter(AccessLevel.PACKAGE)
+    private String name;
+
+    /**
+     *
+     */
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
     private String value;
 
     /**
@@ -56,7 +66,34 @@ public abstract class AbstractToken implements IToken {
     public AbstractToken(final String value) {
         this.createdOn = LocalDateTime.now();
         this.value = value;
+
+        this.name = extractNameFromToken(value);
     }
+
+    /**
+     * @param token String
+     * @return String
+     */
+    public static String extractNameFromToken(final String token) {
+        if (token != null)
+            try {
+                return JwtAccessTokenConverter.getInstance().extractAuthentication(JwtAccessTokenConverter.getInstance().decode(token)).getName();
+            } catch (final Exception ignored) {
+            }
+        return null;
+    }
+
+//    /**
+//     * @param value     String
+//     * @param id        String
+//     * @param grantType GrantType
+//     */
+//    public AbstractToken(final String value, final String id, final GrantType grantType) {
+//        this.createdOn = LocalDateTime.now();
+//        this.value = value;
+//        this.id = id;
+//        this.grantType = grantType;
+//    }
 
     /**
      * @return Optional<IToken>
@@ -124,7 +161,6 @@ public abstract class AbstractToken implements IToken {
                 present.revoke();
         });
     }
-
 
     //  ------------- Print
 

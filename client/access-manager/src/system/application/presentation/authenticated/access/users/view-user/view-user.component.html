@@ -54,11 +54,15 @@
       <label class='title'>Ativo:</label>
       <label class='text'>{{ user.enabled ? 'Sim' : 'Não' }}</label>
     </div>
-
+    <horizontal-space></horizontal-space>
+    <div layout='column' *ngIf='user?.group?.id'>
+      <label class='title'>Grupo de Acesso:</label>
+      <label class='text'>{{ user?.group?.name }}</label>
+    </div>
   </div>
   <vertical-space></vertical-space>
-  <div layout='column' *ngIf='user?.group?.id'>
-    <label class='title'>Grupo de Acesso:</label>
-    <label class='text'>{{ user?.group?.name }}</label>
+  <div layout='column' flex>
+    <label class='title'>Sessões:</label>
+    <label class='text'></label>
   </div>
 </mat-card>

@@ -32,17 +32,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      *
      */
     @Getter
-    private final JwtAccessTokenConverter jwtAccessTokenConverter;
-
-    /**
-     * Create a JwtTokenStore with this token enhancer (should be shared with the CustomTokenServices if used).
-     *
-     * @param jwtAccessTokenConverter JwtAccessTokenConverter
-     */
-    public AbstractTokenRepository(final JwtAccessTokenConverter jwtAccessTokenConverter) {
-        this.jwtAccessTokenConverter = jwtAccessTokenConverter;
-    }
-
+    private final JwtAccessTokenConverter jwtAccessTokenConverter = JwtAccessTokenConverter.getInstance();
 
     /**
      * Create several and return the root
@@ -111,6 +101,19 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
                 return found;
         }
 
+        return Optional.empty();
+    }
+
+
+    /**
+     * @param name String
+     * @return Optional<IToken>
+     */
+    @Override
+    public Optional<IToken> findTokenByName(final String name) {
+        final Optional<IToken> token = this.tokens.stream().filter(iToken -> iToken.getName().equals(name)).findFirst();
+        if(token.isPresent())
+            return token.orElseThrow().getRoot();
         return Optional.empty();
     }
 

@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import static com.emanuelvictor.api.nonfunctional.authengine.application.security.CommonConfiguration.DEFAULT_KEY;
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @RunWith(JUnitPlatform.class)
 public abstract class AbstractsTests {
@@ -25,15 +23,7 @@ public abstract class AbstractsTests {
 //    @Before before to junit
     @BeforeEach
     public void beforeTests() {
-        tokenStore = new TokenRepository(this.accessTokenConverter());
+        tokenStore = new TokenRepository();
     }
 
-    /**
-     * @return JwtAccessTokenConverter
-     */
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(DEFAULT_KEY);
-        return converter;
-    }
 }

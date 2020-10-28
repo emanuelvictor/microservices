@@ -29,6 +29,28 @@ import java.util.Map;
 
 public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConverter, InitializingBean {
 
+    public final static String DEFAULT_KEY = "integrator";
+
+    /**
+     *
+     */
+    private static final JwtAccessTokenConverter instance = new JwtAccessTokenConverter();
+
+    /**
+     *
+     */
+    private JwtAccessTokenConverter() {
+    }
+
+    /**
+     * @return JwtAccessTokenConverter
+     */
+    public static JwtAccessTokenConverter getInstance() {
+        instance.setSigningKey(DEFAULT_KEY);
+        instance.afterPropertiesSet();
+        return instance;
+    }
+
     /**
      * Field name for token id.
      */
@@ -145,7 +167,7 @@ public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConver
      *
      * @param key the key to be used for signing JWTs.
      */
-    public void setSigningKey(String key) {
+    protected void setSigningKey(String key) {
         Assert.hasText(key);
         key = key.trim();
 
@@ -262,7 +284,7 @@ public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConver
         }
     }
 
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         if (verifier != null) {
             // Assume signer also set independently if needed
             return;
