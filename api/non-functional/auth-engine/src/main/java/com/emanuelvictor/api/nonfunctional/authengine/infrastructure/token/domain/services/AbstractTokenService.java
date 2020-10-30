@@ -258,6 +258,14 @@ public abstract class AbstractTokenService implements ITokenService {
     }
 
     /**
+     * @param name String
+     * @return Set<String>
+     */
+    public Set<IToken> listTokensByName(final String name){
+        return abstractTokenRepository.listTokensByName(name);
+    }
+
+    /**
      * @param grantedAuthorities Collection<? extends GrantedAuthority>
      * @return Set<String>
      */

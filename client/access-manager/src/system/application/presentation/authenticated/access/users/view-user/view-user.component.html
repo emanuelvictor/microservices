@@ -60,9 +60,12 @@
       <label class='text'>{{ user?.group?.name }}</label>
     </div>
   </div>
-  <vertical-space></vertical-space>
-  <div layout='column' flex>
-    <label class='title'>Sessões:</label>
-    <label class='text'></label>
+  <vertical-space *ngIf='user?.sessions?.length'></vertical-space>
+  <div flex layout='column'
+       *ngIf='user?.sessions?.length'>
+    <label class='title'>Sessões({{user?.sessions?.length}}):</label>
+    <label class='text' *ngFor='let session of user.sessions'>
+      {{session.value}} - Criada em: {{session.createdOn | date:'dd/MM/yyyy HH:mm:ss'}} {{session.revoked ? ' - Sessão Revogada' : ''}}
+    </label>
   </div>
 </mat-card>

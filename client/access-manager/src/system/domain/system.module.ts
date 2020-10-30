@@ -75,6 +75,7 @@ import {UpdateApplicationComponent} from "../application/presentation/authentica
 import {ViewApplicationComponent} from "../application/presentation/authenticated/access/applications/view-application/view-application.component";
 import {ApplicationRepository} from "./repository/application.repository";
 import {ApplicationFormComponent} from "../application/presentation/authenticated/access/applications/insert-application/application-form/application-form.component";
+import {TokenRepository} from "./repository/token.repository";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -199,6 +200,7 @@ export function customTranslateLoader(http: HttpClient) {
     PermissionRepository,
     ApplicationRepository,
     GroupRepository,
+    TokenRepository,
 
     // Services
     Describer,

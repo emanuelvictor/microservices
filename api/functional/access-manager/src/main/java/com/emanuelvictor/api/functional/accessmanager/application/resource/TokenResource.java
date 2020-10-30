@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+
 /**
  *
  */
@@ -25,6 +27,15 @@ public class TokenResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final String token) {
         tokenService.revoke(token);
+    }
+
+    /**
+     *
+     */
+    @GetMapping("{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public Set<Object> findTokenByName(@PathVariable final String name) {
+        return tokenService.findTokenByName(name);
     }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @EnableAsync
+@EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
 public class AccessManagerApplication extends SpringBootServletInitializer {

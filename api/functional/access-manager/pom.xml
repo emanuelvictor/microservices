@@ -70,6 +70,13 @@
             <version>1.9.4</version>
         </dependency>
 
+        <!--feign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+
+
         <!--hibernate-->
         <dependency>
             <groupId>org.hibernate</groupId>

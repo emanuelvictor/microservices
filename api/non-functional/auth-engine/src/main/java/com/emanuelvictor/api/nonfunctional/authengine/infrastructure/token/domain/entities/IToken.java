@@ -59,4 +59,8 @@ public interface IToken {
     boolean isRoot();
 
     String getName();
+
+    void setName(final String name);
+
+    void extractNameFromToken();
 }

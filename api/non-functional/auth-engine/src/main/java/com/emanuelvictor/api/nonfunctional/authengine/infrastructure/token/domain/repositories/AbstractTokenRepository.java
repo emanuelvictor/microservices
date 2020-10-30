@@ -1,8 +1,8 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public abstract class AbstractTokenRepository implements ITokenRepository {
@@ -110,11 +111,10 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> findTokenByName(final String name) {
-        final Optional<IToken> token = this.tokens.stream().filter(iToken -> iToken.getName().equals(name)).findFirst();
-        if(token.isPresent())
-            return token.orElseThrow().getRoot();
-        return Optional.empty();
+    public Set<IToken> listTokensByName(final String name) {
+        return this.tokens.stream().filter(iToken ->
+                iToken.getName() != null && iToken.getName().equals(name)
+        ).collect(Collectors.toSet());
     }
 
     /**

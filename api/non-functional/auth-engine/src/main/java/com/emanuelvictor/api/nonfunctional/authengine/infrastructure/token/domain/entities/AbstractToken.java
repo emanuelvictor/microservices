@@ -1,19 +1,21 @@
 package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@JsonIgnoreProperties({"next", "previous", "root", "leaf", "refresh", "access", "all"})
 public abstract class AbstractToken implements IToken {
 
     /**
@@ -50,7 +52,7 @@ public abstract class AbstractToken implements IToken {
      *
      */
     @Getter
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
     private String name;
 
     /**
@@ -80,20 +82,17 @@ public abstract class AbstractToken implements IToken {
                 return JwtAccessTokenConverter.getInstance().extractAuthentication(JwtAccessTokenConverter.getInstance().decode(token)).getName();
             } catch (final Exception ignored) {
             }
-        return null;
+        return token;
     }
 
-//    /**
-//     * @param value     String
-//     * @param id        String
-//     * @param grantType GrantType
-//     */
-//    public AbstractToken(final String value, final String id, final GrantType grantType) {
-//        this.createdOn = LocalDateTime.now();
-//        this.value = value;
-//        this.id = id;
-//        this.grantType = grantType;
-//    }
+    /**
+     *
+     */
+    @Override
+    public void extractNameFromToken() {
+        this.name = extractNameFromToken(this.value);
+        this.getRoot().orElseThrow().setName(this.name);
+    }
 
     /**
      * @return Optional<IToken>
@@ -120,9 +119,13 @@ public abstract class AbstractToken implements IToken {
             return Optional.of(this);
         }
 
-        this.getNext().ifPresentOrElse(present -> present.add(next), () -> {
+        this.getNext().ifPresentOrElse(present -> {
+            present.add(next);
+            present.extractNameFromToken();
+        }, () -> {
             next.setPrevious(this);
             this.setNext(next);
+            this.extractNameFromToken();
         });
 
         return Optional.of(next);
