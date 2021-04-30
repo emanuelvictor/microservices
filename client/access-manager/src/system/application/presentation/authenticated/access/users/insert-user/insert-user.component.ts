@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AuthenticatedViewComponent} from '../../../authenticated-view.component';
-import {MessageService} from '../../../../../../domain/services/message.service';
-import {UserRepository} from "../../../../../../domain/repository/user.repository";
-import {User} from "../../../../../../domain/entity/user.model";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticatedViewComponent } from '../../../authenticated-view.component';
+import { MessageService } from '../../../../../../domain/services/message.service';
+import { UserRepository } from "../../../../../../domain/repository/user.repository";
+import { User } from "../../../../../../domain/entity/user.model";
 
 // @ts-ignore
 @Component({
@@ -37,10 +37,10 @@ export class InsertUserComponent implements OnInit {
    * @param userRepository
    */
   constructor(private router: Router,
-              private homeView: AuthenticatedViewComponent,
-              private activatedRoute: ActivatedRoute,
-              private messageService: MessageService,
-              private userRepository: UserRepository,) {
+    private homeView: AuthenticatedViewComponent,
+    private activatedRoute: ActivatedRoute,
+    private messageService: MessageService,
+    private userRepository: UserRepository,) {
 
     if (!this.activatedRoute.snapshot.params.id) {
       homeView.toolbar.subhead = 'Usuário / Adicionar';
@@ -73,6 +73,7 @@ export class InsertUserComponent implements OnInit {
    * @param user
    */
   public save(user) {
+    console.log(user)
     if (!user.root && this.isString(user.grupoAcesso)) {
       this.messageService.toastWarning('Nenhum grupo de acesso válido foi selecionada.')
       return

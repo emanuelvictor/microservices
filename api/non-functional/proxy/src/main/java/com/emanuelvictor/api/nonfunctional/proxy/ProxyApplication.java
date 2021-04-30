@@ -36,7 +36,7 @@ public class ProxyApplication {
              */
             public void addCorsMappings(final CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8082")
+                        .allowedOrigins("http://localhost:4200") // client to development
 //                        .allowCredentials(true)
                         .allowedHeaders("access-control-allow-origin", "x-requested-with", "authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization")
                         .allowedMethods("OPTIONS", "DELETE", "GET", "POST", "PATCH", "PUT");
