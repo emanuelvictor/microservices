@@ -1,12 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {AuthenticatedViewComponent} from '../../../authenticated-view.component';
-import {MessageService} from '../../../../../../domain/services/message.service';
-import {UserRepository} from "../../../../../../domain/repository/user.repository";
-import {viewAnimation} from "../../../../../utils/utils";
-import {UpdatePasswordComponent} from "../update-password/update-password.component";
-import {MatDialog} from "@angular/material";
-import {TokenRepository} from "../../../../../../domain/repository/token.repository";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthenticatedViewComponent } from '../../../authenticated-view.component';
+import { MessageService } from '../../../../../../domain/services/message.service';
+import { UserRepository } from "../../../../../../domain/repository/user.repository";
+import { viewAnimation } from "../../../../../utils/utils";
+import { UpdatePasswordComponent } from "../update-password/update-password.component";
+import { MatDialog } from "@angular/material";
+import { TokenRepository } from "../../../../../../domain/repository/token.repository";
 
 // @ts-ignore
 @Component({
@@ -40,12 +40,12 @@ export class ViewUserComponent implements OnInit {
    * @param tokenRepository
    */
   constructor(private router: Router,
-              private dialog: MatDialog,
-              public activatedRoute: ActivatedRoute,
-              private messageService: MessageService,
-              public homeView: AuthenticatedViewComponent,
-              private userRepository: UserRepository,
-              private tokenRepository: TokenRepository) {
+    private dialog: MatDialog,
+    public activatedRoute: ActivatedRoute,
+    private messageService: MessageService,
+    public homeView: AuthenticatedViewComponent,
+    private userRepository: UserRepository,
+    private tokenRepository: TokenRepository) {
     this.user.id = +this.activatedRoute.snapshot.params.id || null;
     homeView.toolbar.subhead = 'Usuário / Detalhes'
   }
@@ -68,7 +68,7 @@ export class ViewUserComponent implements OnInit {
       .subscribe(result => {
         this.user = result;
         this.tokenRepository.listTokensById(this.user.username)
-          .subscribe( result => {
+          .subscribe(result => {
             (this.user as any).sessions = result
           })
       })
@@ -92,7 +92,17 @@ export class ViewUserComponent implements OnInit {
     this.dialog.open(UpdatePasswordComponent, {
       width: '400px',
       height: 'auto',
-      data: {user: this.user || null}
+      data: { user: this.user || null }
+    })
+  }
+
+  /**
+   *
+   */
+  public revoke(session: any) {
+    this.tokenRepository.revoke(session.value).then((enabled) => {
+      session.revoked = true
+      this.messageService.toastSuccess('Revogado com sucesso!')
     })
   }
 }

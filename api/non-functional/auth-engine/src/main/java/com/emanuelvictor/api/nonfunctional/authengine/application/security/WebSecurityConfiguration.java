@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedGrantedAuthoritiesUserDetailsService;
+import org.springframework.session.MapSessionRepository;
+import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Emanuel Victor
@@ -22,6 +23,7 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedG
 @Configuration
 //@EnableWebSecurity
 @RequiredArgsConstructor
+@EnableSpringHttpSession // It's required only to session repository, that is, only to removing jsessionid from session repository.
 //@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -44,6 +46,16 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final AuthenticationManagerBuilder builder) throws Exception {
         builder/*.authenticationProvider(this.authenticationProvider())*/.userDetailsService(userDetailsService);
+    }
+
+    /**
+     * Repository from jsessionid's
+     * Necessary to revoke session after revoke token
+     * @return MapSessionRepository
+     */
+    @Bean
+    public MapSessionRepository sessionRepository() {
+        return new MapSessionRepository(new ConcurrentHashMap<>());
     }
 
     /**

@@ -9,24 +9,20 @@
       <span>Voltar</span>
     </button>
     <div [@fadeInOut] *hasPermission="['root', 'users/put/activate']; operation 'OR'">
-      <button *ngIf='!user?.internal'
-              color='primary' class='ml-25'
-              mat-raised-button (click)='updatePassword()'>
+      <button *ngIf='!user?.internal' color='primary' class='ml-25' mat-raised-button (click)='updatePassword()'>
         <mat-icon>vpn_key</mat-icon>
         <span>Alterar senha</span>
       </button>
     </div>
     <div *hasPermission="['root', 'users/put/activate']; operation 'OR'">
-      <button mat-raised-button type='button' *ngIf='!itsMe'
-              (click)='updateEnabled(user.id)' class='ml-25'
-              [ngClass]="{'activate': !user.enabled, 'inactivate': user.enabled}">
+      <button mat-raised-button type='button' *ngIf='!itsMe' (click)='updateEnabled(user.id)' class='ml-25'
+        [ngClass]="{'activate': !user.enabled, 'inactivate': user.enabled}">
         <mat-icon>{{ !user.enabled ? 'check' : 'block' }}</mat-icon>
         <span>{{ !user.enabled ? 'Ativar' : 'Inativar' }}</span>
       </button>
     </div>
-    <a color='primary' routerLink='edit'
-       class='ml-25' mat-raised-button type='button'
-       *hasPermission="['root', 'users/put']; operation 'OR'">
+    <a color='primary' routerLink='edit' class='ml-25' mat-raised-button type='button'
+      *hasPermission="['root', 'users/put']; operation 'OR'">
       <mat-icon>edit</mat-icon>
       <span>Editar</span>
     </a>
@@ -61,11 +57,32 @@
     </div>
   </div>
   <vertical-space *ngIf='user?.sessions?.length'></vertical-space>
-  <div flex layout='column'
-       *ngIf='user?.sessions?.length'>
+  <div flex layout='column' *ngIf='user?.sessions?.length'>
     <label class='title'>Sessões({{user?.sessions?.length}}):</label>
-    <label class='text' *ngFor='let session of user.sessions'>
-      {{session.value}} - Criada em: {{session.createdOn | date:'dd/MM/yyyy HH:mm:ss'}} {{session.revoked ? ' - Sessão Revogada' : ''}}
-    </label>
+
+    <mat-accordion class="example-headers-align" multi style='margin-left: -23px'>
+      <mat-expansion-panel *ngFor='let session of user.sessions'
+        style='box-shadow: none; padding-bottom: 0; margin-bottom: 0;'
+        [ngStyle]="{'background-color': (session.revoked ? 'gray' : 'white')}">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{session.createdOn | date:'dd/MM/yyyy HH:mm:ss'}} -
+            {{session?.value?.substring(session?.value?.length,session?.value?.length - 30)}} {{session.revoked ? ' -
+            Sessão Revogada' : ''}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div flex>
+          <div flex layout-margin style="overflow-wrap: break-word; text-overflow: ellipsis;">{{session?.value}}</div>
+          <div layout='column' flex layout-margin layout-align="end end">
+            <button layout-align='end end' flex 
+            layout-margin style='margin: 0' mat-button color="warn"
+              *ngIf='!session?.revoked'
+              (click)='revoke(session)'>
+              Revogar
+            </button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
 </mat-card>

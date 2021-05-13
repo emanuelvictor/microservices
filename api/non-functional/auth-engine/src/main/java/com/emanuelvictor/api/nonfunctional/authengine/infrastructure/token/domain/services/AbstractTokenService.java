@@ -4,6 +4,7 @@ import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Client;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.AbstractTokenRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidScopeExcepti
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.session.MapSessionRepository;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -50,7 +52,8 @@ public abstract class AbstractTokenService implements ITokenService {
      * @param clientDetailsService    ClientDetailsService
      * @param abstractTokenRepository AbstractTokenRepository
      */
-    public AbstractTokenService(final ClientDetailsService clientDetailsService,
+    public AbstractTokenService(
+                                final ClientDetailsService clientDetailsService,
                                 final AbstractTokenRepository abstractTokenRepository) {
         this.clientDetailsService = clientDetailsService;
         this.abstractTokenRepository = abstractTokenRepository;
@@ -66,7 +69,7 @@ public abstract class AbstractTokenService implements ITokenService {
 
         return AbstractTokenRepository.extractSessionID(authentication)
                 .flatMap(sessionId -> this.abstractTokenRepository.findTokenByValue(sessionId).map(iToken ->
-                // Is a authentication in the browser navigator, and Jessionid was found in repository
+                        // Is a authentication in the browser navigator, and Jessionid was found in repository
                 {
 
                     // Token is revoked, that is the logout has effected
@@ -223,9 +226,13 @@ public abstract class AbstractTokenService implements ITokenService {
         }
         return result;
     }
-
     /**
-     * d
+     *
+     */
+    @Autowired
+    private MapSessionRepository sessionRepository;
+    /**
+     *
      *
      * @param tokenValue String
      * @return boolean
@@ -235,8 +242,13 @@ public abstract class AbstractTokenService implements ITokenService {
 
         final Optional<IToken> token = abstractTokenRepository.findTokenByValue(tokenValue);
 
+        // Removing jsessionId
+        sessionRepository.deleteById(token.orElseThrow().getRoot().orElseThrow().getValue());
+
+        // Revoke the token in this application
         abstractTokenRepository.revoke(token.orElseThrow().getValue());
 
+        // Revoke the token in other applications
         final OAuth2Authentication oAuth2Authentication = abstractTokenRepository.readAuthentication(token.orElseThrow().getAccess().orElseThrow().getValue());
 
         token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
@@ -261,7 +273,7 @@ public abstract class AbstractTokenService implements ITokenService {
      * @param name String
      * @return Set<String>
      */
-    public Set<IToken> listTokensByName(final String name){
+    public Set<IToken> listTokensByName(final String name) {
         return abstractTokenRepository.listTokensByName(name);
     }
 

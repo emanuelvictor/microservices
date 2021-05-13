@@ -2,9 +2,13 @@ package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.services.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.session.SessionRepositoryUnavailableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.context.HttpRequestResponseHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +31,7 @@ public class CustomLogoutHandler implements LogoutHandler {
     @Override
     public void logout(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse, final Authentication authentication) {
         if (authentication != null && authentication.getDetails() != null && authentication.getDetails() instanceof WebAuthenticationDetails)
-            tokenService.revokeToken(((WebAuthenticationDetails) authentication.getDetails()).getSessionId());
+            if (((WebAuthenticationDetails) authentication.getDetails()).getSessionId() != null)
+                tokenService.revokeToken(((WebAuthenticationDetails) authentication.getDetails()).getSessionId());
     }
 }

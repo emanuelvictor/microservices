@@ -1,9 +1,9 @@
-import {IWrite} from '../interfaces/IWrite';
-import {IRead} from '../interfaces/IRead';
-import {HttpClient} from '@angular/common/http';
-import {PageSerialize} from '../../page-serialize/page-serialize';
-import {Observable} from 'rxjs';
-import {environment} from "../../../../environments/environment";
+import { IWrite } from '../interfaces/IWrite';
+import { IRead } from '../interfaces/IRead';
+import { HttpClient } from '@angular/common/http';
+import { PageSerialize } from '../../page-serialize/page-serialize';
+import { Observable } from 'rxjs';
+import { environment } from "../../../../environments/environment";
 
 
 export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {

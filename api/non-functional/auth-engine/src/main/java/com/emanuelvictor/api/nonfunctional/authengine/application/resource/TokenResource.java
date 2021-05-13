@@ -5,6 +5,7 @@ import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domai
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.DefaultSessionAttributeStore;
 
 import java.util.Set;
 
@@ -22,6 +23,16 @@ public class TokenResource {
     private final TokenService tokenService;
 
     /**
+     * Todo falha de segurança, deve ter preauthorize
+     */
+    @DeleteMapping("{token}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable final String token) {
+        tokenService.revokeToken(token);
+    }
+
+    /**
+     * Todo falha de segurança, deve ter preauthorize
      *
      */
     @GetMapping("{name}")

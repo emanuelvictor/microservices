@@ -32,6 +32,7 @@ public class TokenService {
      * @param token String
      */
     public void revoke(final String token) {
+        // Black list
         ((JwtTokenStore) this.tokenStore).revoke(token);
     }
 

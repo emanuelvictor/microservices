@@ -21,16 +21,16 @@ public class TokenResource {
     private final TokenService tokenService;
 
     /**
-     *
+     * todo deve ter preauthorize
      */
-    @DeleteMapping("/revoke/{token}")
+    @DeleteMapping("{token}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final String token) {
         tokenService.revoke(token);
     }
 
     /**
-     *
+     * todo deve ter preauthorize
      */
     @GetMapping("{name}")
     @ResponseStatus(HttpStatus.OK)

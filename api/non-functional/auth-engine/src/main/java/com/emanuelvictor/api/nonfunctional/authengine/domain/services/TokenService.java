@@ -4,10 +4,9 @@ import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domai
 import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.services.AbstractTokenService;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.session.MapSessionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Set;
 
 
 /**

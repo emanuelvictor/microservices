@@ -39,7 +39,7 @@ export class Interceptor implements HttpInterceptor {
    * @returns {Observable<HttpEvent<>>}
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+console.log('intercept')
     this.progress.start();
 
     if (this.authenticationService.access && this.authenticationService.access.access_token)
