@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
 
     /**
-     * TODO remover
+     * TODO remover?
      */
     private String name;
 

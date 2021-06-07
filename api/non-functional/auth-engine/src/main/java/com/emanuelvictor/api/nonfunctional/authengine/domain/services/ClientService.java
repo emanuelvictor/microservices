@@ -48,7 +48,7 @@ public class ClientService implements ClientDetailsService {
         if (clientId.equals(env.getProperty("oauth.clientId"))) {
             return new ClientBuilder()
                     .withClientId(env.getProperty("oauth.clientId"))
-                    .withRedirectUris("http://localhost:8081/login", "http://localhost:8084/api/logged", "http://localhost:8080/access-manager/api/logged", "http://localhost:8084/api/test") //TODO api/test
+                    .withRedirectUris("http://localhost:8081/login"/*, "http://localhost:8080/access-manager/api/logged"*/)
                     .withScoped(false)
                     .withClientSecret(passwordEncoder.encode(env.getProperty("oauth.clientSecret")))
                     .withScope("root")

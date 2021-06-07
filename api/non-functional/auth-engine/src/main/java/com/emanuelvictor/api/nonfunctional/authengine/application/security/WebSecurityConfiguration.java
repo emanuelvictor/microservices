@@ -30,7 +30,7 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableSpringHttpSession // It's required only to session repository, that is, only to removing jsessionid from session repository.
-//@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     /**

@@ -24,10 +24,11 @@ public class TokenResource {
     private final TokenService tokenService;
 
     /**
-     * Todo falha de segurança, deve ter preauthorize
+     * @param token String
      */
     @DeleteMapping("{token}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAnyAuthority('root/access-manager/sessions/delete')")
     public void delete(@PathVariable final String token) {
         tokenService.revokeToken(token);
     }

@@ -117,8 +117,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 
     /**
-     * TODO tornar um bean gerenciável
-     * @return
+     * @return CorsConfigurationSource
      */
     public static CorsConfigurationSource corsConfigurationSource() {
 
