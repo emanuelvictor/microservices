@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,4 +29,18 @@ public interface ITokenFeignRepository {
     @DeleteMapping("{token}")
     void revoke(@PathVariable("token") final String token);
 
+    /*Dedicated to tests of the scope of the application. Client Credentials tests*/
+
+    /**
+     *
+     * @return ResponseEntity<String>
+     */
+    @GetMapping("must-return-403")
+    ResponseEntity<String> mustReturn403();
+
+    /**
+     * @return ResponseEntity<String>
+     */
+    @GetMapping("must-return-200")
+    ResponseEntity<String> mustReturn200();
 }

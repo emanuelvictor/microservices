@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.application.resource;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -36,6 +37,29 @@ public class TokenResource {
     @ResponseStatus(HttpStatus.OK)
     public Set<Object> findTokenByName(@PathVariable final String name) {
         return tokenService.findTokenByName(name);
+    }
+
+    /*Dedicated to tests of the scope of the application. Client Credentials tests*/
+
+    /**
+     * @return ResponseEntity<String>
+     */
+    @GetMapping("must-return-403")
+    @ResponseStatus(HttpStatus.OK)
+//    @PreAuthorize("#oauth2.hasScope('root/access-manager/sessions/get')")
+    public ResponseEntity<String> mustReturn403() {
+        return tokenService.mustReturn403();
+    }
+
+    /**
+     * To test of the access
+     *
+     * @return StringBuffer
+     */
+    @GetMapping("must-return-200")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> mustReturn200() {
+        return tokenService.mustReturn200();
     }
 
 }

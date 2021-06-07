@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.services;
 import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign.ITokenFeignRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +43,22 @@ public class TokenService {
      */
     public Set<Object> findTokenByName(final String name) {
         return tokenFeignRepository.findTokenByName(name);
+    }
+
+    /*Dedicated to tests of the scope of the application. Client Credentials tests*/
+
+    /**
+     *
+     * @return ResponseEntity<String>
+     */
+    public ResponseEntity<String> mustReturn403() {
+        return tokenFeignRepository.mustReturn403();
+    }
+
+    /**
+     * @return ResponseEntity<String>
+     */
+    public ResponseEntity<String> mustReturn200() {
+        return tokenFeignRepository.mustReturn200();
     }
 }

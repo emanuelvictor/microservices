@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.session.MapSessionRepository;
@@ -14,14 +17,17 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 31/01/2020
  */
-@Order(1)
+@Order(20)
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 @RequiredArgsConstructor
 @EnableSpringHttpSession // It's required only to session repository, that is, only to removing jsessionid from session repository.
 //@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
@@ -68,6 +74,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().antMatchers("/oauth/authorize");
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -76,19 +87,95 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
+
         http
                 .sessionManagement().sessionFixation().none()
+
                 .and()
-                .csrf()
-                .disable()
+
+                .requestMatchers()
+                .antMatchers("/" , "/ui/**", "/login", "/oauth/authorize")
+                .and()
                 .authorizeRequests()
-                .antMatchers("/**"/*, "/login", "/oauth/authorize"*/)
-                .permitAll()
-                .and().formLogin()
+                .antMatchers("/").permitAll()
+                .antMatchers("/ui/public/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .addLogoutHandler(customLogoutHandler)
-                .permitAll().and().logout().permitAll();
+                .formLogin().permitAll()
+        ;
+
+
+//        http
+//                .sessionManagement().sessionFixation().none()
+//                .and()
+//                .csrf()
+//                .disable()
+//
+////                .authorizeRequests()
+////                .antMatchers("/tokens/**")
+////                .authenticated()
+////
+////                .and()
+////
+////                .antMatcher("/oauth/")
+////                .authorizeRequests()
+////                .antMatchers("/oauth/token","/oauth/token_key","/oauth/check_token")
+////                .permitAll()
+////
+////                .and()
+////
+////                .antMatcher("/oauth/**")
+////                .authorizeRequests()
+////                .antMatchers("/oauth/authorize","/oauth/authorize/**")
+////                .authenticated()
+////
+////                .and()
+////
+////                .antMatcher("/oauth/authorize")
+////                .authorizeRequests()
+////                .antMatchers("/login")
+////                .permitAll()
+////
+////                .and()
+//
+//                .antMatcher("/login")
+//                .authorizeRequests()
+//
+//                .antMatchers("/**")
+//                .permitAll()
+//
+//
+//                .and()
+////
+////                .antMatcher("/oauth/**")
+////                .authorizeRequests()
+////                .antMatchers("/authorize", "/tokens")
+////                .permitAll()
+////
+////                .and()
+//
+//
+//
+//                .formLogin()
+//                .and()
+//                .logout()
+//                .logoutUrl("/logout")
+//                .addLogoutHandler(customLogoutHandler)
+//                .permitAll().and().logout().permitAll();
+//
+////        http
+////                .sessionManagement().sessionFixation().none()
+////                .and()
+////                .csrf()
+////                .disable()
+////                .authorizeRequests()
+////                .antMatchers("/**"/*, "/login", "/oauth/authorize"*/)
+////                .permitAll()
+////                .and().formLogin()
+////                .and()
+////                .logout()
+////                .logoutUrl("/logout")
+////                .addLogoutHandler(customLogoutHandler)
+////                .permitAll().and().logout().permitAll();
     }
 }

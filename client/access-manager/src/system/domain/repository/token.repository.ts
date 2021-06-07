@@ -30,8 +30,8 @@ export class TokenRepository extends BaseRepository<Token> {
   * @param token
   */
   revoke(token: string): Promise<any> {
-    return this.httpClient.delete<any>('http://localhost:8080/auth-engine/tokens/' + token).toPromise()
-    // return this.deleteData('http://localhost:8081/tokens/' + token);
+    //return this.httpClient.delete<any>('http://localhost:8080/auth-engine/tokens/' + token).toPromise()
+    return this.deleteData('http://localhost:8081/tokens/' + token);
   }
 
   deleteData(url) {
