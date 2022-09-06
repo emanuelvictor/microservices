@@ -1,28 +1,42 @@
 package com.emanuelvictor.api.functional.assessment;
 
 import com.emanuelvictor.api.functional.assessment.domain.entities.Alternative;
-import com.emanuelvictor.api.functional.assessment.domain.entities.Unity;
+import com.emanuelvictor.api.functional.assessment.domain.entities.Option;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class AssessmentApplicationTests {
 
     @Test
     void contextLoads() {
 
-        final Unity client = new Unity("Bubblemix Tea");
-        final Alternative alternative = new Alternative("Selecione a unidade?", client);
-
-        final Unity big = new Unity("BIG - Foz do Iguaçu");
-        final Alternative atendimento = new Alternative("Selecione o nível do atendimento", big, alternative);
+        // Client
+        final Option client1 = new Option("Bubblemix Tea");
+        final Alternative clientSelected = new Alternative("Selecione a unidade?", client1);
 
 
+        // Unities
+        final Option unity1 = new Option("BIG - Foz do Iguaçu");
+        final Alternative unity1Selected = new Alternative("Por quem você foi atendimento?", unity1, clientSelected);
+        final Option unity2 = new Option("Catuaí Palladium - Foz do Iguaçu");
+        final Alternative unity2Selected = new Alternative("Por quem você foi atendimento?", unity2, clientSelected);
 
-        final Unity unity2 = new Unity("Catuaí Palladium - Foz do Iguaçu");
-        final Alternative alternative2 = new Alternative("Selecione o sabor para avaliação", big, alternative);
-        final Unity unity3 = new Unity("Iguatemi - Curitiba");
-        final Alternative alternative3 = new Alternative("Selecione o local para avaliação", big, alternative);
+        // Options
+        final Option person1 = new Option("Andressa");
+        final Alternative alternativePerson1 = new Alternative("Como você avalia o atendimento?", person1, unity1Selected);
+        final Option person2 = new Option("Marta");
+        final Alternative alternativePerson2 = new Alternative("Como você avalia o atendimento?", person2, unity1Selected);
+        final Option person3 = new Option("Roberto");
+        final Alternative alternativePerson3 = new Alternative("Como você avalia o atendimento?", person3, unity1Selected);
+
+        final Option person4 = new Option("Edson");
+        final Alternative alternativePerson4 = new Alternative("Como você avalia o atendimento?", person4, unity2Selected);
+        final Option person5 = new Option("Valdir");
+        final Alternative alternativePerson5 = new Alternative("Como você avalia o atendimento?", person5, unity2Selected);
+        final Option person6 = new Option("Vilma");
+        final Alternative alternativePerson6 = new Alternative("Como você avalia o atendimento?", person6, unity2Selected);
+
+
+
 
     }
 

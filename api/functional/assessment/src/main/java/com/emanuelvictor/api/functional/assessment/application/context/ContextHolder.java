@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.assessment.application.context;
 
-import com.emanuelvictor.api.functional.assessment.domain.entities.Unity;
+import com.emanuelvictor.api.functional.assessment.domain.entities.Option;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,11 +18,11 @@ public class ContextHolder {
     /**
      * @return {User}
      */
-    public static Unity getAuthenticatedUser() {
+    public static Option getAuthenticatedUser() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof Unity) {
-            return (Unity) authentication.getPrincipal();
+        if (authentication != null && authentication.getPrincipal() instanceof Option) {
+            return (Option) authentication.getPrincipal();
         }
 
         throw new AuthenticationCredentialsNotFoundException("O usuário não está autenticado");
@@ -45,7 +45,7 @@ public class ContextHolder {
 
         Assert.isTrue(isAuthenticated(), "O usuário não está autenticado");
 
-        return ((Unity) authentication.getPrincipal()).getId().equals(id);
+        return ((Option) authentication.getPrincipal()).getId().equals(id);
     }
 
 }

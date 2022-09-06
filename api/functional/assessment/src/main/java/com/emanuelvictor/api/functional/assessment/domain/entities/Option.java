@@ -19,7 +19,7 @@ import javax.persistence.Entity;
 @Audited
 @NoArgsConstructor
 @lombok.EqualsAndHashCode(callSuper = true)
-public class Unity extends PersistentEntity {
+public class Option extends PersistentEntity {
 
     /**
      *
@@ -30,7 +30,7 @@ public class Unity extends PersistentEntity {
     /**
      * @param name String
      */
-    public Unity(final String name) {
+    public Option(final String name) {
         this.name = name;
     }
 }

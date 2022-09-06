@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.assessment.domain.services;
 
 import com.emanuelvictor.api.functional.assessment.application.i18n.MessageSourceHolder;
-import com.emanuelvictor.api.functional.assessment.domain.entities.Unity;
+import com.emanuelvictor.api.functional.assessment.domain.entities.Option;
 import com.emanuelvictor.api.functional.assessment.domain.repositories.UnityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class UnityService {
      * @param pageable      Pageable
      * @return Page<User>
      */
-    public Page<Unity> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
+    public Page<Option> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
         return unityRepository.findAll(pageable);
     }
 
@@ -39,33 +39,33 @@ public class UnityService {
      * @return User
      */
     @Transactional(readOnly = true)
-    public Unity findById(final long id) {
+    public Option findById(final long id) {
         return this.unityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", id)));
     }
 
     /**
-     * @param unity User
+     * @param option User
      * @return User
      */
     @Transactional
-    public Unity save(final Unity unity) {
-        return this.unityRepository.save(unity);
+    public Option save(final Option option) {
+        return this.unityRepository.save(option);
     }
 
     /**
-     * @param unity User
+     * @param option User
      * @return User
      */
     @Transactional
-    public Unity save(final long id, final Unity unity) {
+    public Option save(final long id, final Option option) {
 
-        unity.setId(id);
+        option.setId(id);
 
-        final Unity unitySaved = this.unityRepository.findById(unity.getId())
-                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", unity.getId())));
+        final Option optionSaved = this.unityRepository.findById(option.getId())
+                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", option.getId())));
 
-        return this.unityRepository.saveAndFlush(unity);
+        return this.unityRepository.saveAndFlush(option);
     }
 
     /**
@@ -73,14 +73,14 @@ public class UnityService {
      * @return User
      */
     @Transactional
-    public Unity updateEnable(final long id) {
+    public Option updateEnable(final long id) {
 
-        final Unity unitySaved = this.unityRepository.findById(id)
+        final Option optionSaved = this.unityRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", id)));
 
-        Assert.notNull(unitySaved, MessageSourceHolder.getMessage("repository.notFoundById", id));
+        Assert.notNull(optionSaved, MessageSourceHolder.getMessage("repository.notFoundById", id));
 
-        return this.unityRepository.saveAndFlush(unitySaved);
+        return this.unityRepository.saveAndFlush(optionSaved);
     }
 
 }

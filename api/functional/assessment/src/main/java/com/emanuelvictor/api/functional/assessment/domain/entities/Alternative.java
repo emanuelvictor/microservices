@@ -51,7 +51,7 @@ public class Alternative extends PersistentEntity {
      * d
      */
     @ManyToOne(fetch = FetchType.EAGER)
-    private Unity unity;
+    private Option option;
 
     /**
      * @param messageToNext String
@@ -62,11 +62,11 @@ public class Alternative extends PersistentEntity {
 
     /**
      * @param messageToNext String
-     * @param unity         Unity
+     * @param option         Unity
      */
-    public Alternative(final String messageToNext, final Unity unity) {
+    public Alternative(final String messageToNext, final Option option) {
         this(messageToNext);
-        this.unity = unity;
+        this.option = option;
     }
 
     /**
@@ -82,8 +82,8 @@ public class Alternative extends PersistentEntity {
      * @param messageToNext String
      * @param oldChoice     Alternative
      */
-    public Alternative(final String messageToNext, final Unity unity, final Alternative oldChoice) {
-        this(messageToNext, unity);
+    public Alternative(final String messageToNext, final Option option, final Alternative oldChoice) {
+        this(messageToNext, option);
         this.oldChoice = oldChoice;
     }
 }
