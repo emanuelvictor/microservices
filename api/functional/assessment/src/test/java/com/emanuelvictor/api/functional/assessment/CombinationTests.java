@@ -26,14 +26,33 @@ class CombinationTests {
 
     int[] comb(final int[] ints) {
         for (int i = 0; i < ints.length - 1; i++) { // run the counters
+            System.out.println(Arrays.toString(ints));
             for (int j = 1; j < ints.length - i; j++) {
                 // print from the index I to index J + I
                 System.out.print(ints[0]);
                 System.out.println(" | " + Arrays.toString(subArrayInclude(ints, j, j + i)).replace("[", "").replace("]", ""));
             }
-            System.out.println(" ------ ");
         }
         return null;
+    }
+
+    @Test
+    void subArrayIncludeRangeTest() {
+        final int[] ints = new int[]{7, 5, 6, 8, 9};
+        Assertions.assertThat(subArrayIncludeRange(ints, 1, 3)).isEqualTo(new int[]{5,6, 8});
+        Assertions.assertThat(subArrayIncludeRange(ints, 0, 0)).isEqualTo(new int[]{7});
+
+        final int[] ints2 = new int[]{7, 5, 6, 8, 9, 16, 28, 39};
+        Assertions.assertThat(subArrayIncludeRange(ints2, 1, 6)).isEqualTo(new int[]{5, 6, 8, 9, 16, 28});
+        Assertions.assertThat(subArrayIncludeRange(ints2, 0, 0)).isEqualTo(new int[]{7});
+    }
+
+    int[] subArrayIncludeRange(final int[] array, final int from, final int to) {
+        final int[] range = new int[to + 1 - from];
+        for (int i = 0; i < range.length; i++) {
+            range[i] = from + i;
+        }
+        return subArrayInclude(array, range);
     }
 
     @Test
