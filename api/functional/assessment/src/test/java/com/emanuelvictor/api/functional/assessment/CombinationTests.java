@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.assessment;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -18,28 +19,29 @@ class CombinationTests {
     @Test
     void combineTest() {
         int[] alternatives = new int[]{5, 6, 7, 8, 9};
-        int combs = comb(alternatives.length);
-
-        System.out.println("Combinações possíveis: " + combs);
+        long combs = comb(alternatives.length);
 
         Set<Combination> combinations = comb(alternatives);
-        combinations.forEach(System.out::println);
 
         Assertions.assertThat(combinations.size()).isEqualTo(combs);
 
-        alternatives = new int[]{7, 6, 7, 8, 8};
+        Assertions.assertThatThrownBy(() -> comb(new int[]{7, 6, 7, 8, 8}))
+                .isInstanceOf(RuntimeException.class);
+
+        alternatives = new int[]{7, 6, 1, 2, 3, 17, 21};
         combs = comb(alternatives.length);
         combinations = comb(alternatives);
 
-        Assertions.assertThat(combinations.size()).isEqualTo(combs);
-
-        alternatives = new int[]{7, 6, 1, 2, 3, 7, 21, 8, 88, 5, 16, 6, 71, 7, 81, 8, 9, 45};
-        combs = comb(alternatives.length);
+        combinations.forEach(System.out::println);
 
         Assertions.assertThat(combinations.size()).isEqualTo(combs);
     }
 
     static Set<Combination> comb(int[] ints) {
+
+        if(!validate(ints))
+            throw new RuntimeException();
+
         final Set<Combination> combinations = new HashSet<>();
 
         for (int anInt : ints) combinations.add(new Combination(new int[]{anInt}));
@@ -47,8 +49,8 @@ class CombinationTests {
         return comb(subArrayIncludeRange(ints, 0, 0), ints, ints, comb(ints.length), combinations);
     }
 
-
-    static Set<Combination> comb(int[] pivots, int[] range, int[] originals, int totalOfCombinations, final Set<Combination> result) {
+    //TODO we need remove recursively
+    static Set<Combination> comb(int[] pivots, int[] range, int[] originals, long totalOfCombinations, final Set<Combination> result) {
 
         for (int i = 0; i < range.length; i++)
             for (int j = 1; j < range.length - i; j++) {
@@ -69,6 +71,22 @@ class CombinationTests {
         if (pivots.length == originals.length)
             return comb(subArrayIncludeRange(rotate(originals), 0, 0), rotate(originals), rotate(originals), totalOfCombinations, result);
         return comb(subArrayIncludeRange(originals, 0, pivots.length), subArrayIncludeRange(range, 1, range.length - 1), originals, totalOfCombinations, result);
+    }
+
+    @Test
+    void validateTest(){
+        Assertions.assertThat(validate(new int[]{1,2,3,4,5})).isTrue();
+        Assertions.assertThat(validate(new int[]{1,2,5,4,5})).isFalse();
+    }
+
+    static boolean validate(final int[] ints){
+        for (int i = 0; i < ints.length; i++) {
+            for (int j = 0; j < ints.length; j++) {
+                if(j != i && ints[i] == ints[j])
+                    return false;
+            }
+        }
+        return true;
     }
 
     @Test
@@ -354,7 +372,7 @@ class CombinationTests {
      * @param p int
      * @return int
      */
-    static int comb(final int p) {
+    static long comb(final int p) {
         return comb(p, p);
     }
 
@@ -363,7 +381,7 @@ class CombinationTests {
      * @param p int
      * @return int
      */
-    static int comb(final int n, final int p) {
+    static long comb(final int n, final int p) {
         if (p == 1)
             return n;
         if (n == p)
