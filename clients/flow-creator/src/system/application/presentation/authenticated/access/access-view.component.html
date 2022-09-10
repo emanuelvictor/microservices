@@ -1,0 +1,12 @@
+<div layout='row' layout-align='center center' class='nav-menu'>
+
+  <a layout-margin routerLinkActive #rlaFlows='routerLinkActive' [ngClass]="{'menu-active': rlaFlows.isActive}"
+    routerLink='flows'>
+    Meus Fluxos
+  </a>
+
+</div>
+
+<div class='main-content'>
+  <router-outlet></router-outlet>
+</div>
