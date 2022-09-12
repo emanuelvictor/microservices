@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute, RouterState, UrlSegmentGroup, PRIMARY_OUTLET, UrlSegment, UrlTree } from '@angular/router';
-import { AuthenticatedViewComponent } from 'system/application/presentation/authenticated/authenticated-view.component';
+import { AuthenticatedViewComponent } from 'system/presentation/authenticated/authenticated-view.component';
 import { MessageService } from 'system/domain/services/message.service';
 import { BaseRepository } from 'system/infrastructure/repository/base/base.repository';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material';

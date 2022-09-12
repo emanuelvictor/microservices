@@ -3,11 +3,11 @@ import {LoadingMode, LoadingType, TdLoadingService} from '@covalent/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material';
 import {Subscription} from 'rxjs';
-import {MessageService} from '../../../domain/services/message.service';
+import {MessageService} from '../../domain/services/message.service';
 import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from "../../../domain/services/authentication.service";
-import {User} from "../../../domain/entity/user.model";
-import {UserRepository} from "../../../domain/repository/user.repository";
+import {AuthenticationService} from "../../domain/services/authentication.service";
+import {User} from "../../domain/entity/user.model";
+import {UserRepository} from "../../domain/repository/user.repository";
 
 // @ts-ignore
 @Component({

@@ -8,7 +8,7 @@ import {
 } from '@angular/material';
 import {tdCollapseAnimation} from '@covalent/core';
 import {CrudViewComponent} from '../crud-view.component';
-import {debounce} from '../../../utils/debounce';
+import {debounce} from '../../../../infrastructure/utils/debounce';
 // import {
 //   MAT_FORM_FIELD_DEFAULT_OPTIONS,
 //   MatFormFieldDefaultOptions,

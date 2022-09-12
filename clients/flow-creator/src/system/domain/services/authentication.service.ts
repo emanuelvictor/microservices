@@ -4,7 +4,7 @@ import {ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, RouterSta
 import {isNullOrUndefined} from "util";
 import {Observable} from "rxjs";
 import 'rxjs/add/operator/map';
-import {getParameterByName, parseJwt} from "../../application/utils/utils";
+import {getParameterByName, parseJwt} from "../../infrastructure/utils/utils";
 import {Access} from "../../infrastructure/authentication/access";
 import {UserDetails} from "../../infrastructure/authentication/user-details";
 import {User} from "../entity/user.model";

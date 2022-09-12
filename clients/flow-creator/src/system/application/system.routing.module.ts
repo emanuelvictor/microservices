@@ -1,24 +1,24 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AuthenticatedViewComponent} from "../application/presentation/authenticated/authenticated-view.component";
-import {AuthenticationService} from "./services/authentication.service";
-import {ConsultFlowsComponent} from "../application/presentation/authenticated/access/flows/consult-flows/consult-flows.component";
-import {InsertFlowComponent} from "../application/presentation/authenticated/access/flows/insert-flow/insert-flow.component";
-import {UpdateFlowComponent} from "../application/presentation/authenticated/access/flows/update-flow/update-flow.component";
-import {ViewFlowComponent} from "../application/presentation/authenticated/access/flows/view-flow/view-flow.component";
-import {FlowsViewComponent} from "../application/presentation/authenticated/access/flows/flows-view.component";
-import {AccessViewComponent} from "../application/presentation/authenticated/access/access-view.component";
+import {AuthenticatedViewComponent} from "../presentation/authenticated/authenticated-view.component";
+import {AuthenticationService} from "../domain/services/authentication.service";
+import {ConsultFlowsComponent} from "../presentation/authenticated/flows/flows/consult-flows/consult-flows.component";
+import {InsertFlowComponent} from "../presentation/authenticated/flows/flows/insert-flow/insert-flow.component";
+import {UpdateFlowComponent} from "../presentation/authenticated/flows/flows/update-flow/update-flow.component";
+import {ViewFlowComponent} from "../presentation/authenticated/flows/flows/view-flow/view-flow.component";
+import {FlowsViewComponent} from "../presentation/authenticated/flows/flows/flows-view.component";
+import {FlowMenuViewComponent} from "../presentation/authenticated/flows/flow-menu-view.component";
 
 const routes: Routes = [
   {
     path: '', component: AuthenticatedViewComponent, canActivate: [AuthenticationService],
     children: [
       {
-        path: '', redirectTo: 'access', pathMatch: 'full',
+        path: '', redirectTo: 'flows', pathMatch: 'full',
       },
       {
-        path: 'access',
-        component: AccessViewComponent,
+        path: 'flows',
+        component: FlowMenuViewComponent,
         children: [
           {
             path: '', redirectTo: 'flows/insert', pathMatch: 'full',

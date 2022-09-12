@@ -19,42 +19,42 @@ import { EntityFormComponent } from 'system/application/controls/crud/cadastros/
 import { FormToolbarComponent } from 'system/application/controls/crud/cadastros/form-toolbar/form-toolbar.component';
 import { ListTableComponent } from 'system/application/controls/crud/cadastros/list-table/list-table.component';
 import { NoRecordsFoundComponent } from "system/application/controls/no-records-found/no-records-found.component";
-import { ConsultFlowsComponent } from 'system/application/presentation/authenticated/access/flows/consult-flows/consult-flows.component';
-import { FlowsViewComponent } from 'system/application/presentation/authenticated/access/flows/flows-view.component';
-import { InsertFlowComponent } from 'system/application/presentation/authenticated/access/flows/insert-flow/insert-flow.component';
-import { UpdateFlowComponent } from 'system/application/presentation/authenticated/access/flows/update-flow/update-flow.component';
-import { ViewFlowComponent } from 'system/application/presentation/authenticated/access/flows/view-flow/view-flow.component';
+import { ConsultFlowsComponent } from 'system/presentation/authenticated/flows/flows/consult-flows/consult-flows.component';
+import { FlowsViewComponent } from 'system/presentation/authenticated/flows/flows/flows-view.component';
+import { InsertFlowComponent } from 'system/presentation/authenticated/flows/flows/insert-flow/insert-flow.component';
+import { UpdateFlowComponent } from 'system/presentation/authenticated/flows/flows/update-flow/update-flow.component';
+import { ViewFlowComponent } from 'system/presentation/authenticated/flows/flows/view-flow/view-flow.component';
 import { SharedModule } from '../../shared/shared.module';
-import { CrudViewComponent } from '../application/controls/crud/crud-view.component';
-import { DetailPageComponent } from '../application/controls/crud/detail/detail-page.component';
-import { FormPageComponent } from '../application/controls/crud/form/form-page.component';
-import { ListPageComponent } from '../application/controls/crud/list/list-page.component';
-import { DataComponent } from "../application/controls/data/data.component";
-import { DocumentoPipe } from "../application/controls/documento-pipe/documento-pipe";
-import { EvDatepicker } from "../application/controls/ev-datepicker/ev-datepicker";
-import { NoSubmitDirective } from "../application/controls/no-sumbit/no-submit.directive";
-import { EmConstrucaoComponent } from "../application/controls/not-found/em-construcao.component";
-import { FilterPipe } from "../application/controls/pipes/filter.pipe";
-import { UserInitialsPipe } from "../application/controls/pipes/user-initials.pipe";
-import { CnpjValidator, CpfValidator } from "../application/controls/validators/validators";
-import { Describer } from '../application/describer/describer';
-import { HasPermissionDirective } from "../application/has-permission/has-permission";
-import { Interceptor } from '../application/interceptor/interceptor';
-import { AccessViewComponent } from "../application/presentation/authenticated/access/access-view.component";
-import { AuthenticatedViewComponent } from '../application/presentation/authenticated/authenticated-view.component';
-import { SystemComponent } from "../application/presentation/system.component";
-import { FirstUppercasePipe } from "../application/utils/utils";
-import { ApplicationRepository } from "./repository/application.repository";
-import { GroupRepository } from "./repository/group.repository";
-import { PermissionRepository } from "./repository/permission.repository";
-import { TokenRepository } from "./repository/token.repository";
-import { UserRepository } from "./repository/user.repository";
-import { AuthenticationService } from './services/authentication.service';
-import { DialogService } from './services/dialog.service';
-import { MessageService } from './services/message.service';
-import { PaginationService } from './services/pagination.service';
-import { getPaginatorIntl } from './services/portuguese-paginator-intl';
-import { WildcardService } from './services/wildcard.service';
+import { CrudViewComponent } from './controls/crud/crud-view.component';
+import { DetailPageComponent } from './controls/crud/detail/detail-page.component';
+import { FormPageComponent } from './controls/crud/form/form-page.component';
+import { ListPageComponent } from './controls/crud/list/list-page.component';
+import { DataComponent } from "./controls/data/data.component";
+import { DocumentoPipe } from "./controls/documento-pipe/documento-pipe";
+import { EvDatepicker } from "./controls/ev-datepicker/ev-datepicker";
+import { NoSubmitDirective } from "./controls/no-sumbit/no-submit.directive";
+import { EmConstrucaoComponent } from "./controls/not-found/em-construcao.component";
+import { FilterPipe } from "./controls/pipes/filter.pipe";
+import { UserInitialsPipe } from "./controls/pipes/user-initials.pipe";
+import { CnpjValidator, CpfValidator } from "./controls/validators/validators";
+import { Describer } from '../infrastructure/describer/describer';
+import { HasPermissionDirective } from "../infrastructure/has-permission/has-permission";
+import { Interceptor } from './interceptor/interceptor';
+import { FlowMenuViewComponent } from "../presentation/authenticated/flows/flow-menu-view.component";
+import { AuthenticatedViewComponent } from '../presentation/authenticated/authenticated-view.component';
+import { SystemComponent } from "../presentation/system.component";
+import { FirstUppercasePipe } from "../infrastructure/utils/utils";
+import { ApplicationRepository } from "../domain/repository/application.repository";
+import { GroupRepository } from "../domain/repository/group.repository";
+import { PermissionRepository } from "../domain/repository/permission.repository";
+import { TokenRepository } from "../domain/repository/token.repository";
+import { UserRepository } from "../domain/repository/user.repository";
+import { AuthenticationService } from '../domain/services/authentication.service';
+import { DialogService } from '../domain/services/dialog.service';
+import { MessageService } from '../domain/services/message.service';
+import { PaginationService } from '../domain/services/pagination.service';
+import { getPaginatorIntl } from '../domain/services/portuguese-paginator-intl';
+import { WildcardService } from '../domain/services/wildcard.service';
 import { SystemRoutingModule } from "./system.routing.module";
 
 const appearance: MatFormFieldDefaultOptions = {
@@ -107,7 +107,7 @@ export function customTranslateLoader(http: HttpClient) {
     EntityFormComponent,
 
     // Configuracoes
-    AccessViewComponent,
+    FlowMenuViewComponent,
 
     // Flows
     FlowsViewComponent,
@@ -161,7 +161,7 @@ export function customTranslateLoader(http: HttpClient) {
     PaginationService,
     AuthenticationService,
 
-    AccessViewComponent,
+    FlowMenuViewComponent,
 
     DialogService,
     MessageService,

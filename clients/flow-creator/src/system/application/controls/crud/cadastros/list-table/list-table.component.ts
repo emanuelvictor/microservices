@@ -8,7 +8,7 @@ import {
   MatSort
 } from '@angular/material';
 import {tdCollapseAnimation} from '@covalent/core';
-import {debounce} from 'system/application/utils/debounce';
+import {debounce} from 'system/infrastructure/utils/debounce';
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'

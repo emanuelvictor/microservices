@@ -58,7 +58,7 @@ import {DeleteDialogComponent} from "../system/application/controls/delete-dialo
 import {CapitalizePipe} from "../system/application/controls/pipes/capitalize.pipe";
 import {HorizontalSpaceComponent} from "../system/application/controls/horizontal-space.component";
 import {VerticalSpaceComponent} from "../system/application/controls/vertical-space.component";
-import {FocusOnInitDirective} from "../system/application/utils/focus-on-init.directive";
+import {FocusOnInitDirective} from "../system/infrastructure/utils/focus-on-init.directive";
 import {DragDropModule} from '@angular/cdk/drag-drop';
 
 /**
