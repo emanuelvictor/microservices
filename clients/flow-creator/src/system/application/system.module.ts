@@ -44,18 +44,21 @@ import { FlowMenuViewComponent } from "../presentation/authenticated/flows/flow-
 import { AuthenticatedViewComponent } from '../presentation/authenticated/authenticated-view.component';
 import { SystemComponent } from "../presentation/system.component";
 import { FirstUppercasePipe } from "../infrastructure/utils/utils";
-import { ApplicationRepository } from "../domain/repository/application.repository";
-import { GroupRepository } from "../domain/repository/group.repository";
-import { PermissionRepository } from "../domain/repository/permission.repository";
-import { TokenRepository } from "../domain/repository/token.repository";
-import { UserRepository } from "../domain/repository/user.repository";
-import { AuthenticationService } from '../domain/services/authentication.service';
+import { OptionRepository } from "../domain/repository/option.repository";
 import { DialogService } from '../domain/services/dialog.service';
 import { MessageService } from '../domain/services/message.service';
 import { PaginationService } from '../domain/services/pagination.service';
 import { getPaginatorIntl } from '../domain/services/portuguese-paginator-intl';
 import { WildcardService } from '../domain/services/wildcard.service';
 import { SystemRoutingModule } from "./system.routing.module";
+import { ConsultOptionsComponent } from "system/presentation/authenticated/flows/options/consult-options/consult-options.component";
+import { OptionFormComponent } from "system/presentation/authenticated/flows/options/insert-option/option-form/option-form.component";
+import { OptionDetailComponent } from "system/presentation/authenticated/flows/options/option-detail/option-detail.component";
+import { UpdateOptionComponent } from "system/presentation/authenticated/flows/options/update-option/update-option.component";
+import { InsertOptionComponent } from "system/presentation/authenticated/flows/options/insert-option/insert-option.component";
+import { OptionsViewComponent } from "system/presentation/authenticated/flows/options/options-view.component";
+import { FlowRepository } from "system/domain/repository/flow.repository";
+import { FlowFormComponent } from "system/presentation/authenticated/flows/flows/insert-flow/flow-form/flow-form.component";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -106,7 +109,7 @@ export function customTranslateLoader(http: HttpClient) {
     ListTableComponent,
     EntityFormComponent,
 
-    // Configuracoes
+    // Flow Menu
     FlowMenuViewComponent,
 
     // Flows
@@ -115,6 +118,15 @@ export function customTranslateLoader(http: HttpClient) {
     UpdateFlowComponent,
     InsertFlowComponent,
     ViewFlowComponent,
+    FlowFormComponent,
+
+    // Options
+    OptionsViewComponent,
+    UpdateOptionComponent,
+    OptionDetailComponent,
+    InsertOptionComponent,
+    OptionFormComponent,
+    ConsultOptionsComponent,
 
     DataComponent,
 
@@ -149,17 +161,13 @@ export function customTranslateLoader(http: HttpClient) {
   providers: [
 
     // Repositories
-    UserRepository,
-    PermissionRepository,
-    ApplicationRepository,
-    GroupRepository,
-    TokenRepository,
+    FlowRepository,
+    OptionRepository,
 
     // Services
     Describer,
     WildcardService,
     PaginationService,
-    AuthenticationService,
 
     FlowMenuViewComponent,
 
@@ -178,8 +186,8 @@ export function customTranslateLoader(http: HttpClient) {
     },
 
     // Internacionalizacao MatPaginator
-    {provide: MatPaginatorIntl, useValue: getPaginatorIntl()},
-    {provide: LOCALE_ID, useValue: 'pt-BR'}
+    { provide: MatPaginatorIntl, useValue: getPaginatorIntl() },
+    { provide: LOCALE_ID, useValue: 'pt-BR' }
   ],
   bootstrap: [SystemComponent]
 })

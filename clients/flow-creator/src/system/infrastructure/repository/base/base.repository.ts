@@ -8,6 +8,8 @@ import { environment } from "../../../../environments/environment";
 
 export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
 
+  private data: T[] = [];
+
   public collectionName: string = environment.api + '/';
 
   constructor(public httpClient: HttpClient, public collection: string) {
@@ -21,7 +23,11 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     const aux: any = item;
     if (aux.id)
       return this.update(aux.id, item);
-    return this.httpClient.post<T>(this.collectionName, item).toPromise();
+
+    this.data.push(item);
+    return new Promise(function (resolve, reject) {
+      resolve(item)
+    })
   }
 
   update(id: number, item: T): Promise<T> {
@@ -37,11 +43,8 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
   }
 
   listByFilters(pageable: any): Observable<any> {
-
-    const params = PageSerialize.getHttpParamsFromPageable(pageable);
-
-    return this.httpClient.get(this.collectionName, {
-      params: params
+    return new Observable(observer => {
+      observer.next(this.data)
     })
 
   }

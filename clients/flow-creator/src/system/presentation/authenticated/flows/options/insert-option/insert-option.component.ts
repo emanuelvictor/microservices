@@ -1,17 +1,16 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { FlowRepository } from 'system/domain/repository/flow.repository';
 import { OptionRepository } from 'system/domain/repository/option.repository';
 import { MessageService } from 'system/domain/services/message.service';
-import { AuthenticatedViewComponent } from 'system/presentation/authenticated/authenticated-view.component';
+import { AuthenticatedViewComponent } from '../../../authenticated-view.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 // @ts-ignore
 @Component({
-  selector: 'insert-flow',
-  templateUrl: 'insert-flow.component.html',
-  styleUrls: ['../flows.component.scss']
+  selector: 'insert-option',
+  templateUrl: 'insert-option.component.html',
+  styleUrls: ['../options.component.scss']
 })
-export class InsertFlowComponent {
+export class InsertOptionComponent {
 
   /**
    *
@@ -23,14 +22,14 @@ export class InsertFlowComponent {
    * @param router
    * @param homeView AuthenticatedViewComponent
    * @param messageService MessageService
-   * @param flowRepository FlowRepository
+   * @param optionRepository OptionRepository
    */
   constructor(private router: Router,
               private messageService: MessageService,
-              private flowRepository: FlowRepository,
+              private optionRepository: OptionRepository,
               private homeView: AuthenticatedViewComponent) {
 
-    homeView.toolbar.subhead = 'Fluxo / Adicionar'
+    homeView.toolbar.subhead = 'Opção / Adicionar'
 
   }
 
@@ -41,9 +40,9 @@ export class InsertFlowComponent {
       return;
     }
 
-    this.flowRepository.save(this.entity)
+    this.optionRepository.save(this.entity)
       .then(() => {
-        this.router.navigate(['flows/flows']);
+        this.router.navigate(['flows/options']);
         this.messageService.toastSuccess()
       })
   }

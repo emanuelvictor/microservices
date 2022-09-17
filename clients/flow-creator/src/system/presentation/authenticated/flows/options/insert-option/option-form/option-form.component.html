@@ -1,0 +1,61 @@
+<form [formGroup]='form' (ngSubmit)='saveEntity(form)' novalidate>
+
+  <!--toolbar div-->
+  <ng-content select='[toolbar]'></ng-content>
+
+  <mat-card id='default-form'>
+    <div layout='row'>
+
+      <mat-form-field flex>
+        <mat-label>Nome</mat-label>
+        <input formControlName='name' matInput 
+        placeholder='Nome' required id='name' name='name'
+          [(ngModel)]='entity.name' maxlength='50' />
+        <mat-error>
+          Esse campo é obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <horizontal-space></horizontal-space>
+
+      <mat-form-field>
+        <mat-label>Tipo</mat-label>
+        <mat-select [(ngModel)]="entity.type" (change)="eventSelection($event.value)" [ngModelOptions]="{standalone: true}">
+          <mat-option value="critery">Critério</mat-option>
+          <mat-option value="person">Pessoa</mat-option>
+          <mat-option value="level">Nível</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    <vertical-space *ngIf="entity?.type == 'person'"></vertical-space>
+
+    <div layout='row' *ngIf="entity?.type == 'person'">
+
+      avatar 
+
+      <horizontal-space></horizontal-space>
+
+      deve ter acesso ?
+
+    </div>
+
+    <vertical-space *ngIf="entity?.type == 'critery'"></vertical-space>
+
+    <div layout='row' *ngIf="entity?.type == 'critery'">
+
+      foto 
+
+    </div>
+
+    <vertical-space *ngIf="entity?.type == 'level'"></vertical-space>
+
+    <div layout='row' *ngIf="entity?.type == 'level'">
+
+      imagem
+
+    </div>
+
+  </mat-card>
+</form>

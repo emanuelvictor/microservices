@@ -1,7 +1,6 @@
-import { Component, ViewChild } from "@angular/core";
-import { MatTableDataSource } from "@angular/material";
+import {Component, ViewChild} from "@angular/core";
+import {MatTableDataSource} from "@angular/material";
 import { ListPageComponent } from "system/application/controls/crud/list/list-page.component";
-import { FlowRepository } from "system/domain/repository/flow.repository";
 import { OptionRepository } from "system/domain/repository/option.repository";
 import { DialogService } from "system/domain/services/dialog.service";
 import { MessageService } from "system/domain/services/message.service";
@@ -10,11 +9,11 @@ import { handlePageable } from "system/infrastructure/utils/handle-data-table";
 
 // @ts-ignore
 @Component({
-  selector: 'consult-flows',
-  templateUrl: 'consult-flows.component.html',
-  styleUrls: ['../flows.component.scss']
+  selector: 'consult-options',
+  templateUrl: 'consult-options.component.html',
+  styleUrls: ['../options.component.scss']
 })
-export class ConsultFlowsComponent  /*implements OnInit */ {
+export class ConsultOptionsComponent /*implements OnInit */ {
 
   // Bind com o component ListPageComponent
   @ViewChild(ListPageComponent, {static : true})
@@ -45,12 +44,12 @@ export class ConsultFlowsComponent  /*implements OnInit */ {
    * @param dialogService {DialogService}
    * @param paginationService {PaginationService}
    * @param messageService {MessageService}
-   * @param flowRepository {OptionRepository}
+   * @param optionRepository {OptionRepository}
    */
   constructor(private dialogService: DialogService,
               paginationService: PaginationService,
               private messageService: MessageService,
-              private flowRepository: FlowRepository) {
+              private optionRepository: OptionRepository) {
 
     this.displayedColumns.push('acoes');
     this.pageable = paginationService.pageable('name');
@@ -89,7 +88,7 @@ export class ConsultFlowsComponent  /*implements OnInit */ {
     const pageable = handlePageable(hasAnyFilter, (this.option as any).paginator, this.pageable);
     pageable.defaultFilter = (this.option as any).filters.defaultFilter;
 
-    this.flowRepository.listByFilters(pageable)
+    this.optionRepository.listByFilters(pageable)
       .subscribe(result => {
         this.dataSource = new MatTableDataSource(result)
       });
@@ -101,14 +100,14 @@ export class ConsultFlowsComponent  /*implements OnInit */ {
    */
   public openDeleteDialog(option) {
 
-    this.dialogService.confirmDelete(option, 'FLUXO')
+    this.dialogService.confirmDelete(option, 'OPÇÃO')
       .then((accept: boolean) => {
 
         if (accept) {
-          this.flowRepository.delete(option.id)
+          this.optionRepository.delete(option.id)
             .then(() => {
               this.listByFilters();
-              this.messageService.toastSuccess('Fluxo excluída com sucesso')
+              this.messageService.toastSuccess('Opção excluída com sucesso')
             });
         }
       });

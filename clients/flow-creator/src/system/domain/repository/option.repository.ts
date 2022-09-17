@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {BaseRepository} from "../../infrastructure/repository/base/base.repository";
 import {HttpClient} from "@angular/common/http";
-import {Permission} from "../entity/permission.model";
+import {Option} from "../entity/option.model";
 
 @Injectable()
-export class PermissionRepository extends BaseRepository<Permission> {
+export class OptionRepository extends BaseRepository<Option> {
 
   constructor(httpClient: HttpClient) {
-    super(httpClient, 'access-manager/permissions');
+    super(httpClient, 'flows/options');
   }
+
 }

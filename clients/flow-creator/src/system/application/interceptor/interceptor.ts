@@ -9,8 +9,6 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse} from
 import {Router} from '@angular/router';
 import {MessageService} from '../../domain/services/message.service';
 import {MatSnackBar} from "@angular/material";
-import {AuthenticationService} from "../../domain/services/authentication.service";
-import {Access} from "../../infrastructure/authentication/access";
 
 @Injectable()
 export class Interceptor implements HttpInterceptor {
@@ -28,7 +26,6 @@ export class Interceptor implements HttpInterceptor {
    * @param router
    */
   constructor(private messageService: MessageService,
-              private authenticationService: AuthenticationService,
               private router: Router, private snackBar: MatSnackBar) {
   }
 
@@ -90,19 +87,16 @@ export class Interceptor implements HttpInterceptor {
 
         // Invalid refresh token handler
         if (res.error.error && res.error.error === 'invalid_grant' && res.error.error_description && res.error.error_description.indexOf('nvalid refresh token') > 0) {
-          this.authenticationService.authorizationCode(window.location.href.substring(window.location.href.indexOf('#/') + 1, window.location.href.length))
           return this.innerHandler(res)
         }
 
         // Invalid access token error
         if (res.error.error && res.error.error === 'invalid_token' && res.error.error_description && res.error.error_description.indexOf('nvalid access token') > 0) {
-          this.authenticationService.authorizationCode(window.location.href.substring(window.location.href.indexOf('#/') + 1, window.location.href.length))
           return this.innerHandler(res)
         }
 
         // Invalid access token error
         if (res.error.error && res.error.error === 'invalid_token' && res.error.error_description && res.error.error_description.indexOf('revoked') > 0) {
-          this.authenticationService.authorizationCode(window.location.href.substring(window.location.href.indexOf('#/') + 1, window.location.href.length))
           return this.innerHandler(res)
         }
 

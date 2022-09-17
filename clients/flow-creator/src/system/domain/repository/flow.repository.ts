@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {BaseRepository} from "../../infrastructure/repository/base/base.repository";
 import {HttpClient} from "@angular/common/http";
-import {Group} from "../entity/group.model";
+import {Flow} from "../entity/flow.model";
 
 @Injectable()
-export class GroupRepository extends BaseRepository<Group> {
+export class FlowRepository extends BaseRepository<Flow> {
 
   constructor(httpClient: HttpClient) {
-    super(httpClient, 'access-manager/groups');
+    super(httpClient, 'flows/flows');
   }
 
 }

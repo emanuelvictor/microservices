@@ -1,5 +1,4 @@
 import {Directive, ElementRef, Input, OnInit, TemplateRef, ViewContainerRef} from "@angular/core";
-import {AuthenticationService} from "../../domain/services/authentication.service";
 
 @Directive({selector: '[hasPermission]'})
 export class HasPermissionDirective implements OnInit {
@@ -28,18 +27,13 @@ export class HasPermissionDirective implements OnInit {
    */
   constructor(private element: ElementRef,
               private templateRef: TemplateRef<any>,
-              private viewContainer: ViewContainerRef,
-              private authenticationService: AuthenticationService) {
+              private viewContainer: ViewContainerRef) {
   }
 
   /**
    *
    */
   ngOnInit() {
-    if (this.authenticationService.user && this.authenticationService.user.authorities && this.authenticationService.user.authorities.length) {
-      this.currentUser = this.authenticationService.user;
-      this.updateView()
-    }
   }
 
   /**

@@ -5,9 +5,6 @@ import {MatDialog} from '@angular/material';
 import {Subscription} from 'rxjs';
 import {MessageService} from '../../domain/services/message.service';
 import {TranslateService} from '@ngx-translate/core';
-import {AuthenticationService} from "../../domain/services/authentication.service";
-import {User} from "../../domain/entity/user.model";
-import {UserRepository} from "../../domain/repository/user.repository";
 
 // @ts-ignore
 @Component({
@@ -19,7 +16,6 @@ export class AuthenticatedViewComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  public user: User;
   public routerSubscription: Subscription;
   public userSubscription: Subscription;
 
@@ -43,9 +39,7 @@ export class AuthenticatedViewComponent implements OnInit, OnDestroy {
               private activeRoute: ActivatedRoute,
               private messageService: MessageService,
               private loadingService: TdLoadingService,
-              private userRepository: UserRepository,
-              private dialog: MatDialog, private router: Router,
-              private authenticationService: AuthenticationService) {
+              private dialog: MatDialog, private router: Router) {
 
     // this language will be used as a fallback when a translation isn't found in the current language
     translate.setDefaultLang('pt-br');
@@ -72,21 +66,19 @@ export class AuthenticatedViewComponent implements OnInit, OnDestroy {
    *
    */
   public logout() {
-    this.authenticationService.logout()
   }
 
   /**
    *
    */
   public getAuthenticatedUser() {
-    this.user = this.authenticationService.user;
   }
 
   /**
    * Verifica se o usuário logado é ADMINISTRADOR e se está editando ele mesmo.
    */
   public itsMe(user: any): boolean {
-    const authenticatedUser = this.user;
+    const authenticatedUser = {};
     return authenticatedUser && ((authenticatedUser as any).isRoot || (authenticatedUser as any).id === user.id)
   }
 
