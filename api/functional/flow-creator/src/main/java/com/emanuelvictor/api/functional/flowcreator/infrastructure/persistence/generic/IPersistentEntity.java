@@ -10,17 +10,22 @@ import java.io.Serializable;
 public interface IPersistentEntity<ID extends Serializable> extends Serializable {
 
     /**
-     * @return
+     * @return {@link ID}
      */
     ID getId();
 
     /**
-     * @return
+     * @param id {@link ID}
+     */
+    void setId(final ID id);
+
+    /**
+     * @return {@link Boolean}
      */
     boolean isSaved();
 
     /**
-     * @return
+     * @return {@link Boolean}
      */
     default boolean isNotSaved() {
         return !this.isSaved();

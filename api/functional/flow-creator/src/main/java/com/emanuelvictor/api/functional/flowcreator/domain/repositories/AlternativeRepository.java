@@ -3,6 +3,8 @@ package com.emanuelvictor.api.functional.flowcreator.domain.repositories;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository;
 
+import java.util.List;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
@@ -10,4 +12,9 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.C
  */
 public interface AlternativeRepository extends CrudRepository<Alternative, Long> {
 
+    /**
+     * @param previousId {@link Long}
+     * @return {@link List}
+     */
+    List<Alternative> findByPreviousId(final Long previousId);
 }

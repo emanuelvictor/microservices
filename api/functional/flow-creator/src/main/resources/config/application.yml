@@ -74,4 +74,4 @@ info:
   name: flow-creator
   description: 'Flow Creator'
   version: @project.version@-@project.build-number@
-  environment: @active.profile@
+  environment: alpha
