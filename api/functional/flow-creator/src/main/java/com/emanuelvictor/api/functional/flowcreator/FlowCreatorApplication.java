@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator;
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entity.Choice;
+import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.AlternativeRepository;
@@ -53,11 +54,6 @@ public class FlowCreatorApplication extends SpringBootServletInitializer {
     AlternativeRepository alternativeRepository;
 
     /**
-     *
-     */
-    public static final Logger LOGGER = LoggerFactory.getLogger(FlowCreatorApplication.class);
-
-    /**
      * @param args String[]
      */
     public static void main(final String[] args) {
@@ -93,17 +89,17 @@ public class FlowCreatorApplication extends SpringBootServletInitializer {
     }
 
     public void choice(final Long alternativeId) {
-        final List<IntermediaryAlternative> intermediaryAlternatives = alternativeRepository.findByPreviousId(alternativeId).collect(Collectors.toList());
+        final AbstractAlternative abstractAlternative = alternativeRepository.findById(alternativeId).orElseThrow();
+        final List<IntermediaryAlternative> intermediaryAlternatives = alternativeRepository.findByPreviousId(abstractAlternative.getId()).collect(Collectors.toList());
         if (intermediaryAlternatives.size() == 0) {
-            final IntermediaryAlternative intermediaryAlternative = (IntermediaryAlternative) alternativeRepository.findById(alternativeId).orElseThrow();
-            final Choice choice = new Choice(intermediaryAlternative);
+            final Choice choice = new Choice(abstractAlternative);
             choiceRepository.save(choice);
             final Map<String, List<Choice>> choicesMap = choiceRepository.findAll().collect(Collectors.groupingBy(Choice::getPath));
-            choicesMap.forEach((k, v) -> {
-                System.out.println(k + " => " + v.size());
-            });
+            choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
+            System.out.println("------------------------------------------------");
             start();
         }
+        System.out.println(abstractAlternative.getMessageToNext());
         final HashMap<Integer, Long> alternativesMap = new HashMap<>();
         for (int i = 0; i < intermediaryAlternatives.size(); i++) {
             System.out.println(i + 1 + " - " + intermediaryAlternatives.get(i).getOption().getName());

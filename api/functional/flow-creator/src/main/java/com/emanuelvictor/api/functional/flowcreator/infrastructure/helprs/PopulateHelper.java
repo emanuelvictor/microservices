@@ -27,6 +27,9 @@ public class PopulateHelper {
         this.alternativeRepository = alternativeRepository;
     }
 
+    /**
+     * Populate Data
+     */
     public void populateData() {
 
         // Client
@@ -96,6 +99,9 @@ public class PopulateHelper {
         alternativeRepository.save(intermediaryAlternativePerson6);
     }
 
+    /**
+     * Erase Data
+     */
     public void eraseData() {
         alternativeRepository.eraseData();
         optionRepository.eraseData();
