@@ -1,11 +1,9 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence;
 
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.IPersistentEntity;
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.PersistentEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,7 +16,14 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
     /**
      *
      */
-    protected final List<T> collection = new ArrayList<>();
+    private final List<T> collection = new ArrayList<>();
+
+    /**
+     * @return Stream
+     */
+    public Stream<T> getStream() {
+        return collection.stream();
+    }
 
     /**
      * Saves a given entity. Use the returned instance for further operations as the save operation might have changed the
@@ -29,7 +34,7 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
     public <S extends T> S save(S entity) {
-        if(entity.isNotSaved())
+        if (entity.isNotSaved())
             entity.setId(new Random().nextLong());
         collection.add(entity);
         return entity;
@@ -66,5 +71,9 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
     @Override
     public Stream<T> findAll() {
         return collection.stream();
+    }
+
+    public void eraseData() {
+        collection.removeIf(Objects::nonNull);
     }
 }

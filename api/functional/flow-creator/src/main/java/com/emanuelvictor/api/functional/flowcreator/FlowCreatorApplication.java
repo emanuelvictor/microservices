@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Alternative;
-import com.emanuelvictor.api.functional.flowcreator.domain.repositories.AlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.IntermediaryAlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.ChoiceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +16,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  *
@@ -31,7 +28,10 @@ import java.util.Scanner;
 public class FlowCreatorApplication extends SpringBootServletInitializer {
 
     @Autowired
-    AlternativeRepository alternativeRepository;
+    ChoiceRepository choiceRepository;
+
+    @Autowired
+    IntermediaryAlternativeRepository intermediaryAlternativeRepository;
 
     /**
      *
@@ -74,21 +74,32 @@ public class FlowCreatorApplication extends SpringBootServletInitializer {
             LOGGER.info("--------------------------------------------------");
 
 
-            choice(1L);
+//            choice(1L);
         };
     }
 
-    public void choice(final Long alternativeId) {
-        final List<Alternative> alternatives = alternativeRepository.findByPreviousId(alternativeId);
-        if(alternatives.size() == 0)
-            choice(1L);
-        final HashMap<Integer, Long> alternativesMap = new HashMap<>();
-        for (int i = 0; i < alternatives.size(); i++) {
-            System.out.println(i + 1 + " - " + alternatives.get(i).getOption().getName());
-            alternativesMap.put(i + 1, alternatives.get(i).getId());
-        }
-        final Scanner myObj = new Scanner(System.in);
-        final Integer choice = Integer.valueOf(myObj.nextLine());
-        choice(alternativesMap.get(choice));
-    }
+//    public void choice(final Long alternativeId) {
+//        final List<IntermediaryAlternative> intermediaryAlternatives = intermediaryAlternativeRepository.findByPreviousId(alternativeId);
+//        if (intermediaryAlternatives.size() == 0) {
+//            final IntermediaryAlternative intermediaryAlternative = intermediaryAlternativeRepository.findById(alternativeId).orElseThrow();
+//            final Choice choice = new Choice(intermediaryAlternative);
+//            choiceRepository.save(choice);
+//            final Map<String, List<Choice>> choicesMap = choiceRepository.findAll().collect(Collectors.groupingBy(Choice::getPath));
+//            choicesMap.forEach((k, v) -> {
+//                System.out.println(k + " => " + v.size());
+//            });
+//            choice(1L);
+//        }
+//        final HashMap<Integer, Long> alternativesMap = new HashMap<>();
+//        for (int i = 0; i < intermediaryAlternatives.size(); i++) {
+//            System.out.println(i + 1 + " - " + intermediaryAlternatives.get(i).getOption().getName());
+//            alternativesMap.put(i + 1, intermediaryAlternatives.get(i).getId());
+//        }
+//        System.out.println("0 - exit");
+//        final Scanner myObj = new Scanner(System.in);
+//        final int choice = Integer.parseInt(myObj.nextLine());
+//        if (choice == 0)
+//            System.exit(-1);
+//        choice(alternativesMap.get(choice));
+//    }
 }

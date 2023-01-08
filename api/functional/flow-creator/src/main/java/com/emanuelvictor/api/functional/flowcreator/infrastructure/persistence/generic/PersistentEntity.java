@@ -9,15 +9,15 @@ import lombok.*;
  * @since 2.0.0, 01/01/2020
  */
 @ToString
-@NoArgsConstructor
 public abstract class PersistentEntity implements IPersistentEntity<Long> {
 
     /**
      *
      */
-    @Getter
-    @Setter
     protected Long id;
+
+    public PersistentEntity() {
+    }
 
     /**
      * @param id Long
@@ -34,5 +34,13 @@ public abstract class PersistentEntity implements IPersistentEntity<Long> {
     @Override
     public boolean isSaved() {
         return this.id != null && this.id != 0;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
