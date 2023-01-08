@@ -29,7 +29,7 @@ class FlowCreatorApplicationTests {
     @BeforeEach
     void beforeEach() {
         populateHelper.eraseData();
-        populateHelper.populate();
+        populateHelper.populateData();
     }
 
     /**

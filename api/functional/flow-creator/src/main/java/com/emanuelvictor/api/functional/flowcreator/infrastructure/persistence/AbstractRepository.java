@@ -73,6 +73,9 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
         return collection.stream();
     }
 
+    /**
+     *
+     */
     public void eraseData() {
         collection.removeIf(Objects::nonNull);
     }

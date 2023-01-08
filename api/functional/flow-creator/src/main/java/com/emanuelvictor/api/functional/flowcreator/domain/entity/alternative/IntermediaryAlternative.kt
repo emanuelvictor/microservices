@@ -7,14 +7,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entity.Option
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: AbstractAlternative, option: Option, messageToNext: String) :
-    AbstractAlternative(option, messageToNext) {
-
-//    val previous: AbstractAlternative
-//
-//    init {
-//        this.previous = previous
-//    }
+class IntermediaryAlternative(val previous: AbstractAlternative, option: Option, messageToNext: String) : AbstractAlternative(option, messageToNext) {
 
     /**
      * @return This recursive method return the total path from the alternative.

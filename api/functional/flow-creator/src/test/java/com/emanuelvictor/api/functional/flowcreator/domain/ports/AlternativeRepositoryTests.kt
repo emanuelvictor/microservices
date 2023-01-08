@@ -24,9 +24,12 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
     @BeforeEach
     fun beforeEach() {
         populateHelper.eraseData()
-        populateHelper.populate()
+        populateHelper.populateData()
     }
 
+    /**
+     *
+     */
     @Test
     fun `Instance Of IntermediaryAlternative Tests`() {
         val client = Option("Bubblemix Tea")

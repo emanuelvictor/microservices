@@ -4,9 +4,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.In
 import com.emanuelvictor.api.functional.flowcreator.domain.entity.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.AlternativeRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.IntermediaryAlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.OptionRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.RootAlternativeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +27,7 @@ public class PopulateHelper {
         this.alternativeRepository = alternativeRepository;
     }
 
-    public void populate() {
+    public void populateData() {
 
         // Client
         final Option client = new Option("Bubblemix Tea");
