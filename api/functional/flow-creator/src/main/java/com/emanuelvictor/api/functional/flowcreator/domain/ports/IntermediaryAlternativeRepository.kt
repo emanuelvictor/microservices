@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.IntermediaryAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import java.util.stream.Stream
 
 /**
@@ -10,7 +10,7 @@ import java.util.stream.Stream
  */
 interface IntermediaryAlternativeRepository {
 
-    fun findByPreviousId(previousId: Long): Stream<IntermediaryAlternative>
+    fun findChildrenFromAlternativeId(id: Long): Stream<IntermediaryAlternative>
 
     fun findAllIntermediaryAlternatives(): Stream<IntermediaryAlternative>
 }

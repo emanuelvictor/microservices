@@ -1,14 +1,12 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.AbstractAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.IntermediaryAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.AlternativeRepository
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.IntermediaryAlternativeRepository
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.AbstractRepository
 import org.springframework.stereotype.Repository
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 /**
  *
@@ -16,10 +14,10 @@ import kotlin.streams.toList
 @Repository
 class AlternativeRepositoryImpl : AbstractRepository<AbstractAlternative?, Long?>(), AlternativeRepository {
 
-    override fun findByPreviousId(previousId: Long): Stream<IntermediaryAlternative> {
+    override fun findChildrenFromAlternativeId(id: Long): Stream<IntermediaryAlternative> {
         return stream
             .filter { persistentEntity ->
-                (persistentEntity is IntermediaryAlternative) && (persistentEntity.previous.id == previousId)
+                (persistentEntity is IntermediaryAlternative) && (persistentEntity.previous.id == id)
             } as Stream<IntermediaryAlternative>
     }
 

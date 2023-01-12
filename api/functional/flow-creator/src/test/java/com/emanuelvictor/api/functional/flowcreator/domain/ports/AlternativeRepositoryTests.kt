@@ -1,8 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.Option
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.IntermediaryAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.entity.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs.PopulateHelper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -37,7 +36,7 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
         Assertions.assertThat(alternativeRepository.findAllIntermediaryAlternatives().count()).isEqualTo(8)
 
         val rootAlternative = alternativeRepository.findAllRootAlternatives().findFirst().orElseThrow()
-        val unities = alternativeRepository.findByPreviousId(rootAlternative.id)
+        val unities = alternativeRepository.findChildrenFromAlternativeId(rootAlternative.id)
 
         Assertions.assertThat(unities.count()).isEqualTo(2)
     }
@@ -48,7 +47,7 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
     @Test
     fun `Must verify the children of Root`() {
         val rootAlternative = alternativeRepository.findAllRootAlternatives().findFirst().orElseThrow()
-        val unities = alternativeRepository.findByPreviousId(rootAlternative.id)
+        val unities = alternativeRepository.findChildrenFromAlternativeId(rootAlternative.id)
 
         Assertions.assertThat(unities.count()).isEqualTo(2)
     }
@@ -58,10 +57,10 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
      */
     @Test
     fun `Must save IntermediaryAlternative`() {
-        val client = Option("Bubblemix Tea")
-        val clientSelected = RootAlternative(client, "Selecione a unidade?")
-        val unit = Option("BIG - Foz do Iguaçu")
-        val unitSelected = IntermediaryAlternative(clientSelected, unit, "Por quem você foi atendido?")
+        val value = "Bubblemix Tea"
+        val clientSelected = RootAlternative(value, "Selecione a unidade?")
+        val valueFromUnit = "BIG - Foz do Iguaçu"
+        val unitSelected = IntermediaryAlternative(clientSelected, valueFromUnit, "Por quem você foi atendido?")
         Assertions.assertThat(unitSelected.isSaved).isFalse
 
         alternativeRepository.save(unitSelected)
@@ -74,8 +73,8 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
      */
     @Test
     fun `Must save RootAlternative`() {
-        val client = Option("Bubblemix Tea")
-        val clientSelected = RootAlternative(client, "Selecione a unidade?")
+        val value = "Bubblemix Tea"
+        val clientSelected = RootAlternative(value, "Selecione a unidade?")
         Assertions.assertThat(clientSelected.isSaved).isFalse
 
         alternativeRepository.save(clientSelected)

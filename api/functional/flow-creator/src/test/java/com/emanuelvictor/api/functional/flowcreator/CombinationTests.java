@@ -74,30 +74,35 @@ class CombinationTests {
     public Set<int[]> generate(int n) {
         final Set<int[]> elements = new HashSet<>();
         for (int i = 1; i <= n; i++) {
-             elements.addAll(generate(n, i));
+            elements.addAll(generate(n, i));
         }
         return elements;
     }
 
-    public Set<int[]> generate(final int n, final int r) {
+    /**
+     * @param countAlternatives {@link int}
+     * @param groupAlternatives {@link int}
+     * @return {@link Set<int>}
+     */
+    public Set<int[]> generate(final int countAlternatives, final int groupAlternatives) {
         final Set<int[]> combinations = new HashSet<>();
-        final int[] combination = new int[r];
+        final int[] combination = new int[groupAlternatives];
 
         // initialize with lowest lexicographic combination
-        for (int i = 0; i < r; i++) {
+        for (int i = 0; i < groupAlternatives; i++) {
             combination[i] = i;
         }
 
-        while (combination[r - 1] < n) {
+        while (combination[groupAlternatives - 1] < countAlternatives) {
             combinations.add(combination.clone());
 
             // generate next combination in lexicographic order
-            int t = r - 1;
-            while (t != 0 && combination[t] == n - r + t) {
+            int t = groupAlternatives - 1;
+            while (t != 0 && combination[t] == countAlternatives - groupAlternatives + t) {
                 t--;
             }
             combination[t]++;
-            for (int i = t + 1; i < r; i++) {
+            for (int i = t + 1; i < groupAlternatives; i++) {
                 combination[i] = combination[i - 1] + 1;
             }
         }

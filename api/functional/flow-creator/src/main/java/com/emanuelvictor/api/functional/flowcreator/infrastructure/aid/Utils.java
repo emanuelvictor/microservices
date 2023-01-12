@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.aid;
 
+import java.lang.reflect.Array;
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.List;
@@ -18,10 +19,29 @@ public final class Utils {
      * @param array T[]
      * @return <T> List<T>
      */
-    public static <T> List<T> getListFromArray(T[] array) {
+    public static <T> List<T> getListFromArray(final T[] array) {
         if (array == null || array.length == 0)
             return null;
         return Arrays.asList(array);
+    }
+
+    public static <T> T[] getArrayFromList(final List<T> list) {
+        if (list == null || list.isEmpty())
+            return null;
+        T[] itemsArray = (T[]) asdfa(list.get(0).getClass(), list.size());
+        itemsArray = list.toArray(itemsArray);
+        return itemsArray;
+    }
+
+    /**
+     * TODO
+     * @param clazz
+     * @param capacity
+     * @return
+     * @param <E>
+     */
+    public static  <E> E[] asdfa(Class<E> clazz, int capacity) {
+        return (E[]) Array.newInstance(clazz, capacity);
     }
 
     /**
