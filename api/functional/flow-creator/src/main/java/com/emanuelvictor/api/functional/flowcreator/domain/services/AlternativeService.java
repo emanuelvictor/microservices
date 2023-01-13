@@ -28,7 +28,7 @@ public class AlternativeService {
     public IntermediaryAlternative save(final IntermediaryAlternative alternative) {
         if (alternative.getPrevious().getNextIsMultipleChoice()) {
             final Set<IntermediaryAlternative> alternatives = this.alternativeRepository.findChildrenFromAlternativeId(alternative.getPrevious().getId()).collect(Collectors.toSet());
-            generateAlternatives(alternatives, alternative);
+            alternativeRepository.saveAll(generateAlternatives(alternatives, alternative));
         }
         return alternativeRepository.save(alternative);
     }

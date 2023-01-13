@@ -21,32 +21,44 @@ public class AlternativeServiceTests {
     @Autowired
     private AlternativeService alternativeService;
 
-    RootAlternative clientSelected;
-
-    IntermediaryAlternative unity1Selected;
+    private IntermediaryAlternative unity1Selected;
 
     @BeforeEach
     public void beforeEach() {
-        clientSelected = alternativeService.save(new RootAlternative("Bubblemix Tea", "Selecione a unidade?", false));
+        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Bubblemix Tea", "Selecione a unidade?", false));
         unity1Selected = alternativeService.save(new IntermediaryAlternative(clientSelected, "BIG - Foz do Iguaçu", "Por quem você foi atendido?", true));
     }
 
     /**
-     * TODO
+     *
      */
     @Test
-    public void asdfasdf() {
-        System.out.println("Inserindo a Sarah:");
-        final IntermediaryAlternative sarah = alternativeService.save(new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false));
-        System.out.println("Inserindo o Emanuel:");
-        final IntermediaryAlternative emanuel = alternativeService.save(new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false));
-        System.out.println("Inserindo o Israel:");
-        final IntermediaryAlternative israel = alternativeService.save(new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false));
+    public void mustPersistSevenCombinationsFromTrheeAlternatives() {
+        final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
 
-        System.out.println(" -------------------- ");
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false)));
+
+        Assertions.assertThat(AlternativeService.generate(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void mustPersistThirtyOneCombinationsFromFiveAlternatives() {
+        final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
+
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Tais", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Francielly", "Como foi o atendimento?", false)));
+
+        Assertions.assertThat(AlternativeService.generate(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
 
         alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).forEach(intermediaryAlternative -> {
-            System.out.println("ALTERNATIVE ");
             System.out.println(String.join(",", intermediaryAlternative.getValues()));
         });
     }

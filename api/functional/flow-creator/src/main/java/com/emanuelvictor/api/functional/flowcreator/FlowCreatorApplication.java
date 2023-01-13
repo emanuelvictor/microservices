@@ -51,10 +51,10 @@ public class FlowCreatorApplication extends SpringBootServletInitializer {
     public ApplicationListener<ApplicationReadyEvent> getApplicationReadyEvent() {
         return applicationReadyEvent -> {
 
-//            populateHelper.eraseData();
-//            populateHelper.populateData();
+            populateHelper.eraseData();
+            populateHelper.populateData();
 
-//            populateHelper.startProgram();
+            populateHelper.startProgram();
         };
     }
 

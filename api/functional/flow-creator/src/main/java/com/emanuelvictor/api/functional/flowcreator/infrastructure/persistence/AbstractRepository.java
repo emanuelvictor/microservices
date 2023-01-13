@@ -34,10 +34,23 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
      * @throws IllegalArgumentException in case the given {@literal entity} is {@literal null}.
      */
     public <S extends T> S save(S entity) {
-        if (entity.isNotSaved())
+        if (entity.isNotSaved()) {
             entity.setId(new Random().nextLong());
-        collection.add(entity);
+            collection.add(entity);
+        } else {
+            return update((ID) entity.getId(), entity);
+        }
         return entity;
+    }
+
+    private <S extends T> S update(final ID id, final S entity) {
+        for (int i = 0; i < collection.size(); i++) {
+            if (collection.get(i).getId().equals(id)) {
+                collection.set(i, entity);
+                return entity;
+            }
+        }
+        throw new RuntimeException("Não encontrado " + id);
     }
 
     /**
