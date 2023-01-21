@@ -2,8 +2,6 @@ package com.emanuelvictor.api.functional.flowcreator.infrastructure.beans;
 
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.EdgeRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.NodeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +23,11 @@ public class Beans {
     }
 
     /**
-     * @param choiceRepository {@link ChoiceService}
-     * @return {@link AlternativeService}
+     * @param choiceRepository {@link ChoiceRepository}
+     * @return {@link ChoiceService}
      */
     @Bean
-    public ChoiceService choiceService(final NodeRepository nodeRepository, final EdgeRepository edgeRepository, final ChoiceRepository choiceRepository) {
-        return new ChoiceService(nodeRepository, edgeRepository, choiceRepository);
+    public ChoiceService choiceService(final ChoiceRepository choiceRepository) {
+        return new ChoiceService(choiceRepository);
     }
 }

@@ -3,10 +3,8 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.util.function.Consumer
 
 class ChoiceTests {
 
@@ -60,9 +58,9 @@ class ChoiceTests {
         val valueFromThirdSubAttendant = "Samuel"
         val subAttendants = IntermediaryAlternative(attendantSelected, arrayListOf(valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant) , "Como foi o atendimento?")
 
-        val nodes = Choice(subAttendants).getAllOrderedNodes()
+//        val nodes = Choice(subAttendants).getAllOrderedNodes()
 
-        nodes.forEach(Consumer { println(it.value) })
+//        nodes.forEach(Consumer { println(it.value) })
 
 //        Assertions.assertThat(nodes.size).isEqualTo(3)
 //        Assertions.assertThat(nodes[0].messageToNext).isEqualTo("Selecione a unidade?")
