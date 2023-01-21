@@ -12,7 +12,7 @@ class AbstractAlternativeTests {
 
     @Test
     fun `Must convert Set to String`() {
-        val twoValues = hashSetOf("Value One", "Value Two")
+        val twoValues = arrayListOf("Value One", "Value Two")
         val alternativeWithTwoValues = object : AbstractAlternative(twoValues, "messageToNext", true) {
             override val path: String
                 get() = TODO("Not yet implemented")

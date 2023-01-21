@@ -68,6 +68,15 @@ class CombinationTests {
     void generateTest() {
         Assertions.assertThat(generate(5).size()).isEqualTo(comb(5));
         Assertions.assertThat(generate(8).size()).isEqualTo(comb(8));
+
+        final Set<int[]> combinations = generate(4);
+        combinations.forEach(combination -> {
+
+            for (int i : combination) {
+                System.out.print(i+1 + " ");
+            }
+            System.out.println();
+        });
     }
 
 

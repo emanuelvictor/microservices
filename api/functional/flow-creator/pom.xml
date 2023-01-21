@@ -38,6 +38,14 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.gephi/gephi-toolkit -->
+        <dependency>
+            <groupId>org.gephi</groupId>
+            <artifactId>gephi-toolkit</artifactId>
+            <version>0.10.0</version>
+        </dependency>
+
+
         <!-- Utilities -->
         <dependency>
             <groupId>org.projectlombok</groupId>

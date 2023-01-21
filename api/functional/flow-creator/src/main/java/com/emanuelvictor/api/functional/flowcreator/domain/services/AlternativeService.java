@@ -3,7 +3,7 @@ package com.emanuelvictor.api.functional.flowcreator.domain.services;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.AlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -71,6 +71,11 @@ public class AlternativeService {
         alternativeRepository.eraseData();
     }
 
+    /**
+     * @param alternatives   {@link Set<IntermediaryAlternative>}
+     * @param newAlternative {@link IntermediaryAlternative}
+     * @return {@link Set<IntermediaryAlternative>}
+     */
     public static Set<IntermediaryAlternative> generateAlternatives(final Set<IntermediaryAlternative> alternatives, final IntermediaryAlternative newAlternative) {
         alternatives.add(newAlternative);
 
@@ -87,7 +92,7 @@ public class AlternativeService {
                 valuesFromPossibility.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
             }
 
-            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(newAlternative.getPrevious(), new HashSet<>(valuesFromPossibility), newAlternative.getMessageToNext(), newAlternative.getNextIsMultipleChoice());
+            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(newAlternative.getPrevious(), new ArrayList<>(valuesFromPossibility), newAlternative.getMessageToNext(), newAlternative.getNextIsMultipleChoice());
             newAlternativesGenerated.add(intermediaryAlternative);
         }
 

@@ -40,8 +40,8 @@ class IntermediaryAlternativeTests {
     @Test
     fun `Must compare the values of two IntermediaryAlternatives and return true`() {
         val unity = RootAlternative("unity", "Selecione a unidade?")
-        val alternativeOne = IntermediaryAlternative(unity, hashSetOf("Sarah","Emanuel", "Israel", "Valdina"), "Como foi o atendimento?", false)
-        val alternativeTwo = IntermediaryAlternative(unity, hashSetOf("Sarah", "Valdina", "Emanuel", "Israel" ), "Como foi o atendimento?", false)
+        val alternativeOne = IntermediaryAlternative(unity, arrayListOf("Sarah","Emanuel", "Israel", "Valdina"), "Como foi o atendimento?", false)
+        val alternativeTwo = IntermediaryAlternative(unity, arrayListOf("Sarah", "Valdina", "Emanuel", "Israel" ), "Como foi o atendimento?", false)
 
         val alternativeHaveTheSameValues = alternativeTwo.compareValues(alternativeOne)
 
@@ -51,8 +51,8 @@ class IntermediaryAlternativeTests {
     @Test
     fun `Must compare the values of two IntermediaryAlternatives and return false`() {
         val unity = RootAlternative("unity", "Selecione a unidade?")
-        val alternativeOne = IntermediaryAlternative(unity, hashSetOf("Sarah","Emanuel", "Israel", "Jackson"), "Como foi o atendimento?", false)
-        val alternativeTwo = IntermediaryAlternative(unity, hashSetOf("Sarah", "Valdina", "Emanuel", "Israel" ), "Como foi o atendimento?", false)
+        val alternativeOne = IntermediaryAlternative(unity, arrayListOf("Sarah","Emanuel", "Israel", "Jackson"), "Como foi o atendimento?", false)
+        val alternativeTwo = IntermediaryAlternative(unity, arrayListOf("Sarah", "Valdina", "Emanuel", "Israel" ), "Como foi o atendimento?", false)
 
         val alternativeHaveTheSameValues = alternativeTwo.compareValues(alternativeOne)
 
@@ -62,8 +62,8 @@ class IntermediaryAlternativeTests {
     @Test
     fun `Compare the values from Two IntermediaryAlternatives, with different size of values and return false`() {
         val unity = RootAlternative("unity", "Selecione a unidade?")
-        val alternativeOne = IntermediaryAlternative(unity, hashSetOf("Sarah","Emanuel", "Israel", "Jackson"), "Como foi o atendimento?", false)
-        val alternativeTwo = IntermediaryAlternative(unity, hashSetOf("Sarah", "Valdina", "Emanuel", "Israel", "Tais" ), "Como foi o atendimento?", false)
+        val alternativeOne = IntermediaryAlternative(unity, arrayListOf("Sarah","Emanuel", "Israel", "Jackson"), "Como foi o atendimento?", false)
+        val alternativeTwo = IntermediaryAlternative(unity, arrayListOf("Sarah", "Valdina", "Emanuel", "Israel", "Tais" ), "Como foi o atendimento?", false)
 
         val alternativeHaveTheSameValues = alternativeTwo.compareValues(alternativeOne)
 

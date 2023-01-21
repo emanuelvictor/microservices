@@ -3,7 +3,7 @@ package com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.AlternativeRepository
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.AbstractRepository
 import org.springframework.stereotype.Repository
 import java.util.stream.Stream

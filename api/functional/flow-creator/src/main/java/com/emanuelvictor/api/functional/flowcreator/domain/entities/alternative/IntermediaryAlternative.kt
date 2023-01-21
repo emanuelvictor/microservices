@@ -1,14 +1,17 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Edge
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Node
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: AbstractAlternative, values: Set<String>, messageToNext: String, nextIsMultipleChoice: Boolean = false) :
+class IntermediaryAlternative(val previous: AbstractAlternative, values: List<String>, messageToNext: String, nextIsMultipleChoice: Boolean = false) :
     AbstractAlternative(values, messageToNext, nextIsMultipleChoice) {
 
-    constructor(previous: AbstractAlternative, value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(previous, hashSetOf(value), messageToNext, nextIsMultipleChoice)
+    constructor(previous: AbstractAlternative, value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(previous, arrayListOf(value), messageToNext, nextIsMultipleChoice)
 
     /**
      * @return This recursive method return the total path from the alternative.
@@ -16,6 +19,24 @@ class IntermediaryAlternative(val previous: AbstractAlternative, values: Set<Str
      */
     override val path: String
         get() = previous.path + SEPARATOR + valuesToString()
+
+    /**
+     * TODO TODO maybe it is not necessary
+     */
+    fun getEdges(): Set<Edge> {
+
+        val edges = HashSet<Edge>()
+
+        for (sourceValue in previous.values) {
+            for (targetValue in values) {
+                val source = Node(sourceValue)
+                val target = Node(targetValue)
+                edges.add(Edge(source, target))
+            }
+        }
+
+        return edges
+    }
 
     /**
      * @param alternative {@link IntermediaryAlternative} to compare values

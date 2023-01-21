@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.flowcreator.domain.ports
+package com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository

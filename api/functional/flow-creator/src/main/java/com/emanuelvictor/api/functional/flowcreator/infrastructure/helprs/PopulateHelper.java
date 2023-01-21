@@ -4,8 +4,9 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.ChoiceRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
+import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,16 +22,20 @@ import java.util.stream.Collectors;
 @Component
 public class PopulateHelper {
 
+    private final ChoiceService choiceService;
+
     private final ChoiceRepository choiceRepository;
 
     private final AlternativeService alternativeService;
 
     /**
+     * @param choiceService      {@link ChoiceService}
      * @param choiceRepository   {@link ChoiceRepository}
      * @param alternativeService {@link AlternativeService}
      */
     @Autowired
-    public PopulateHelper(final ChoiceRepository choiceRepository, final AlternativeService alternativeService) {
+    public PopulateHelper(final ChoiceService choiceService, final ChoiceRepository choiceRepository, final AlternativeService alternativeService) {
+        this.choiceService = choiceService;
         this.choiceRepository = choiceRepository;
         this.alternativeService = alternativeService;
     }
@@ -96,6 +101,22 @@ public class PopulateHelper {
         final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, person6, "Como você avalia o atendimento?", false);
 
         alternativeService.save(intermediaryAlternativePerson6);
+
+//        choiceService.makeChoice(intermediaryAlternativePerson1);
+//        choiceService.makeChoice(intermediaryAlternativePerson2);
+//        choiceService.makeChoice(intermediaryAlternativePerson2);
+//        choiceService.makeChoice(intermediaryAlternativePerson3);
+//        choiceService.makeChoice(intermediaryAlternativePerson3);
+//        choiceService.makeChoice(intermediaryAlternativePerson3);
+//        choiceService.makeChoice(intermediaryAlternativePerson4);
+//        choiceService.makeChoice(intermediaryAlternativePerson4);
+//        choiceService.makeChoice(intermediaryAlternativePerson4);
+//        choiceService.makeChoice(intermediaryAlternativePerson4);
+//        choiceService.makeChoice(intermediaryAlternativePerson5);
+//        choiceService.makeChoice(intermediaryAlternativePerson5);
+//        choiceService.makeChoice(intermediaryAlternativePerson5);
+//        choiceService.makeChoice(intermediaryAlternativePerson5);
+//        choiceService.makeChoice(intermediaryAlternativePerson5);
     }
 
     /**
@@ -114,8 +135,7 @@ public class PopulateHelper {
         final AbstractAlternative abstractAlternative = alternativeService.findById(alternativeId).orElseThrow();
         final List<IntermediaryAlternative> intermediaryAlternatives = alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()).collect(Collectors.toList());
         if (intermediaryAlternatives.size() == 0) {
-            final Choice choice = new Choice(abstractAlternative);
-            choiceRepository.save(choice);
+            choiceService.makeChoice((IntermediaryAlternative) abstractAlternative);
             final Map<String, List<Choice>> choicesMap = choiceRepository.findAll().collect(Collectors.groupingBy(Choice::getPath));
             choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
             System.out.println("------------------------------------------------");
@@ -162,7 +182,7 @@ public class PopulateHelper {
     private static HashMap<Integer, Long> showAndReturnOptions(final List<IntermediaryAlternative> intermediaryAlternatives) {
         final HashMap<Integer, Long> alternativesMap = new HashMap<>();
         for (int i = 0; i < intermediaryAlternatives.size(); i++) {
-            System.out.println(i + 1 + " - " + intermediaryAlternatives.get(i).valuesToString());
+            System.out.println(i + 1 + " - " + intermediaryAlternatives.get(i).getPath());
             alternativesMap.put(i + 1, intermediaryAlternatives.get(i).getId());
         }
         System.out.println("0 - exit");

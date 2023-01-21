@@ -2,12 +2,14 @@ package com.emanuelvictor.api.functional.flowcreator.domain.ports
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs.PopulateHelper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import java.util.function.Consumer
 
 /**
  * @author Emanuel Victor
@@ -31,9 +33,9 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
      */
     @Test
     fun `Must verify if the database is populated`() {
-        Assertions.assertThat(alternativeRepository.findAll().count()).isEqualTo(9)
+        Assertions.assertThat(alternativeRepository.findAll().count()).isEqualTo(17)
         Assertions.assertThat(alternativeRepository.findAllRootAlternatives().count()).isEqualTo(1)
-        Assertions.assertThat(alternativeRepository.findAllIntermediaryAlternatives().count()).isEqualTo(8)
+        Assertions.assertThat(alternativeRepository.findAllIntermediaryAlternatives().count()).isEqualTo(16)
 
         val rootAlternative = alternativeRepository.findAllRootAlternatives().findFirst().orElseThrow()
         val unities = alternativeRepository.findChildrenFromAlternativeId(rootAlternative.id)

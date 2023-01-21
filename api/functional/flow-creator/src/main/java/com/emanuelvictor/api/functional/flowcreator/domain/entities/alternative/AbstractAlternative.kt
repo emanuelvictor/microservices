@@ -7,15 +7,15 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.g
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-abstract class AbstractAlternative(val values: Set<String>, val messageToNext: String, val nextIsMultipleChoice: Boolean) : PersistentEntity() {
+abstract class AbstractAlternative(val values: List<String>, val messageToNext: String, val nextIsMultipleChoice: Boolean) : PersistentEntity() {
 
-    constructor(value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(hashSetOf( value), messageToNext, nextIsMultipleChoice)
+    constructor(value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(arrayListOf( value), messageToNext, nextIsMultipleChoice)
     internal companion object {
         const val SEPARATOR = "->"
     }
 
     /**
-     * @return the name of the option.
+     * @return the path
      */
     abstract val path: String
 

@@ -28,20 +28,7 @@ public final class Utils {
     public static <T> T[] getArrayFromList(final List<T> list) {
         if (list == null || list.isEmpty())
             return null;
-        T[] itemsArray = (T[]) asdfa(list.get(0).getClass(), list.size());
-        itemsArray = list.toArray(itemsArray);
-        return itemsArray;
-    }
-
-    /**
-     * TODO
-     * @param clazz
-     * @param capacity
-     * @return
-     * @param <E>
-     */
-    public static  <E> E[] asdfa(Class<E> clazz, int capacity) {
-        return (E[]) Array.newInstance(clazz, capacity);
+        return list.toArray((T[]) Array.newInstance(list.get(0).getClass(), list.size()));
     }
 
     /**
@@ -68,8 +55,7 @@ public final class Utils {
         return pattern.matcher(nfdNormalizedString).replaceAll("");
     }
 
-    public static boolean isNumeric(String str)
-    {
+    public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 }
