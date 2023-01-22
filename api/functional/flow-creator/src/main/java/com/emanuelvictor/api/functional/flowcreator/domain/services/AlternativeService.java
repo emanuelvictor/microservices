@@ -51,18 +51,18 @@ public class AlternativeService {
     }
 
     /**
-     * @param alternativeId {@link Long}
+     * @param alternativeId {@link Integer}
      * @return {@link Optional<AbstractAlternative>}
      */
-    public Optional<AbstractAlternative> findById(final Long alternativeId) {
+    public Optional<AbstractAlternative> findById(final Integer alternativeId) {
         return alternativeRepository.findById(alternativeId);
     }
 
     /**
-     * @param id {@link Long}
+     * @param id {@link Integer}
      * @return {@link Stream<IntermediaryAlternative>}
      */
-    public Stream<IntermediaryAlternative> findChildrenFromAlternativeId(final Long id) {
+    public Stream<IntermediaryAlternative> findChildrenFromAlternativeId(final Integer id) {
         return alternativeRepository.findChildrenFromAlternativeId(id);
     }
 

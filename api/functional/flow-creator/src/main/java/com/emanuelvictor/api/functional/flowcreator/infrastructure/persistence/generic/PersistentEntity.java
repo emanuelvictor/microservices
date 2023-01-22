@@ -1,28 +1,27 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic;
 
-import lombok.*;
-
-
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
  */
-@ToString
-public abstract class PersistentEntity implements IPersistentEntity<Long> {
+public abstract class PersistentEntity implements IPersistentEntity<Integer> {
 
     /**
      *
      */
-    protected Long id;
+    protected Integer id;
 
+    /**
+     *
+     */
     public PersistentEntity() {
     }
 
     /**
-     * @param id Long
+     * @param id Integer
      */
-    public PersistentEntity(final Long id) {
+    public PersistentEntity(final Integer id) {
         this.id = id;
     }
 
@@ -36,11 +35,17 @@ public abstract class PersistentEntity implements IPersistentEntity<Long> {
         return this.id != null && this.id != 0;
     }
 
-    public Long getId() {
+    /**
+     * @return Integer id of the persistent entity
+     */
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    /**
+     * @param id Integer of the persistent entity
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 }

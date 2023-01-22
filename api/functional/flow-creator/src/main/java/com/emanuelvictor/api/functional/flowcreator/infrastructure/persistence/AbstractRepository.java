@@ -13,6 +13,8 @@ import java.util.stream.Stream;
  */
 public abstract class AbstractRepository<T extends IPersistentEntity, ID> implements CrudRepository<T, ID> {
 
+    private Integer lastId = 1;
+
     /**
      *
      */
@@ -35,7 +37,7 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
      */
     public <S extends T> S save(S entity) {
         if (entity.isNotSaved()) {
-            entity.setId(new Random().nextLong());
+            entity.setId(lastId++);
             collection.add(entity);
         } else {
             return update((ID) entity.getId(), entity);

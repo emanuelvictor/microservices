@@ -132,7 +132,7 @@ public class PopulateHelper {
         startProgram(rootAlternative.getId());
     }
 
-    private void startProgram(final Long alternativeId) {
+    private void startProgram(final Integer alternativeId) {
         final AbstractAlternative abstractAlternative = alternativeService.findById(alternativeId).orElseThrow();
         final List<IntermediaryAlternative> intermediaryAlternatives = alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()).collect(Collectors.toList());
         if (intermediaryAlternatives.size() == 0) {
@@ -144,16 +144,16 @@ public class PopulateHelper {
         }
 
         System.out.println(abstractAlternative.getMessageToNext());
-        final HashMap<Integer, Long> alternativesMap = showAndReturnOptions(intermediaryAlternatives);
+        final HashMap<Integer, Integer> alternativesMap = showAndReturnOptions(intermediaryAlternatives);
 
         choice(alternativesMap, abstractAlternative.getNextIsMultipleChoice());
     }
 
-    private void startProgram(final Long... alternativeIds) {
+    private void startProgram(final Integer... alternativeIds) {
         System.out.println(alternativeIds);
     }
 
-    public void choice(final HashMap<Integer, Long> alternativesMap, final boolean isMultipleChoice) {
+    public void choice(final HashMap<Integer, Integer> alternativesMap, final boolean isMultipleChoice) {
 //        if (isMultipleChoice) {
 //            final Scanner myObj = new Scanner(System.in);
 //            final int choice = Integer.parseInt(myObj.nextLine());
@@ -180,8 +180,8 @@ public class PopulateHelper {
             System.exit(-1);
     }
 
-    private static HashMap<Integer, Long> showAndReturnOptions(final List<IntermediaryAlternative> intermediaryAlternatives) {
-        final HashMap<Integer, Long> alternativesMap = new HashMap<>();
+    private static HashMap<Integer, Integer> showAndReturnOptions(final List<IntermediaryAlternative> intermediaryAlternatives) {
+        final HashMap<Integer, Integer> alternativesMap = new HashMap<>();
         for (int i = 0; i < intermediaryAlternatives.size(); i++) {
             System.out.println(i + 1 + " - " + intermediaryAlternatives.get(i).getPath());
             alternativesMap.put(i + 1, intermediaryAlternatives.get(i).getId());

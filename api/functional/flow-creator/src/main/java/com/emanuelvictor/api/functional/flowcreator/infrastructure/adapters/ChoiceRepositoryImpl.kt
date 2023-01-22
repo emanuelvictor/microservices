@@ -9,4 +9,4 @@ import org.springframework.stereotype.Repository
  *
  */
 @Repository
-class ChoiceRepositoryImpl : AbstractRepository<Choice?, Long?>(), ChoiceRepository
+class ChoiceRepositoryImpl : AbstractRepository<Choice, Int>(), ChoiceRepository

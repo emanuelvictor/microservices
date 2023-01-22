@@ -12,9 +12,9 @@ import java.util.stream.Stream
  *
  */
 @Repository
-class AlternativeRepositoryImpl : AbstractRepository<AbstractAlternative?, Long?>(), AlternativeRepository {
+class AlternativeRepositoryImpl : AbstractRepository<AbstractAlternative, Int>(), AlternativeRepository {
 
-    override fun findChildrenFromAlternativeId(id: Long): Stream<IntermediaryAlternative> {
+    override fun findChildrenFromAlternativeId(id: Int): Stream<IntermediaryAlternative> {
         return stream
             .filter { persistentEntity ->
                 (persistentEntity is IntermediaryAlternative) && (persistentEntity.previous.id == id)

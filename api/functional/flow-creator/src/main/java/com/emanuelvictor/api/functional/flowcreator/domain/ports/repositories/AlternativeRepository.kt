@@ -8,4 +8,4 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.C
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
  */
-interface AlternativeRepository : RootAlternativeRepository, IntermediaryAlternativeRepository, CrudRepository<AbstractAlternative?, Long?>
+interface AlternativeRepository : RootAlternativeRepository, IntermediaryAlternativeRepository, CrudRepository<AbstractAlternative, Int>

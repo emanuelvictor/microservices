@@ -13,7 +13,7 @@ interface IntermediaryAlternativeRepository {
     /**
      *
      */
-    fun findChildrenFromAlternativeId(id: Long): Stream<IntermediaryAlternative>
+    fun findChildrenFromAlternativeId(id: Int): Stream<IntermediaryAlternative>
 
     /**
      *

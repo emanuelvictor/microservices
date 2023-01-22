@@ -91,9 +91,9 @@ public class AlternativeServiceTests {
     @Test
     public void mustBeTheMergeBeetweenTwoListsOfAlternativesAndTheValuesFromTheFirstListMustBePreserved() {
         final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new Option("Sarah"));
-        sarah.setId(1L);
+        sarah.setId(1);
         final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new Option("Emanuel"));
-        emanuel.setId(2L);
+        emanuel.setId(2);
         final Set<IntermediaryAlternative> firstCollection = new HashSet<>();
         firstCollection.add(sarah);
         firstCollection.add(emanuel);
