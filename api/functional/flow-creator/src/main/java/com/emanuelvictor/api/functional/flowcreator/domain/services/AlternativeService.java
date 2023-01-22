@@ -4,6 +4,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,13 +14,13 @@ import java.util.stream.Stream;
 /**
  *
  */
+@RequiredArgsConstructor
 public class AlternativeService {
 
+    /**
+     *
+     */
     private final AlternativeRepository alternativeRepository;
-
-    public AlternativeService(final AlternativeRepository alternativeRepository) {
-        this.alternativeRepository = alternativeRepository;
-    }
 
     /**
      * @param alternative {@link IntermediaryAlternative}

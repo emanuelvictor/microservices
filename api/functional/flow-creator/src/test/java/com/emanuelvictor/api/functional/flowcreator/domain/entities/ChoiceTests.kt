@@ -5,6 +5,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.function.Consumer
 
 class ChoiceTests {
 
@@ -39,7 +40,6 @@ class ChoiceTests {
     }
 
     /**
-     * TODO must be get all ordered nodes, because the alternative can have multiples values
      * TODO passar values para o reticências, utilizar varar pra isso.
      * TODO AQUI É O B.O
      */
@@ -52,20 +52,54 @@ class ChoiceTests {
         val valueFromFirstAttendant = "Maria"
         val valueFromSecondAttendant = "Marcia"
         val valueFromThirdAttendant = "Marcelo"
-        val attendantSelected = IntermediaryAlternative(unitSelected, arrayListOf(valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant) , "Selecione os sub atendentes?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, arrayListOf(valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant), "Selecione os sub atendentes?")
         val valueFromFirstSubAttendant = "Rafael"
         val valueFromSecondSubAttendant = "Ricardo"
         val valueFromThirdSubAttendant = "Samuel"
-        val subAttendants = IntermediaryAlternative(attendantSelected, arrayListOf(valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant) , "Como foi o atendimento?")
+        val subAttendants = IntermediaryAlternative(attendantSelected, arrayListOf(valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant), "Como foi o atendimento?")
+        val subSubAttendantValue = "subAtendantValue"
+        val subSubAttendent = IntermediaryAlternative(subAttendants, arrayListOf(subSubAttendantValue), "nanana")
+        val firstSubSubSubAttendantValue = "Rosa"
+        val secondSubSubSubAttendantValue = "Maria"
+        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, arrayListOf(firstSubSubSubAttendantValue, secondSubSubSubAttendantValue), "nanana")
 
-//        val nodes = Choice(subAttendants).getAllOrderedNodes()
+        val paths = extractPathsFromAlternative(Choice(subSubSubAttendant).getPath())
 
-//        nodes.forEach(Consumer { println(it.value) })
+        Assertions.assertThat(paths.size).isEqualTo(18)
+        Assertions.assertThat(paths).contains(
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Rafael->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Ricardo->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Ricardo->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Samuel->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Samuel->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Rafael->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Samuel->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Samuel->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Rafael->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Rafael->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Samuel->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Ricardo->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Ricardo->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Rafael->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Ricardo->subAtendantValue->Rosa",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Ricardo->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Rafael->subAtendantValue->Maria",
+            "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Samuel->subAtendantValue->Rosa"
+        )
+    }
 
-//        Assertions.assertThat(nodes.size).isEqualTo(3)
-//        Assertions.assertThat(nodes[0].messageToNext).isEqualTo("Selecione a unidade?")
-//        Assertions.assertThat(nodes[1].messageToNext).isEqualTo("Por quem você foi atendido?")
-//        Assertions.assertThat(nodes[2].messageToNext).isEqualTo("Como foi o atendimento?")
+    private fun extractPathsFromAlternative(pathFromAlternative: String): HashSet<String> {
+        val paths = HashSet<String>()
+        if (pathFromAlternative.contains("["))
+            pathFromAlternative.substring(pathFromAlternative.indexOf("[") + 1, pathFromAlternative.indexOf("]"))
+                .split(", ")
+                .forEach(Consumer {
+                    val extracted = (pathFromAlternative.substring(0, pathFromAlternative.indexOf("[")) + it + pathFromAlternative.substring(pathFromAlternative.indexOf("]") + 1));
+                    if (!extracted.contains("["))
+                        paths.add(extracted)
+                    paths.addAll(extractPathsFromAlternative(extracted))
+                })
+        return paths
     }
 
 }
