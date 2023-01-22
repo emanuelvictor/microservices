@@ -5,10 +5,12 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: AbstractAlternative, values: List<String>, messageToNext: String, nextIsMultipleChoice: Boolean = false) :
-    AbstractAlternative(values, messageToNext, nextIsMultipleChoice) {
+class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg values: String) :
+    AbstractAlternative(messageToNext, nextIsMultipleChoice, *values) {
 
-    constructor(previous: AbstractAlternative, value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(previous, arrayListOf(value), messageToNext, nextIsMultipleChoice)
+    constructor(previous: AbstractAlternative, messageToNext: String, vararg values: String) : this(previous, messageToNext, false, *values)
+
+    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<String>) : this(previous, messageToNext, nextIsMultipleChoice, *values.toTypedArray())
 
     /**
      * @return This recursive method return the total path from the alternative.

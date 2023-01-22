@@ -4,8 +4,14 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
+/**
+ *
+ */
 class AlternativeRepositoryImplTest {
 
+    /**
+     *
+     */
     @Test
     fun `Must verify if classes is equals`() {
         val value = "Bubblemix Tea"

@@ -25,8 +25,8 @@ public class AlternativeServiceTests {
 
     @BeforeEach
     public void beforeEach() {
-        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Bubblemix Tea", "Selecione a unidade?", false));
-        unity1Selected = alternativeService.save(new IntermediaryAlternative(clientSelected, "BIG - Foz do Iguaçu", "Por quem você foi atendido?", true));
+        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Selecione a unidade?", false, "Bubblemix Tea"));
+        unity1Selected = alternativeService.save(new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, "BIG - Foz do Iguaçu"));
     }
 
     /**
@@ -36,9 +36,9 @@ public class AlternativeServiceTests {
     public void mustPersistSevenCombinationsFromTrheeAlternatives() {
         final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
 
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Sarah")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Emanuel")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Israel")));
 
         Assertions.assertThat(AlternativeService.generate(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
     }
@@ -49,12 +49,11 @@ public class AlternativeServiceTests {
     @Test
     public void mustPersistThirtyOneCombinationsFromFiveAlternatives() {
         final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
-
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Tais", "Como foi o atendimento?", false)));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Francielly", "Como foi o atendimento?", false)));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Sarah")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Emanuel")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Israel")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Tais")));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Francielly")));
 
         Assertions.assertThat(AlternativeService.generate(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
 
@@ -66,11 +65,11 @@ public class AlternativeServiceTests {
     @Test
     public void mustGenerateSevenCombinationsFromThreeAlternatives() {
         Set<IntermediaryAlternative> alternatives = new HashSet<>();
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false);
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Sarah");
         alternatives = AlternativeService.generateAlternatives(alternatives, sarah);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Emanuel");
         alternatives = AlternativeService.generateAlternatives(alternatives, emanuel);
-        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false);
+        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Israel");
         alternatives = AlternativeService.generateAlternatives(alternatives, israel);
 
         Assertions.assertThat(7).isEqualTo(alternatives.size());
@@ -80,9 +79,9 @@ public class AlternativeServiceTests {
     public void mustConvertValuesFromAlternativeToSetOfString() {
         final String sarahName = "Sarah";
         final String emanuelName = "Emanuel";
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, sarahName, "Como foi o atendimento?", false);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, emanuelName, "Como foi o atendimento?", false);
-        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(unity1Selected, sarahName + "," + emanuelName, "Como foi o atendimento?", false);
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahName);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelName);
+        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahName + "," + emanuelName);
         final Stream<IntermediaryAlternative> alternatives = Stream.of(sarah, emanuel, sarahEEmanuel);
 
         final Set<String> values = AlternativeService.extractIsolatedValuesFromAlternatives(alternatives).collect(Collectors.toSet());
@@ -92,15 +91,15 @@ public class AlternativeServiceTests {
 
     @Test
     public void mustBeTheMergeBeetweenTwoListsOfAlternativesAndTheValuesFromTheFirstListMustBePreserved() {
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Sarah", "Como foi o atendimento?", false);
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Sarah");
         sarah.setId(1L);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Emanuel", "Como foi o atendimento?", false);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Emanuel");
         emanuel.setId(2L);
         final Set<IntermediaryAlternative> firstCollection = new HashSet<>();
         firstCollection.add(sarah);
         firstCollection.add(emanuel);
-        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Israel", "Como foi o atendimento?", false);
-        final IntermediaryAlternative tais = new IntermediaryAlternative(unity1Selected, "Tais", "Como foi o atendimento?", false);
+        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Israel");
+        final IntermediaryAlternative tais = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, "Tais");
         final Set<IntermediaryAlternative> secondCollection = new HashSet<>();
         secondCollection.add(israel);
         secondCollection.add(tais);

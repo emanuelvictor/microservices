@@ -93,7 +93,7 @@ public class AlternativeService {
                 valuesFromPossibility.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
             }
 
-            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(newAlternative.getPrevious(), new ArrayList<>(valuesFromPossibility), newAlternative.getMessageToNext(), newAlternative.getNextIsMultipleChoice());
+            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(newAlternative.getPrevious(), newAlternative.getMessageToNext(), newAlternative.getNextIsMultipleChoice(), valuesFromPossibility);
             newAlternativesGenerated.add(intermediaryAlternative);
         }
 
@@ -122,8 +122,7 @@ public class AlternativeService {
 
     public static Stream<String> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
         return alternatives.
-                map(intermediaryAlternative -> intermediaryAlternative.getValues()
-                        .stream()
+                map(intermediaryAlternative -> Arrays.stream(intermediaryAlternative.getValues())
                         .map(value -> Arrays.stream(value.split(",")).collect(Collectors.toSet()))
                         .collect(Collectors.toSet())
                 ).flatMap(sets -> sets.stream().flatMap(Collection::stream));

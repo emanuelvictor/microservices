@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.aid.Utils
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.PersistentEntity
 
 /**
@@ -7,9 +8,10 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.g
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-abstract class AbstractAlternative(val values: List<String>, val messageToNext: String, val nextIsMultipleChoice: Boolean) : PersistentEntity() {
+abstract class AbstractAlternative(val messageToNext: String, val nextIsMultipleChoice: Boolean, vararg val values: String) : PersistentEntity() {
 
-    constructor(value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(arrayListOf( value), messageToNext, nextIsMultipleChoice)
+    constructor(messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<String>) : this(messageToNext, nextIsMultipleChoice, *values.toTypedArray())
+
     internal companion object {
         const val SEPARATOR = "->"
     }
@@ -27,6 +29,6 @@ abstract class AbstractAlternative(val values: List<String>, val messageToNext: 
         if (values.size == 1) {
             return values.first()
         }
-        return values.toString()
+        return Utils.getListFromArray(values).toString()
     }
 }

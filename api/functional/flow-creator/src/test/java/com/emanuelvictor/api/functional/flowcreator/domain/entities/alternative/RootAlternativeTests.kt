@@ -8,7 +8,7 @@ class RootAlternativeTests {
     @Test
     fun `Instance Of Root Alternative Tests`() {
         val rootValue = "Bubblemix Tea"
-        val rootAlternative = RootAlternative(rootValue, "Selecione a unidade?")
+        val rootAlternative = RootAlternative( "Selecione a unidade?", rootValue)
 
         Assertions.assertThat(rootAlternative.path).isEqualTo(rootValue)
     }

@@ -47,58 +47,58 @@ public class PopulateHelper {
 
         // Client
         final String client = "Bubblemix Tea";
-        final RootAlternative clientSelected = new RootAlternative(client, "Selecione a unidade?", false);
+        final RootAlternative clientSelected = new RootAlternative("Selecione a unidade?", false, client);
 
         alternativeService.save(clientSelected);
 
         // Unities
         // ---- Unity 1
         final String unity1 = "BIG - Foz do Iguaçu";
-        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, unity1, "Por quem você foi atendido?", true);
+        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, unity1);
 
         alternativeService.save(unity1Selected);
 
         // ---- Unity 2
         final String unity2 = "Catuaí Palladium - Foz do Iguaçu";
-        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, unity2, "Por quem você foi atendido?", true);
+        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, unity2);
 
         alternativeService.save(unity2Selected);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 1
         final String person1 = "Andressa";
-        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, person1, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person1);
 
         alternativeService.save(intermediaryAlternativePerson1);
 
         // Person 2 of Unity 1
         final String person2 = "Marta";
-        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, person2, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person2);
 
         alternativeService.save(intermediaryAlternativePerson2);
 
         // Person 3 of Unity 1
         final String person3 = "Roberto";
-        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, person3, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person3);
 
         alternativeService.save(intermediaryAlternativePerson3);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 2
         final String person4 = "Edson";
-        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, person4, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person4);
 
         alternativeService.save(intermediaryAlternativePerson4);
 
         // Person 2 of Unity 2
         final String person5 = "Valdir";
-        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, person5, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person5);
 
         alternativeService.save(intermediaryAlternativePerson5);
 
         // Person 3 of Unity 2
         final String person6 = "Vilma";
-        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, person6, "Como você avalia o atendimento?", false);
+        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person6);
 
         alternativeService.save(intermediaryAlternativePerson6);
 

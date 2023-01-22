@@ -5,9 +5,9 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class RootAlternative(values: List<String>, messageToNext: String, nextIsMultipleChoice: Boolean = false) : AbstractAlternative(values, messageToNext, nextIsMultipleChoice) {
+class RootAlternative(messageToNext: String, nextIsMultipleChoice: Boolean = false, value: String) : AbstractAlternative(messageToNext, nextIsMultipleChoice, value) {
 
-    constructor(value: String, messageToNext: String, nextIsMultipleChoice: Boolean = false) : this(arrayListOf( value), messageToNext, nextIsMultipleChoice)
+    constructor(messageToNext: String, value: String) : this(messageToNext, false, value)
 
     /**
      * @return the name of the option.

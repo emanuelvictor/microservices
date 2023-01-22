@@ -12,9 +12,9 @@ class ChoiceTests {
     @Test
     fun `Instance Of Choice Tests`() {
         val rootValue = "Bubblemix Tea"
-        val rootAlternative = RootAlternative(rootValue, "Selecione a unidade?")
+        val rootAlternative = RootAlternative( "Selecione a unidade?", rootValue)
         val intermediaryValue = "intermediary value"
-        val intermediaryAlternative = IntermediaryAlternative(rootAlternative, intermediaryValue, "Whatever?")
+        val intermediaryAlternative = IntermediaryAlternative(rootAlternative,  "Whatever?", intermediaryValue)
 
         val choice = Choice(intermediaryAlternative)
 
@@ -26,11 +26,11 @@ class ChoiceTests {
     @Test
     fun `Must return a long path from the choice`() {
         val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative(value, "Selecione a unidade?")
+        val clientSelected = RootAlternative( "Selecione a unidade?", value)
         val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, valueFromUnit, "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", valueFromUnit)
         val valueFromAttendant = "Maria"
-        val attendantSelected = IntermediaryAlternative(unitSelected, valueFromAttendant, "Como foi o atendimento?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, "Como foi o atendimento?", valueFromAttendant)
 
         val choice = Choice(attendantSelected)
 
@@ -40,28 +40,27 @@ class ChoiceTests {
     }
 
     /**
-     * TODO passar values para o reticências, utilizar varar pra isso.
      * TODO AQUI É O B.O
      */
     @Test
     fun `Get all ordered nodes from parents`() {
         val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative(value, "Selecione a unidade?")
+        val clientSelected = RootAlternative("Selecione a unidade?", value)
         val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, valueFromUnit, "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, valueFromUnit)
         val valueFromFirstAttendant = "Maria"
         val valueFromSecondAttendant = "Marcia"
         val valueFromThirdAttendant = "Marcelo"
-        val attendantSelected = IntermediaryAlternative(unitSelected, arrayListOf(valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant), "Selecione os sub atendentes?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", true, valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant)
         val valueFromFirstSubAttendant = "Rafael"
         val valueFromSecondSubAttendant = "Ricardo"
         val valueFromThirdSubAttendant = "Samuel"
-        val subAttendants = IntermediaryAlternative(attendantSelected, arrayListOf(valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant), "Como foi o atendimento?")
+        val subAttendants = IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant)
         val subSubAttendantValue = "subAtendantValue"
-        val subSubAttendent = IntermediaryAlternative(subAttendants, arrayListOf(subSubAttendantValue), "nanana")
+        val subSubAttendent = IntermediaryAlternative(subAttendants, "nanana", subSubAttendantValue)
         val firstSubSubSubAttendantValue = "Rosa"
         val secondSubSubSubAttendantValue = "Maria"
-        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, arrayListOf(firstSubSubSubAttendantValue, secondSubSubSubAttendantValue), "nanana")
+        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue, secondSubSubSubAttendantValue)
 
         val paths = extractPathsFromAlternative(Choice(subSubSubAttendant).getPath())
 
@@ -94,7 +93,7 @@ class ChoiceTests {
             pathFromAlternative.substring(pathFromAlternative.indexOf("[") + 1, pathFromAlternative.indexOf("]"))
                 .split(", ")
                 .forEach(Consumer {
-                    val extracted = (pathFromAlternative.substring(0, pathFromAlternative.indexOf("[")) + it + pathFromAlternative.substring(pathFromAlternative.indexOf("]") + 1));
+                    val extracted = (pathFromAlternative.substring(0, pathFromAlternative.indexOf("[")) + it + pathFromAlternative.substring(pathFromAlternative.indexOf("]") + 1))
                     if (!extracted.contains("["))
                         paths.add(extracted)
                     paths.addAll(extractPathsFromAlternative(extracted))

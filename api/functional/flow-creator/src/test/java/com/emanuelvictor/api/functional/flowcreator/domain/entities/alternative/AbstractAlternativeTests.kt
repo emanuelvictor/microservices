@@ -13,12 +13,12 @@ class AbstractAlternativeTests {
     @Test
     fun `Must convert Set to String`() {
         val twoValues = arrayListOf("Value One", "Value Two")
-        val alternativeWithTwoValues = object : AbstractAlternative(twoValues, "messageToNext", true) {
+        val alternativeWithTwoValues = object : AbstractAlternative("messageToNext", true, twoValues) {
             override val path: String
                 get() = TODO("Not yet implemented")
         }
         val oneValue = "Value One"
-        val alternativeWithOneValue = object : AbstractAlternative(oneValue, "messageToNext", true) {
+        val alternativeWithOneValue = object : AbstractAlternative("messageToNext", true, oneValue) {
             override val path: String
                 get() = TODO("Not yet implemented")
         }
