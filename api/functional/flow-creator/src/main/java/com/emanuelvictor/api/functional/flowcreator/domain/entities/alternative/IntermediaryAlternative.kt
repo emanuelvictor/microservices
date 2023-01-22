@@ -1,16 +1,23 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg values: String) :
+class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg values: Option) :
     AbstractAlternative(messageToNext, nextIsMultipleChoice, *values) {
 
-    constructor(previous: AbstractAlternative, messageToNext: String, vararg values: String) : this(previous, messageToNext, false, *values)
+    constructor(previous: AbstractAlternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, *options)
 
-    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<String>) : this(previous, messageToNext, nextIsMultipleChoice, *values.toTypedArray())
+    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
+        previous,
+        messageToNext,
+        nextIsMultipleChoice,
+        *values.toTypedArray()
+    )
 
     /**
      * @return This recursive method return the total path from the alternative.
@@ -23,14 +30,14 @@ class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: 
      * @param alternative {@link IntermediaryAlternative} to compare values
      */
     fun compareValues(alternative: IntermediaryAlternative): Boolean {
-        values.forEach {
-            for ((externalIndex, externalValue) in alternative.values.withIndex()) {
-                if (it == (externalValue))
+        options.forEach {
+            for ((externalIndex, externalOption) in alternative.options.withIndex()) {
+                if (it.value == externalOption.value)
                     break
-                else if (externalIndex == alternative.values.size - 1)
+                else if (externalIndex == alternative.options.size - 1)
                     return false
             }
         }
-        return (alternative.values.size == values.size)
+        return (alternative.options.size == options.size)
     }
 }

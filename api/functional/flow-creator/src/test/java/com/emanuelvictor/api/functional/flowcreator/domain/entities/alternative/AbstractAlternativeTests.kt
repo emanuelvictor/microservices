@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -10,14 +11,17 @@ import org.junit.jupiter.api.Test
  */
 class AbstractAlternativeTests {
 
+    /**
+     *
+     */
     @Test
     fun `Must convert Set to String`() {
-        val twoValues = arrayListOf("Value One", "Value Two")
+        val twoValues = arrayListOf(Option("Value One"), Option("Value Two"))
         val alternativeWithTwoValues = object : AbstractAlternative("messageToNext", true, twoValues) {
             override val path: String
                 get() = TODO("Not yet implemented")
         }
-        val oneValue = "Value One"
+        val oneValue = Option("Value One")
         val alternativeWithOneValue = object : AbstractAlternative("messageToNext", true, oneValue) {
             override val path: String
                 get() = TODO("Not yet implemented")

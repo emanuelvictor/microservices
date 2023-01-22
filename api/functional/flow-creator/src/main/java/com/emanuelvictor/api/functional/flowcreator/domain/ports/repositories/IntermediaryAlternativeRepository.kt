@@ -10,7 +10,13 @@ import java.util.stream.Stream
  */
 interface IntermediaryAlternativeRepository {
 
+    /**
+     *
+     */
     fun findChildrenFromAlternativeId(id: Long): Stream<IntermediaryAlternative>
 
+    /**
+     *
+     */
     fun findAllIntermediaryAlternatives(): Stream<IntermediaryAlternative>
 }

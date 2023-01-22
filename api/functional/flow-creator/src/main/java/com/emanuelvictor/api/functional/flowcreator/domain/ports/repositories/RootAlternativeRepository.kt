@@ -10,5 +10,8 @@ import java.util.stream.Stream
  */
 interface RootAlternativeRepository {
 
+    /**
+     *
+     */
     fun findAllRootAlternatives(): Stream<RootAlternative>
 }

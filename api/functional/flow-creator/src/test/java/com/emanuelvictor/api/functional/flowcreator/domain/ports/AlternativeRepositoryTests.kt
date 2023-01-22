@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
@@ -9,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.util.function.Consumer
 
 /**
  * @author Emanuel Victor
@@ -60,9 +60,9 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
     @Test
     fun `Must save IntermediaryAlternative`() {
         val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative(value, "Selecione a unidade?")
+        val clientSelected = RootAlternative("Selecione a unidade?", Option(value))
         val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, valueFromUnit, "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", Option(valueFromUnit))
         Assertions.assertThat(unitSelected.isSaved).isFalse
 
         alternativeRepository.save(unitSelected)
@@ -76,14 +76,13 @@ class AlternativeRepositoryTests(@Autowired val alternativeRepository: Alternati
     @Test
     fun `Must save RootAlternative`() {
         val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative(value, "Selecione a unidade?")
+        val clientSelected = RootAlternative("Selecione a unidade?", Option(value))
         Assertions.assertThat(clientSelected.isSaved).isFalse
 
         alternativeRepository.save(clientSelected)
 
         Assertions.assertThat(clientSelected.isSaved).isTrue
     }
-
 
 
 }

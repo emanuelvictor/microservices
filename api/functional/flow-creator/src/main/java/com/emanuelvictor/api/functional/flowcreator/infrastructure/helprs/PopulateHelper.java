@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs;
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
@@ -47,58 +48,58 @@ public class PopulateHelper {
 
         // Client
         final String client = "Bubblemix Tea";
-        final RootAlternative clientSelected = new RootAlternative("Selecione a unidade?", false, client);
+        final RootAlternative clientSelected = new RootAlternative("Selecione a unidade?", false, new Option(client));
 
         alternativeService.save(clientSelected);
 
         // Unities
         // ---- Unity 1
         final String unity1 = "BIG - Foz do Iguaçu";
-        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, unity1);
+        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new Option(unity1));
 
         alternativeService.save(unity1Selected);
 
         // ---- Unity 2
         final String unity2 = "Catuaí Palladium - Foz do Iguaçu";
-        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, unity2);
+        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new Option(unity2));
 
         alternativeService.save(unity2Selected);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 1
         final String person1 = "Andressa";
-        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person1);
+        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person1));
 
         alternativeService.save(intermediaryAlternativePerson1);
 
         // Person 2 of Unity 1
         final String person2 = "Marta";
-        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person2);
+        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person2));
 
         alternativeService.save(intermediaryAlternativePerson2);
 
         // Person 3 of Unity 1
         final String person3 = "Roberto";
-        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, person3);
+        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person3));
 
         alternativeService.save(intermediaryAlternativePerson3);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 2
         final String person4 = "Edson";
-        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person4);
+        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person4));
 
         alternativeService.save(intermediaryAlternativePerson4);
 
         // Person 2 of Unity 2
         final String person5 = "Valdir";
-        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person5);
+        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person5));
 
         alternativeService.save(intermediaryAlternativePerson5);
 
         // Person 3 of Unity 2
         final String person6 = "Vilma";
-        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, person6);
+        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person6));
 
         alternativeService.save(intermediaryAlternativePerson6);
 

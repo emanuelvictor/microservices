@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
@@ -93,7 +94,12 @@ public class AlternativeService {
                 valuesFromPossibility.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
             }
 
-            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(newAlternative.getPrevious(), newAlternative.getMessageToNext(), newAlternative.getNextIsMultipleChoice(), valuesFromPossibility);
+            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
+                    newAlternative.getPrevious(),
+                    newAlternative.getMessageToNext(),
+                    newAlternative.getNextIsMultipleChoice(),
+                    valuesFromPossibility.stream().map(Option::new).collect(Collectors.toList())
+            );
             newAlternativesGenerated.add(intermediaryAlternative);
         }
 
@@ -122,8 +128,8 @@ public class AlternativeService {
 
     public static Stream<String> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
         return alternatives.
-                map(intermediaryAlternative -> Arrays.stream(intermediaryAlternative.getValues())
-                        .map(value -> Arrays.stream(value.split(",")).collect(Collectors.toSet()))
+                map(intermediaryAlternative -> Arrays.stream(intermediaryAlternative.getOptions())
+                        .map(option -> Arrays.stream(option.getValue().split(",")).collect(Collectors.toSet()))
                         .collect(Collectors.toSet())
                 ).flatMap(sets -> sets.stream().flatMap(Collection::stream));
     }
