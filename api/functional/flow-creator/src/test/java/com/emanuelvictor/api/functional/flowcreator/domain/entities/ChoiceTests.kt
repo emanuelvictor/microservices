@@ -1,8 +1,10 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.function.Consumer
@@ -40,10 +42,9 @@ class ChoiceTests {
     }
 
     /**
-     * TODO AQUI É O B.O
      */
     @Test
-    fun `Get all ordered nodes from parents`() {
+    fun `Get all paths from parents`() {
         val value = "Bubblemix Tea"
         val clientSelected = RootAlternative("Selecione a unidade?", Option(value))
         val valueFromUnit = "BIG - Foz do Iguaçu"
@@ -64,10 +65,10 @@ class ChoiceTests {
         val secondSubSubSubAttendantValue = "Maria"
         val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", Option(firstSubSubSubAttendantValue), Option(secondSubSubSubAttendantValue))
 
-        val paths = extractPathsFromAlternative(Choice(subSubSubAttendant).getPath())
+        val fullPaths = extractPathsFromAlternative(Choice(subSubSubAttendant).getPath())
 
-        Assertions.assertThat(paths.size).isEqualTo(18)
-        Assertions.assertThat(paths).contains(
+        Assertions.assertThat(fullPaths.size).isEqualTo(18)
+        Assertions.assertThat(fullPaths).contains(
             "Bubblemix Tea->BIG - Foz do Iguaçu->Marcia->Rafael->subAtendantValue->Maria",
             "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Ricardo->subAtendantValue->Rosa",
             "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Ricardo->subAtendantValue->Rosa",
@@ -87,6 +88,55 @@ class ChoiceTests {
             "Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Rafael->subAtendantValue->Maria",
             "Bubblemix Tea->BIG - Foz do Iguaçu->Marcelo->Samuel->subAtendantValue->Rosa"
         )
+    }
+
+    /**
+     * TODO tem que ser via ID e não via value, (Será?)
+     */
+    @Test
+    fun `Get all possible sub paths from parents`() {
+        val value = "Bubblemix Tea"
+        val clientSelected = RootAlternative("Selecione a unidade?", Option(value))
+        val valueFromUnit = "BIG - Foz do Iguaçu"
+        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, Option(valueFromUnit))
+        val valueFromFirstAttendant = "Maria"
+        val valueFromSecondAttendant = "Marcia"
+        val valueFromThirdAttendant = "Marcelo"
+        val attendantSelected =
+            IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", true, Option(valueFromFirstAttendant), Option(valueFromSecondAttendant), Option(valueFromThirdAttendant))
+        val valueFromFirstSubAttendant = "Rafael"
+        val valueFromSecondSubAttendant = "Ricardo"
+        val valueFromThirdSubAttendant = "Samuel"
+        val subAttendants =
+            IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", Option(valueFromFirstSubAttendant), Option(valueFromSecondSubAttendant), Option(valueFromThirdSubAttendant))
+        val subSubAttendantValue = "subAtendantValue"
+        val subSubAttendent = IntermediaryAlternative(subAttendants, "nanana", Option(subSubAttendantValue))
+        val firstSubSubSubAttendantValue = "Rosa"
+        val secondSubSubSubAttendantValue = "Maria"
+        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", Option(firstSubSubSubAttendantValue), Option(secondSubSubSubAttendantValue))
+        val fullPaths = extractPathsFromAlternative(Choice(subSubSubAttendant).getPath())
+
+        val combinations = extractAllCombinationsFromFullPaths(fullPaths)
+
+        Assertions.assertThat(combinations.size).isEqualTo(1134)
+    }
+
+    private fun extractAllCombinationsFromFullPaths(fullPaths: Set<String>): ArrayList<String> {
+        val combinations = ArrayList<String>()
+        fullPaths.forEach(Consumer { fullPath ->
+            val allNodesInOrder = fullPath.split(SEPARATOR)
+            val combinationsIndexes = AlternativeService.generate(allNodesInOrder.size)
+            combinationsIndexes.forEach(Consumer { combinationIndex ->
+                val subPath: StringBuilder = StringBuilder()
+                for ((index) in combinationIndex.withIndex()) {
+                    subPath.append(allNodesInOrder[combinationIndex[index]])
+                    if (index != combinationIndex.size - 1)
+                        subPath.append(SEPARATOR)
+                }
+                combinations.add(subPath.toString())
+            })
+        })
+        return combinations
     }
 
     private fun extractPathsFromAlternative(pathFromAlternative: String): HashSet<String> {
