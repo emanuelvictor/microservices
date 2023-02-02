@@ -19,9 +19,7 @@ public class ChoiceService {
      */
     public Choice makeChoice(final IntermediaryAlternative alternative) {
 
-        var choice = choiceRepository.save(new Choice(alternative));
-
-        return choice;
+        return choiceRepository.save(new Choice(alternative));
     }
 
 

@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
@@ -12,7 +12,7 @@ import java.util.stream.Stream
  *
  */
 @Repository
-class AlternativeRepositoryImpl : AbstractRepository<AbstractAlternative, Int>(), AlternativeRepository {
+class AlternativeRepositoryImpl : AbstractRepository<Alternative, Int>(), AlternativeRepository {
 
     override fun findChildrenFromAlternativeId(id: Int): Stream<IntermediaryAlternative> {
         return stream

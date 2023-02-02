@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository
 
 /**
@@ -8,4 +8,4 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.C
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
  */
-interface AlternativeRepository : RootAlternativeRepository, IntermediaryAlternativeRepository, CrudRepository<AbstractAlternative, Int>
+interface AlternativeRepository : RootAlternativeRepository, IntermediaryAlternativeRepository, CrudRepository<Alternative, Int>

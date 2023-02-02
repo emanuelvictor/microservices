@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository
 
 /**
@@ -8,10 +8,10 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.C
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
  */
-interface ChoiceRepository : CrudRepository<Choice, Int> {
+interface OptionRepository : CrudRepository<Option, Int> {
 
     /**
-     * todo MAKE tests
+     *
      */
-    fun listChoicesByOptionsValues(vararg values: String): List<Choice>
+    fun listByValue(value: String): List<Option>
 }

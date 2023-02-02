@@ -1,6 +1,6 @@
 //package com.emanuelvictor.api.functional.flowcreator.application.context;
 //
-//import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option;
+//import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 //import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 //import org.springframework.security.core.Authentication;
 //import org.springframework.security.core.context.SecurityContextHolder;

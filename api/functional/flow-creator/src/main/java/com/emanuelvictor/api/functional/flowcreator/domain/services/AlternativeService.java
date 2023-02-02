@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
@@ -52,9 +52,9 @@ public class AlternativeService {
 
     /**
      * @param alternativeId {@link Integer}
-     * @return {@link Optional<AbstractAlternative>}
+     * @return {@link Optional< Alternative >}
      */
-    public Optional<AbstractAlternative> findById(final Integer alternativeId) {
+    public Optional<Alternative> findById(final Integer alternativeId) {
         return alternativeRepository.findById(alternativeId);
     }
 
@@ -79,44 +79,59 @@ public class AlternativeService {
      * @return {@link Set<IntermediaryAlternative>}
      */
     public static Set<IntermediaryAlternative> generateAlternatives(final Set<IntermediaryAlternative> alternatives, final IntermediaryAlternative newAlternative) {
-        alternatives.add(newAlternative);
-
-        final Set<String> isolatedValuesFromAlternatives = extractIsolatedValuesFromAlternatives(alternatives.stream()).collect(Collectors.toSet());
-        final HashMap<Integer, String> isolatedValuesFromAlternativesMapedToIndexes = createIndexesToAlternatives(isolatedValuesFromAlternatives);
-
-        final List<int[]> combinations = generate(isolatedValuesFromAlternatives.size());
-
-        final Set<IntermediaryAlternative> newAlternativesGenerated = new HashSet<>();
-
-        for (final int[] combination : combinations) {
-            final List<String> valuesFromPossibility = new ArrayList<>();
-            for (final int i : combination) {
-                valuesFromPossibility.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
-            }
-
-            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
-                    newAlternative.getPrevious(),
-                    newAlternative.getMessageToNext(),
-                    newAlternative.getNextIsMultipleChoice(),
-                    valuesFromPossibility.stream().map(Option::new).collect(Collectors.toList())
-            );
-            newAlternativesGenerated.add(intermediaryAlternative);
-        }
-
-        return mergeAlternativeLists(alternatives, newAlternativesGenerated);
+//        alternatives.add(newAlternative);
+//
+//        final Set<String> isolatedValuesFromAlternatives = extractIsolatedValuesFromAlternatives(alternatives.stream()).collect(Collectors.toSet());
+//        final HashMap<Integer, String> isolatedValuesFromAlternativesMapedToIndexes = createIndexesToAlternatives(isolatedValuesFromAlternatives);
+//
+//        final List<int[]> combinations = generateCombinations(isolatedValuesFromAlternatives.size());
+//
+//        final Set<IntermediaryAlternative> newAlternativesGenerated = new HashSet<>();
+//
+//        for (final int[] combination : combinations) {
+//            final List<String> valuesFromCombination = new ArrayList<>();
+//            for (final int i : combination) {
+//                valuesFromCombination.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
+//            }
+//
+//            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
+//                    newAlternative.getPrevious(),
+//                    newAlternative.getMessageToNext(),
+//                    newAlternative.getNextIsMultipleChoice(),
+//                    valuesFromCombination.stream().map(Option::new).collect(Collectors.toList()) //TODO
+//            );
+//            newAlternativesGenerated.add(intermediaryAlternative);
+//        }
+//
+//        return mergeAlternativeLists(alternatives, newAlternativesGenerated);
+        return null;
     }
 
-    static Set<IntermediaryAlternative> mergeAlternativeLists(final Set<IntermediaryAlternative> originalAlternatives, final Set<IntermediaryAlternative> alternativesToMerge) {
+    /**
+     * This method preserve current Alternatives and add new Alternatives.
+     *
+     * @param alternativesToPreserve {@link Set<IntermediaryAlternative>}
+     * @param alternativesToMerge    {@link Set<IntermediaryAlternative>}
+     * @return {@link Set<IntermediaryAlternative>}
+     */
+    static Set<IntermediaryAlternative> mergeAlternativeLists(final Set<IntermediaryAlternative> alternativesToPreserve, final Set<IntermediaryAlternative> alternativesToMerge) {
 
         final Set<IntermediaryAlternative> collectionToReturn = new HashSet<>();
 
-        collectionToReturn.addAll(originalAlternatives);
-        collectionToReturn.addAll(alternativesToMerge.stream().filter(alternativeToMerge -> originalAlternatives.stream().noneMatch(alternativeToMerge::compareValues)).collect(Collectors.toSet()));
+        collectionToReturn.addAll(alternativesToPreserve);
+        collectionToReturn.addAll(alternativesToMerge.stream().filter(alternativeToMerge -> alternativesToPreserve.stream().noneMatch(alternativeToMerge::compareValues)).collect(Collectors.toSet()));
 
         return collectionToReturn;
     }
 
-    public static HashMap<Integer, String> createIndexesToAlternatives(final Set<String> alternatives) {
+    /**
+     * TODO make tests
+     * Define one index from each alternative
+     *
+     * @param alternatives {@link Set<String>}
+     * @return {@link HashMap}
+     */
+    static HashMap<Integer, String> createIndexesToAlternatives(final Set<String> alternatives) {
         final HashMap<Integer, String> alternativesWithIndexes = new HashMap<>();
 
         final AtomicInteger i = new AtomicInteger(0);
@@ -125,23 +140,30 @@ public class AlternativeService {
         return alternativesWithIndexes;
     }
 
-
-    public static Stream<String> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
+    /**
+     * This method extract the values from all alternatives.
+     * Example: Emanuel, Sarah, [Emanuel, Sarah], Jackson, [Emanuel, Jackson], [Sarah, Jackson], [Sarah, Emanuel, Jackson] to Sarah, Emanuel, Jackson
+     *
+     * @param alternatives {@link Stream<IntermediaryAlternative> }
+     * @return {@link Stream<String> }
+     */
+    static Stream<String> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
         return alternatives.
-                map(intermediaryAlternative -> Arrays.stream(intermediaryAlternative.getOptions())
-                        .map(option -> Arrays.stream(option.getValue().split(",")).collect(Collectors.toSet()))
+                map(intermediaryAlternative ->
+                        Arrays.stream(intermediaryAlternative.getOptions())
+                        .map(option -> Arrays.stream(option.getIdentifier().split(",")).collect(Collectors.toSet()))
                         .collect(Collectors.toSet())
                 ).flatMap(sets -> sets.stream().flatMap(Collection::stream));
     }
 
     /**
-     * @param countAlternatives {@link int}
-     * @return {@link Set <int>}
+     * @param countAlternatives int
+     * @return {@link Set<int>}
      */
-    public static List<int[]> generate(final int countAlternatives) {
+    public static List<int[]> generateCombinations(final int countAlternatives) {
         final List<int[]> elements = new ArrayList<>();
         for (int i = 1; i <= countAlternatives; i++) {
-            elements.addAll(generate(countAlternatives, i));
+            elements.addAll(generateCombinations(countAlternatives, i));
         }
         return elements;
     }
@@ -151,7 +173,7 @@ public class AlternativeService {
      * @param groupAlternatives {@link int}
      * @return {@link Set <int>}
      */
-    public static Set<int[]> generate(final int countAlternatives, final int groupAlternatives) {
+    public static Set<int[]> generateCombinations(final int countAlternatives, final int groupAlternatives) {
         final Set<int[]> combinations = new HashSet<>();
         final int[] combination = new int[groupAlternatives];
 

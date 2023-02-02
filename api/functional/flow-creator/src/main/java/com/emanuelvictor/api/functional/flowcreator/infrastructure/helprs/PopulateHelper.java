@@ -1,10 +1,12 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs;
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
@@ -48,58 +50,58 @@ public class PopulateHelper {
 
         // Client
         final String client = "Bubblemix Tea";
-        final RootAlternative clientSelected = new RootAlternative("Selecione a unidade?", false, new Option(client));
+        final RootAlternative clientSelected = new RootAlternative("Selecione a unidade?", false, new CompanyOption(client));
 
         alternativeService.save(clientSelected);
 
         // Unities
         // ---- Unity 1
         final String unity1 = "BIG - Foz do Iguaçu";
-        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new Option(unity1));
+        final IntermediaryAlternative unity1Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new BranchOption(unity1));
 
         alternativeService.save(unity1Selected);
 
         // ---- Unity 2
         final String unity2 = "Catuaí Palladium - Foz do Iguaçu";
-        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new Option(unity2));
+        final IntermediaryAlternative unity2Selected = new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new BranchOption(unity2));
 
         alternativeService.save(unity2Selected);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 1
         final String person1 = "Andressa";
-        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person1));
+        final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new PersonOption(person1));
 
         alternativeService.save(intermediaryAlternativePerson1);
 
         // Person 2 of Unity 1
         final String person2 = "Marta";
-        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person2));
+        final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new PersonOption(person2));
 
         alternativeService.save(intermediaryAlternativePerson2);
 
         // Person 3 of Unity 1
         final String person3 = "Roberto";
-        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new Option(person3));
+        final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o atendimento?", false, new PersonOption(person3));
 
         alternativeService.save(intermediaryAlternativePerson3);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 2
         final String person4 = "Edson";
-        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person4));
+        final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new PersonOption(person4));
 
         alternativeService.save(intermediaryAlternativePerson4);
 
         // Person 2 of Unity 2
         final String person5 = "Valdir";
-        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person5));
+        final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new PersonOption(person5));
 
         alternativeService.save(intermediaryAlternativePerson5);
 
         // Person 3 of Unity 2
         final String person6 = "Vilma";
-        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new Option(person6));
+        final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o atendimento?", false, new PersonOption(person6));
 
         alternativeService.save(intermediaryAlternativePerson6);
 
@@ -133,20 +135,20 @@ public class PopulateHelper {
     }
 
     private void startProgram(final Integer alternativeId) {
-        final AbstractAlternative abstractAlternative = alternativeService.findById(alternativeId).orElseThrow();
-        final List<IntermediaryAlternative> intermediaryAlternatives = alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()).collect(Collectors.toList());
+        final Alternative alternative = alternativeService.findById(alternativeId).orElseThrow();
+        final List<IntermediaryAlternative> intermediaryAlternatives = alternativeService.findChildrenFromAlternativeId(alternative.getId()).collect(Collectors.toList());
         if (intermediaryAlternatives.size() == 0) {
-            choiceService.makeChoice((IntermediaryAlternative) abstractAlternative);
+            choiceService.makeChoice((IntermediaryAlternative) alternative);
             final Map<String, List<Choice>> choicesMap = choiceRepository.findAll().collect(Collectors.groupingBy(Choice::getPath));
             choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
             System.out.println("------------------------------------------------");
             startProgram();
         }
 
-        System.out.println(abstractAlternative.getMessageToNext());
+        System.out.println(alternative.getMessageToNext());
         final HashMap<Integer, Integer> alternativesMap = showAndReturnOptions(intermediaryAlternatives);
 
-        choice(alternativesMap, abstractAlternative.getNextIsMultipleChoice());
+        choice(alternativesMap, alternative.getNextIsMultipleChoice());
     }
 
     private void startProgram(final Integer... alternativeIds) {

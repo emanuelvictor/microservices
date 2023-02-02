@@ -1,18 +1,18 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Option
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg values: Option) :
-    AbstractAlternative(messageToNext, nextIsMultipleChoice, *values) {
+class IntermediaryAlternative(val previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option) :
+    Alternative(messageToNext, nextIsMultipleChoice, *options) {
 
-    constructor(previous: AbstractAlternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, *options)
+    constructor(previous: Alternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, *options)
 
-    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
+    constructor(previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
         previous,
         messageToNext,
         nextIsMultipleChoice,
@@ -24,7 +24,10 @@ class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: 
      * Example: 'Bubblemix Tea->Catuaí Palladium - Foz do Iguaçu->Vilma'.
      */
     override val path: String
-        get() = previous.path + SEPARATOR + valuesToString()
+        get() = previous.path + SEPARATOR + optionsValuesToString()
+
+    override val signature: String
+        get() = previous.signature + SEPARATOR + optionsIdsToString()
 
     /**
      * @param alternative {@link IntermediaryAlternative} to compare values
@@ -32,7 +35,7 @@ class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: 
     fun compareValues(alternative: IntermediaryAlternative): Boolean {
         options.forEach {
             for ((externalIndex, externalOption) in alternative.options.withIndex()) {
-                if (it.value == externalOption.value)
+                if (it.identifier == externalOption.identifier)
                     break
                 else if (externalIndex == alternative.options.size - 1)
                     return false

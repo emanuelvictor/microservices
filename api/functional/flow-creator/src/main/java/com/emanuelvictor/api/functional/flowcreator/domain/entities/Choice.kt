@@ -1,10 +1,10 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.PersistentEntity
-import java.util.function.Consumer
+import java.time.LocalDateTime
 
 /**
  * @author Emanuel Victor
@@ -13,11 +13,33 @@ import java.util.function.Consumer
  */
 class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
 
+    val date = LocalDateTime.now()
+
+    val options: HashSet<Option> = HashSet()
+        get() {
+            getOptionFromAlternative(alternative, field)
+            return field
+        }
+
     /**
      *
      */
-    fun getPath(): String {
-        return alternative.path
+    val signature: String
+        get() = alternative.signature
+
+    /**
+     *
+     */
+    val path: String
+        get() = alternative.path
+
+    /**
+     *
+     */
+    private fun getOptionFromAlternative(alternative: Alternative, options: HashSet<Option>) {
+        if (alternative is IntermediaryAlternative)
+            getOptionFromAlternative(alternative.previous, options)
+        options.addAll(alternative.options)
     }
 
 }
