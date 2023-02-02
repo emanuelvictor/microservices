@@ -79,32 +79,31 @@ public class AlternativeService {
      * @return {@link Set<IntermediaryAlternative>}
      */
     public static Set<IntermediaryAlternative> generateAlternatives(final Set<IntermediaryAlternative> alternatives, final IntermediaryAlternative newAlternative) {
-//        alternatives.add(newAlternative);
-//
-//        final Set<String> isolatedValuesFromAlternatives = extractIsolatedValuesFromAlternatives(alternatives.stream()).collect(Collectors.toSet());
-//        final HashMap<Integer, String> isolatedValuesFromAlternativesMapedToIndexes = createIndexesToAlternatives(isolatedValuesFromAlternatives);
-//
-//        final List<int[]> combinations = generateCombinations(isolatedValuesFromAlternatives.size());
-//
-//        final Set<IntermediaryAlternative> newAlternativesGenerated = new HashSet<>();
-//
-//        for (final int[] combination : combinations) {
-//            final List<String> valuesFromCombination = new ArrayList<>();
-//            for (final int i : combination) {
-//                valuesFromCombination.add(isolatedValuesFromAlternativesMapedToIndexes.get(i));
-//            }
-//
-//            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
-//                    newAlternative.getPrevious(),
-//                    newAlternative.getMessageToNext(),
-//                    newAlternative.getNextIsMultipleChoice(),
-//                    valuesFromCombination.stream().map(Option::new).collect(Collectors.toList()) //TODO
-//            );
-//            newAlternativesGenerated.add(intermediaryAlternative);
-//        }
-//
-//        return mergeAlternativeLists(alternatives, newAlternativesGenerated);
-        return null;
+        alternatives.add(newAlternative);
+
+        final Set<Option> isolatedOptionsFromAlternatives = extractIsolatedValuesFromAlternatives(alternatives.stream()).collect(Collectors.toSet());
+        final HashMap<Integer, Option> isolatedOptionsFromAlternativesMapedToIndexes = createIndexesToAlternatives(isolatedOptionsFromAlternatives);
+
+        final List<int[]> combinations = generateCombinations(isolatedOptionsFromAlternativesMapedToIndexes.size());
+
+        final Set<IntermediaryAlternative> newAlternativesGenerated = new HashSet<>();
+
+        for (final int[] combination : combinations) {
+            final List<Option> optionsFromCombination = new ArrayList<>();
+            for (final int i : combination) {
+                optionsFromCombination.add(isolatedOptionsFromAlternativesMapedToIndexes.get(i));
+            }
+
+            final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
+                    newAlternative.getPrevious(),
+                    newAlternative.getMessageToNext(),
+                    newAlternative.getNextIsMultipleChoice(),
+                    new ArrayList<>(optionsFromCombination) //TODO
+            );
+            newAlternativesGenerated.add(intermediaryAlternative);
+        }
+
+        return mergeAlternativeLists(alternatives, newAlternativesGenerated);
     }
 
     /**
@@ -128,11 +127,11 @@ public class AlternativeService {
      * TODO make tests
      * Define one index from each alternative
      *
-     * @param alternatives {@link Set<String>}
+     * @param alternatives {@link Set<Option>}
      * @return {@link HashMap}
      */
-    static HashMap<Integer, String> createIndexesToAlternatives(final Set<String> alternatives) {
-        final HashMap<Integer, String> alternativesWithIndexes = new HashMap<>();
+    static HashMap<Integer, Option> createIndexesToAlternatives(final Set<Option> alternatives) {
+        final HashMap<Integer, Option> alternativesWithIndexes = new HashMap<>();
 
         final AtomicInteger i = new AtomicInteger(0);
         alternatives.forEach(alternative -> alternativesWithIndexes.put(i.getAndIncrement(), alternative));
@@ -147,13 +146,12 @@ public class AlternativeService {
      * @param alternatives {@link Stream<IntermediaryAlternative> }
      * @return {@link Stream<String> }
      */
-    static Stream<String> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
+    static Stream<Option> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
         return alternatives.
                 map(intermediaryAlternative ->
                         Arrays.stream(intermediaryAlternative.getOptions())
-                        .map(option -> Arrays.stream(option.getIdentifier().split(",")).collect(Collectors.toSet()))
                         .collect(Collectors.toSet())
-                ).flatMap(sets -> sets.stream().flatMap(Collection::stream));
+                ).flatMap(Collection::stream);
     }
 
     /**

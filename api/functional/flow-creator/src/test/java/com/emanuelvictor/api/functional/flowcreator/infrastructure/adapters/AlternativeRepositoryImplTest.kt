@@ -1,6 +1,5 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
 import org.assertj.core.api.Assertions

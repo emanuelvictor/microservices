@@ -18,7 +18,6 @@ public class ChoiceService {
      * @return {@link Choice}
      */
     public Choice makeChoice(final IntermediaryAlternative alternative) {
-
         return choiceRepository.save(new Choice(alternative));
     }
 

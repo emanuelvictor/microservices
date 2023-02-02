@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-//import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-//import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -16,9 +14,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 /**
  *
  */
-@EnableAsync
-//@EnableFeignClients
-//@EnableDiscoveryClient
 @SpringBootApplication
 public class FlowCreatorApplication extends SpringBootServletInitializer {
 
@@ -51,10 +46,10 @@ public class FlowCreatorApplication extends SpringBootServletInitializer {
     public ApplicationListener<ApplicationReadyEvent> getApplicationReadyEvent() {
         return applicationReadyEvent -> {
 
-//            populateHelper.eraseData();
-//            populateHelper.populateData();
-//
-//            populateHelper.startProgram();
+            populateHelper.eraseData();
+            populateHelper.populateData();
+
+            populateHelper.startProgram();
         };
     }
 

@@ -5,6 +5,11 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
+import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
+import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.AlternativeRepositoryImpl
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.ChoiceRepositoryImpl
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.OptionRepositoryImpl
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs.PopulateHelper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -17,8 +22,17 @@ import org.springframework.boot.test.context.SpringBootTest
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
  */
-@SpringBootTest
-class AlternativeRepositoryTests(@Autowired val alternativeRepository: AlternativeRepository, @Autowired val populateHelper: PopulateHelper) {
+class AlternativeRepositoryTests {
+
+    private val choiceRepository = ChoiceRepositoryImpl();
+
+    private val choiceService = ChoiceService(choiceRepository)
+
+    private val alternativeRepository = AlternativeRepositoryImpl()
+
+    private val alternativeService = AlternativeService(alternativeRepository);
+
+    private val populateHelper = PopulateHelper(choiceService, choiceRepository, alternativeService)
 
     /**
      *

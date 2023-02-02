@@ -1,32 +1,38 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
+import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.AlternativeRepositoryImpl;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  *
  */
-@SpringBootTest
 public class AlternativeServiceTests {
 
-    @Autowired
-    private AlternativeService alternativeService;
+    private final AlternativeRepository alternativeRepository = new AlternativeRepositoryImpl();
+
+    private final AlternativeService alternativeService = new AlternativeService(alternativeRepository);
 
     private IntermediaryAlternative unity1Selected;
 
+    /**
+     *
+     */
     @BeforeEach
     public void beforeEach() {
         final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Selecione a unidade?", false, new CompanyOption("Bubblemix Tea")));
@@ -79,16 +85,21 @@ public class AlternativeServiceTests {
 
     @Test
     public void mustConvertValuesFromAlternativeToSetOfString() {
-        final String sarahName = "Sarah";
-        final String emanuelName = "Emanuel";
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption(sarahName));
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption(emanuelName));
-        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption(sarahName + "," + emanuelName));
-        final Stream<IntermediaryAlternative> alternatives = Stream.of(sarah, emanuel, sarahEEmanuel);
+        final Option sarahOption = new PersonOption("Sarah");
+        final Option emanuelOption = new PersonOption("Emanuel");
+        final Option jacksonOption = new PersonOption("Jackson");
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption);
+        final IntermediaryAlternative jackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, jacksonOption);
+        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption, emanuelOption);
+        final IntermediaryAlternative sarahEJackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption, jacksonOption);
+        final IntermediaryAlternative emanuelEJackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption, jacksonOption);
+        final IntermediaryAlternative emanuelEJacksonESarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption, jacksonOption, sarahOption);
+        final Stream<IntermediaryAlternative> alternatives = Stream.of(sarah, emanuel, jackson, sarahEEmanuel, sarahEJackson, emanuelEJackson, emanuelEJacksonESarah);
 
-        final Set<String> values = AlternativeService.extractIsolatedValuesFromAlternatives(alternatives).collect(Collectors.toSet());
+        final Set<Option> values = AlternativeService.extractIsolatedValuesFromAlternatives(alternatives).collect(Collectors.toSet());
 
-        Assertions.assertThat(values).isEqualTo(Stream.of(sarahName, emanuelName).collect(Collectors.toSet()));
+        Assertions.assertThat(values).isEqualTo(Stream.of(sarahOption, emanuelOption, jacksonOption).collect(Collectors.toSet()));
     }
 
     @Test
