@@ -24,6 +24,8 @@ import org.springframework.boot.test.context.SpringBootTest
  */
 class AlternativeRepositoryTests {
 
+    private val optionRepository = OptionRepositoryImpl();
+
     private val choiceRepository = ChoiceRepositoryImpl();
 
     private val choiceService = ChoiceService(choiceRepository)
@@ -32,7 +34,7 @@ class AlternativeRepositoryTests {
 
     private val alternativeService = AlternativeService(alternativeRepository);
 
-    private val populateHelper = PopulateHelper(choiceService, choiceRepository, alternativeService)
+    private val populateHelper = PopulateHelper(choiceService, optionRepository, choiceRepository, alternativeService)
 
     /**
      *
@@ -48,9 +50,9 @@ class AlternativeRepositoryTests {
      */
     @Test
     fun `Must verify if the database is populated`() {
-        Assertions.assertThat(alternativeRepository.findAll().count()).isEqualTo(17)
+        Assertions.assertThat(alternativeRepository.findAll().count()).isEqualTo(87)
         Assertions.assertThat(alternativeRepository.findAllRootAlternatives().count()).isEqualTo(1)
-        Assertions.assertThat(alternativeRepository.findAllIntermediaryAlternatives().count()).isEqualTo(16)
+        Assertions.assertThat(alternativeRepository.findAllIntermediaryAlternatives().count()).isEqualTo(86)
 
         val rootAlternative = alternativeRepository.findAllRootAlternatives().findFirst().orElseThrow()
         val unities = alternativeRepository.findChildrenFromAlternativeId(rootAlternative.id)

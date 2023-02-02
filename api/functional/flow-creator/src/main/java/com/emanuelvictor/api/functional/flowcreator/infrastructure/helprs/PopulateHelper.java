@@ -92,15 +92,13 @@ public class PopulateHelper {
 
         alternativeService.save(intermediaryAlternativePerson6);
 
-        alternativeService.findChildrenFromAlternativeId(companyAlternative.getId()).collect(Collectors.toList()).forEach(branchAlternative -> {
-            alternativeService.findChildrenFromAlternativeId(branchAlternative.getId()).collect(Collectors.toList()).forEach(intermediaryAlternative -> {
-                for (int i = 1; i <= 5; i++) {
-                    var levelName = "Level " + i;
-                    var levelOption = optionRepository.listByValue(levelName).stream().findFirst().orElse(this.optionRepository.save(new LevelOption(i)));
-                    this.alternativeService.save(new IntermediaryAlternative(intermediaryAlternative, "Thanks!", levelOption));
-                }
-            });
-        });
+        alternativeService.findChildrenFromAlternativeId(companyAlternative.getId()).collect(Collectors.toList()).forEach(branchAlternative -> alternativeService.findChildrenFromAlternativeId(branchAlternative.getId()).collect(Collectors.toList()).forEach(intermediaryAlternative -> {
+            for (int i = 1; i <= 5; i++) {
+                var levelName = "Level " + i;
+                var levelOption = optionRepository.listByValue(levelName).stream().findFirst().orElse(this.optionRepository.save(new LevelOption(i)));
+                this.alternativeService.save(new IntermediaryAlternative(intermediaryAlternative, "Thanks!", levelOption));
+            }
+        }));
     }
 
     /**
