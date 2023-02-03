@@ -1,10 +1,8 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.AlternativeRepositoryImpl
@@ -14,8 +12,6 @@ import com.emanuelvictor.api.functional.flowcreator.infrastructure.helprs.Popula
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 
 /**
  * @author Emanuel Victor

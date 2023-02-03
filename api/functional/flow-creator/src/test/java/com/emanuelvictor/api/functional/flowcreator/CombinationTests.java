@@ -3,7 +3,8 @@ package com.emanuelvictor.api.functional.flowcreator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *

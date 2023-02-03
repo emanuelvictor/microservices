@@ -87,7 +87,7 @@ class ChoiceTests {
     }
 
     /**
-     *  TODO this test is an integration test
+     *
      */
     @Test
     fun `Get all paths from parents`() {
@@ -111,7 +111,7 @@ class ChoiceTests {
         val secondSubSubSubAttendantValue = optionRepository.save(PersonOption("Maria"))
         val subSubSubAttendant = alternativeRepository.save(IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue, secondSubSubSubAttendantValue))
 
-        val fullPaths = extractPathsFromAlternative(Choice(subSubSubAttendant).path)
+        val fullPaths = Choice(subSubSubAttendant).splittedPaths
 
         Assertions.assertThat(fullPaths.size).isEqualTo(18)
         Assertions.assertThat(fullPaths).contains(
@@ -137,7 +137,31 @@ class ChoiceTests {
     }
 
     /**
-     * TODO this test is an integration test
+     *
+     */
+    @Test
+    fun `Get all paths from parents without multiple choices`() {
+        val value = optionRepository.save(CompanyOption("Bubblemix Tea"))
+        val clientSelected = alternativeRepository.save(RootAlternative("Selecione a unidade?", value))
+        val valueFromUnit = optionRepository.save(BranchOption("BIG - Foz do Iguaçu"))
+        val unitSelected = alternativeRepository.save(IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", false, valueFromUnit))
+        val valueFromFirstAttendant = optionRepository.save(PersonOption("Maria"))
+        val attendantSelected = alternativeRepository.save(IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", false, valueFromFirstAttendant))
+        val valueFromFirstSubAttendant = optionRepository.save(PersonOption("Rafael"))
+        val subAttendants = alternativeRepository.save(IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", valueFromFirstSubAttendant))
+        val subSubAttendantValue = optionRepository.save(PersonOption("subAtendantValue"))
+        val subSubAttendent = alternativeRepository.save(IntermediaryAlternative(subAttendants, "nanana", subSubAttendantValue))
+        val firstSubSubSubAttendantValue = optionRepository.save(PersonOption("Rosa"))
+        val subSubSubAttendant = alternativeRepository.save(IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue))
+
+        val fullPaths = Choice(subSubSubAttendant).splittedPaths
+
+        Assertions.assertThat(fullPaths.size).isEqualTo(1)
+        Assertions.assertThat(fullPaths).contains("Bubblemix Tea->BIG - Foz do Iguaçu->Maria->Rafael->subAtendantValue->Rosa")
+    }
+
+    /**
+     *
      */
     @Test
     fun `Must return the signature from Choice`() {
@@ -180,7 +204,7 @@ class ChoiceTests {
 
 
     /**
-     *  TODO this test is an integration test
+     *
      */
     @Test
     fun `Learning Tests`() {
@@ -250,22 +274,4 @@ class ChoiceTests {
         })
         return combinations
     }
-
-    /**
-     *
-     */
-    private fun extractPathsFromAlternative(pathFromAlternative: String): HashSet<String> {
-        val paths = HashSet<String>()
-        if (pathFromAlternative.contains("["))
-            pathFromAlternative.substring(pathFromAlternative.indexOf("[") + 1, pathFromAlternative.indexOf("]"))
-                .split(", ")
-                .forEach(Consumer {
-                    val extracted = (pathFromAlternative.substring(0, pathFromAlternative.indexOf("[")) + it + pathFromAlternative.substring(pathFromAlternative.indexOf("]") + 1))
-                    if (!extracted.contains("["))
-                        paths.add(extracted)
-                    paths.addAll(extractPathsFromAlternative(extracted))
-                })
-        return paths
-    }
-
 }

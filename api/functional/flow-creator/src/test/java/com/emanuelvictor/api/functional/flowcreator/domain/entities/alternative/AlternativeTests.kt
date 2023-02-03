@@ -1,6 +1,5 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

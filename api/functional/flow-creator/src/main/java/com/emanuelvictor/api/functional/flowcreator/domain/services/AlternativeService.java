@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -15,13 +15,13 @@ import java.util.stream.Stream;
 /**
  *
  */
-@RequiredArgsConstructor
 public class AlternativeService {
 
-    /**
-     *
-     */
     private final AlternativeRepository alternativeRepository;
+
+    public AlternativeService(AlternativeRepository alternativeRepository) {
+        this.alternativeRepository = alternativeRepository;
+    }
 
     /**
      * @param alternative {@link IntermediaryAlternative}
@@ -150,7 +150,7 @@ public class AlternativeService {
         return alternatives.
                 map(intermediaryAlternative ->
                         Arrays.stream(intermediaryAlternative.getOptions())
-                        .collect(Collectors.toSet())
+                                .collect(Collectors.toSet())
                 ).flatMap(Collection::stream);
     }
 

@@ -5,6 +5,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.PersistentEntity
 import java.time.LocalDateTime
+import java.util.function.Consumer
 
 /**
  * @author Emanuel Victor
@@ -13,7 +14,7 @@ import java.time.LocalDateTime
  */
 class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
 
-    val date = LocalDateTime.now()
+    val date: LocalDateTime = LocalDateTime.now()
 
     val options: HashSet<Option> = HashSet()
         get() {
@@ -34,6 +35,16 @@ class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
         get() = alternative.path
 
     /**
+     * Extract all splitted paths from alternatives.
+     * Example:     Company -> Branch -> [Attendant1, Attendant2] -> level 1
+     *              to
+     *              Company -> Branch -> Attendant1 -> level 1
+     *              Company -> Branch -> Attendant2 -> level 1
+     */
+    val splittedPaths: HashSet<String>
+        get() = extractPathsFromChoice(this.path)
+
+    /**
      *
      */
     private fun getOptionFromAlternative(alternative: Alternative, options: HashSet<Option>) {
@@ -42,4 +53,26 @@ class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
         options.addAll(alternative.options)
     }
 
+    /**
+     * Extract all splitted paths from alternatives.
+     * Example:     Company -> Branch -> [Attendant1, Attendant2] -> level 1
+     *              to
+     *              Company -> Branch -> Attendant1 -> level 1
+     *              Company -> Branch -> Attendant2 -> level 1
+     */
+    private fun extractPathsFromChoice(pathFromChoice: String): HashSet<String> {
+        val paths = HashSet<String>()
+        if (pathFromChoice.contains("["))
+            pathFromChoice.substring(pathFromChoice.indexOf("[") + 1, pathFromChoice.indexOf("]"))
+                .split(", ")
+                .forEach(Consumer {
+                    val extracted = (pathFromChoice.substring(0, pathFromChoice.indexOf("[")) + it + pathFromChoice.substring(pathFromChoice.indexOf("]") + 1))
+                    if (!extracted.contains("["))
+                        paths.add(extracted)
+                    paths.addAll(extractPathsFromChoice(extracted))
+                })
+        else
+            paths.add(pathFromChoice)
+        return paths
+    }
 }
