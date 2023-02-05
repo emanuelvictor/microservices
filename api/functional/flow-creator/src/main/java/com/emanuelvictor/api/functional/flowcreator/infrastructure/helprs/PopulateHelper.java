@@ -124,25 +124,44 @@ public class PopulateHelper {
             System.out.println(alternative.getMessageToNext());
             choiceService.makeChoice((IntermediaryAlternative) alternative);
 
-            final Map<String, List<String>> choicesMap =
-                    choiceRepository.findAll()
-                            .map(choice -> Stream.of(choice.getSplittedPaths())
-                                    .map(HashSet::new)
-                                    .collect(Collectors.toSet())
-                            )
-                            .flatMap(sets ->
-                                    sets.stream().flatMap(Collection::stream)
-                            )
-                            .collect(Collectors.groupingBy(s -> s));
-            System.out.println("----------------------------Resultados------------------------------");
-            choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
-            System.out.println("--------------------------------------------------------------------");
+            showRaw();
+
             startProgram();
         }
 
         final HashMap<Integer, Integer> alternativesMap = showAndReturnOptions(alternative, intermediaryAlternatives);
 
         choice(alternativesMap, alternative.getNextIsMultipleChoice());
+    }
+
+    public void showGrouped() {
+        final Map<String, List<String>> choicesMap =
+                choiceRepository.findAll()
+                        .map(choice -> Stream.of(choice.getSplittedPaths())
+                                .map(HashSet::new)
+                                .collect(Collectors.toSet())
+                        )
+                        .flatMap(sets ->
+                                sets.stream().flatMap(Collection::stream)
+                        )
+                        .collect(Collectors.groupingBy(s -> s));
+        System.out.println("----------------------------Resultados------------------------------");
+        choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
+        System.out.println("--------------------------------------------------------------------");
+    }
+
+    public void showRaw() {
+        System.out.println("----------------------------Resultados------------------------------");
+        choiceRepository.findAll()
+                .map(choice -> Stream.of(choice.getSplittedPaths())
+                        .map(ArrayList::new)
+                        .collect(Collectors.toList())
+                )
+                .flatMap(arrayLists ->
+                        arrayLists.stream().sorted().flatMap(Collection::stream)
+                ).sorted()
+                .forEach(System.out::println);
+        System.out.println("--------------------------------------------------------------------");
     }
 
     public void choice(final HashMap<Integer, Integer> alternativesMap, final boolean isMultipleChoice) {
