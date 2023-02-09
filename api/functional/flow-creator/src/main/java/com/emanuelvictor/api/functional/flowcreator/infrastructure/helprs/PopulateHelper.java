@@ -15,6 +15,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.SEPARATOR;
+
 /**
  *
  */
@@ -146,21 +148,24 @@ public class PopulateHelper {
                         )
                         .collect(Collectors.groupingBy(s -> s));
         System.out.println("----------------------------Resultados------------------------------");
+        System.out.println(SEPARATOR + choiceRepository.findAll().findFirst().orElseThrow().getHeader());
         choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
         System.out.println("--------------------------------------------------------------------");
     }
 
     public void showRaw() {
-        System.out.println("----------------------------Resultados------------------------------");
-        choiceRepository.findAll()
+        final Stream<String> paths = choiceRepository.findAll()
                 .map(choice -> Stream.of(choice.getSplittedPaths())
                         .map(ArrayList::new)
                         .collect(Collectors.toList())
                 )
                 .flatMap(arrayLists ->
                         arrayLists.stream().sorted().flatMap(Collection::stream)
-                ).sorted()
-                .forEach(System.out::println);
+                )
+                .sorted();
+        System.out.println("----------------------------Resultados------------------------------");
+        System.out.println(SEPARATOR + choiceRepository.findAll().findFirst().orElseThrow().getHeader());
+        paths.forEach(System.out::println);
         System.out.println("--------------------------------------------------------------------");
     }
 

@@ -19,16 +19,16 @@ class AlternativeTests {
         val twoValues = arrayListOf(PersonOption("Value One"), PersonOption("Value Two"))
         val alternativeWithTwoValues = object : Alternative("messageToNext", true, twoValues) {
             override val signature: String
-                get() = TODO("Not yet implemented")
+                get() = ("Not yet implemented")
             override val path: String
-                get() = TODO("Not yet implemented")
+                get() = ("Not yet implemented")
         }
         val oneValue = PersonOption("Value One")
         val alternativeWithOneValue = object : Alternative("messageToNext", true, oneValue) {
             override val signature: String
-                get() = TODO("Not yet implemented")
+                get() = ("Not yet implemented")
             override val path: String
-                get() = TODO("Not yet implemented")
+                get() = ("Not yet implemented")
         }
 
         val toStringFromTwoValues = alternativeWithTwoValues.optionsValuesToString()

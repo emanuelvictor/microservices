@@ -274,4 +274,25 @@ class ChoiceTests {
         })
         return combinations
     }
+
+    @Test
+    fun `Must back header of choice`() {
+        val company = optionRepository.save(CompanyOption("Fiserv"))
+        val companyAlternative = alternativeRepository.save(RootAlternative("Selecione a tribo", company))
+        val tribe = optionRepository.save(SectorOption("Onboard"))
+        val tribeAlternative = alternativeRepository.save(IntermediaryAlternative(companyAlternative, "Selecione a sua aldeia", tribe))
+        val village = optionRepository.save(SectorOption("Register"))
+        val villageAlternative = alternativeRepository.save(IntermediaryAlternative(tribeAlternative, "Quem são seus líderes?", true, village))
+        val rafael = optionRepository.save(PersonOption("Rafael"))
+        val ricardo = optionRepository.save(PersonOption("Ricardo"))
+        val samuel = optionRepository.save(PersonOption("Samuel"))
+        val managersAlternative = alternativeRepository.save(IntermediaryAlternative(villageAlternative, "Como você avalia seus gestores no quesito 'Empatia'?", rafael, ricardo, samuel))
+        val level5 = optionRepository.save(LevelOption(5))
+        val level5Alternative = alternativeRepository.save(IntermediaryAlternative(managersAlternative, "Obrigado!", level5))
+        val signatureExpected = companyAlternative.messageToNext + SEPARATOR + tribeAlternative.messageToNext + SEPARATOR + villageAlternative.messageToNext + SEPARATOR + managersAlternative.messageToNext + SEPARATOR + level5Alternative.messageToNext
+
+        val headerFromChoice = Choice(level5Alternative).header
+
+        Assertions.assertThat(headerFromChoice).isEqualTo(signatureExpected)
+    }
 }
