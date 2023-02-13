@@ -1,8 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence;
 
 
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.IPersistentEntity;
-
 import java.util.Optional;
 import java.util.stream.Stream;
 

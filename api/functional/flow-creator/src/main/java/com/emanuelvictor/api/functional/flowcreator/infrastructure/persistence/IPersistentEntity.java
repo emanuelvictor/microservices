@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic;
+package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence;
 
 import java.io.Serializable;
 

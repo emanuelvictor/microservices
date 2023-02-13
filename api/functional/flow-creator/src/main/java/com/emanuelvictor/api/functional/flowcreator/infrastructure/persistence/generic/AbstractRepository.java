@@ -1,6 +1,7 @@
-package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence;
+package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic;
 
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.IPersistentEntity;
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository;
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.IPersistentEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public abstract class AbstractRepository<T extends IPersistentEntity, ID> implem
      * @throws IllegalArgumentException if {@literal id} is {@literal null}.
      */
     public Optional<T> findById(ID id) {
-        return collection.stream().filter(t -> t.getId().equals(id)).collect(Collectors.toList()).stream().findFirst(); // TODO Acoplamento, Must have annotations to use reflection
+        return collection.stream().filter(t -> t.getId().equals(id)).toList().stream().findFirst(); // TODO Coupling, Must have annotations to use reflection
     }
 
     /**

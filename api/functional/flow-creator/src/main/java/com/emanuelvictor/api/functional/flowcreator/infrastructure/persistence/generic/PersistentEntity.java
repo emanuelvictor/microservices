@@ -1,5 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic;
 
+import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.IPersistentEntity;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
