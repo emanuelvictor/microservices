@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.Companion.SEPARATOR
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
@@ -204,6 +204,32 @@ class ChoiceTests {
     /**
      *
      */
+    @Test
+    fun `Must back header of choice`() {
+        val company = CompanyOption("Fiserv")
+        val companyAlternative = RootAlternative("Selecione a tribo", company)
+        val tribe = SectorOption("Onboard")
+        val tribeAlternative = IntermediaryAlternative(companyAlternative, "Selecione a sua aldeia", tribe)
+        val village = SectorOption("Register")
+        val villageAlternative = IntermediaryAlternative(tribeAlternative, "Quem são seus líderes?", true, village)
+        val rafael = PersonOption("Rafael")
+        val ricardo = PersonOption("Ricardo")
+        val samuel = PersonOption("Samuel")
+        val managersAlternative = IntermediaryAlternative(villageAlternative, "Como você avalia seus gestores no quesito 'Empatia'?", rafael, ricardo, samuel)
+        val level5 = LevelOption(5)
+        val level5Alternative = IntermediaryAlternative(managersAlternative, "Obrigado!", level5)
+        val signatureExpected =
+            companyAlternative.messageToNext + SEPARATOR + tribeAlternative.messageToNext + SEPARATOR + villageAlternative.messageToNext + SEPARATOR + managersAlternative.messageToNext + SEPARATOR + level5Alternative.messageToNext
+
+        val headerFromChoice = Choice(level5Alternative).header
+
+        Assertions.assertThat(headerFromChoice).isEqualTo(signatureExpected)
+    }
+
+
+    /**
+     *
+     */
     @Deprecated("This algorithm is deprecated")
     private fun extractAllCombinationsFromFullPaths(fullPaths: Set<String>): ArrayList<String> {
         val combinations = ArrayList<String>()
@@ -221,26 +247,5 @@ class ChoiceTests {
             })
         })
         return combinations
-    }
-
-    @Test
-    fun `Must back header of choice`() {
-        val company = CompanyOption("Fiserv")
-        val companyAlternative = RootAlternative("Selecione a tribo", company)
-        val tribe = SectorOption("Onboard")
-        val tribeAlternative = IntermediaryAlternative(companyAlternative, "Selecione a sua aldeia", tribe)
-        val village = SectorOption("Register")
-        val villageAlternative = IntermediaryAlternative(tribeAlternative, "Quem são seus líderes?", true, village)
-        val rafael = PersonOption("Rafael")
-        val ricardo = PersonOption("Ricardo")
-        val samuel = PersonOption("Samuel")
-        val managersAlternative = IntermediaryAlternative(villageAlternative, "Como você avalia seus gestores no quesito 'Empatia'?", rafael, ricardo, samuel)
-        val level5 = LevelOption(5)
-        val level5Alternative = IntermediaryAlternative(managersAlternative, "Obrigado!", level5)
-        val signatureExpected = companyAlternative.messageToNext + SEPARATOR + tribeAlternative.messageToNext + SEPARATOR + villageAlternative.messageToNext + SEPARATOR + managersAlternative.messageToNext + SEPARATOR + level5Alternative.messageToNext
-
-        val headerFromChoice = Choice(level5Alternative).header
-
-        Assertions.assertThat(headerFromChoice).isEqualTo(signatureExpected)
     }
 }

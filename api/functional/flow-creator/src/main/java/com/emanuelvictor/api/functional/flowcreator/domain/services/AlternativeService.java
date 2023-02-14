@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
@@ -43,7 +43,7 @@ public class AlternativeService {
     }
 
     /**
-     * @return {@link Stream<RootAlternative>}
+     * @return {@link Stream< RootAlternative >}
      */
     public Stream<RootAlternative> findAllRootAlternatives() {
         return alternativeRepository.findAllRootAlternatives();
@@ -51,15 +51,15 @@ public class AlternativeService {
 
     /**
      * @param alternativeId {@link Integer}
-     * @return {@link Optional< Alternative >}
+     * @return {@link Optional<  AbstractAlternative  >}
      */
-    public Optional<Alternative> findById(final Integer alternativeId) {
+    public Optional<AbstractAlternative> findById(final Integer alternativeId) {
         return alternativeRepository.findById(alternativeId);
     }
 
     /**
      * @param id {@link Integer}
-     * @return {@link Stream<IntermediaryAlternative>}
+     * @return {@link Stream< IntermediaryAlternative >}
      */
     public Stream<IntermediaryAlternative> findChildrenFromAlternativeId(final Integer id) {
         return alternativeRepository.findChildrenFromAlternativeId(id);
@@ -73,9 +73,9 @@ public class AlternativeService {
     }
 
     /**
-     * @param alternatives   {@link Set<IntermediaryAlternative>}
+     * @param alternatives   {@link Set< IntermediaryAlternative >}
      * @param newAlternative {@link IntermediaryAlternative}
-     * @return {@link Set<IntermediaryAlternative>}
+     * @return {@link Set< IntermediaryAlternative >}
      */
     public static Set<IntermediaryAlternative> generateAlternatives(final Set<IntermediaryAlternative> alternatives, final IntermediaryAlternative newAlternative) {
         alternatives.add(newAlternative);
@@ -108,9 +108,9 @@ public class AlternativeService {
     /**
      * This method preserve current Alternatives and add new Alternatives.
      *
-     * @param alternativesToPreserve {@link Set<IntermediaryAlternative>}
-     * @param alternativesToMerge    {@link Set<IntermediaryAlternative>}
-     * @return {@link Set<IntermediaryAlternative>}
+     * @param alternativesToPreserve {@link Set< IntermediaryAlternative >}
+     * @param alternativesToMerge    {@link Set< IntermediaryAlternative >}
+     * @return {@link Set< IntermediaryAlternative >}
      */
     static Set<IntermediaryAlternative> mergeAlternativeLists(final Set<IntermediaryAlternative> alternativesToPreserve, final Set<IntermediaryAlternative> alternativesToMerge) {
 
@@ -142,7 +142,7 @@ public class AlternativeService {
      * This method extract the values from all alternatives.
      * Example: Emanuel, Sarah, [Emanuel, Sarah], Jackson, [Emanuel, Jackson], [Sarah, Jackson], [Sarah, Emanuel, Jackson] to Sarah, Emanuel, Jackson
      *
-     * @param alternatives {@link Stream<IntermediaryAlternative> }
+     * @param alternatives {@link Stream< IntermediaryAlternative > }
      * @return {@link Stream<String> }
      */
     static Stream<Option> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {

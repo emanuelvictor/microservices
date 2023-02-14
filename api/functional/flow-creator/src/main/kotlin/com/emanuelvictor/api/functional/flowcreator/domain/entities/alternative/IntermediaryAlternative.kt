@@ -7,12 +7,12 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Optio
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class IntermediaryAlternative(val previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option) :
-    Alternative(messageToNext, nextIsMultipleChoice, *options) {
+class IntermediaryAlternative(val previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option) :
+    AbstractAlternative(messageToNext, nextIsMultipleChoice, *options) {
 
-    constructor(previous: Alternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, *options)
+    constructor(previous: AbstractAlternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, *options)
 
-    constructor(previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
+    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
         previous,
         messageToNext,
         nextIsMultipleChoice,

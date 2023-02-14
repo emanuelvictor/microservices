@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  *
  */
 @SpringBootTest
-public class AlternativeServiceTests {
+public class AbstractAlternativeServiceTests {
 
     @Autowired
     private AlternativeService alternativeService;

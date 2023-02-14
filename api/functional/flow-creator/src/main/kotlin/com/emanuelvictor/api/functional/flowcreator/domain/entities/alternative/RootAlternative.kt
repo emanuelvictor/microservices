@@ -7,7 +7,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Optio
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class RootAlternative(messageToNext: String, nextIsMultipleChoice: Boolean = false, option: Option) : Alternative(messageToNext, nextIsMultipleChoice, option) {
+class RootAlternative(messageToNext: String, nextIsMultipleChoice: Boolean = false, option: Option) : AbstractAlternative(messageToNext, nextIsMultipleChoice, option) {
 
     constructor(messageToNext: String, option: Option) : this(messageToNext, false, option)
 

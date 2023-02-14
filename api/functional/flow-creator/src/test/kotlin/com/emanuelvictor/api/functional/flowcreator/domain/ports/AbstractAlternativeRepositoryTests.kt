@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
  * @since 2.0.0, 01/01/2020
  */
 @SpringBootTest
-class AlternativeRepositoryTests(
+class AbstractAlternativeRepositoryTests(
     @Autowired private val alternativeRepository: AlternativeRepository,
     @Autowired private val populateHelper: PopulateHelper
 ) {

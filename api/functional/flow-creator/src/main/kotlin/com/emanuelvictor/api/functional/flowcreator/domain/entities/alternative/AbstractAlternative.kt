@@ -9,7 +9,7 @@ import java.util.stream.Collectors
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-abstract class Alternative(val messageToNext: String, val nextIsMultipleChoice: Boolean, vararg val options: Option) : PersistentEntity() {
+abstract class AbstractAlternative(val messageToNext: String, val nextIsMultipleChoice: Boolean, vararg val options: Option) : PersistentEntity() {
 
     constructor(messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(messageToNext, nextIsMultipleChoice, *values.toTypedArray())
 

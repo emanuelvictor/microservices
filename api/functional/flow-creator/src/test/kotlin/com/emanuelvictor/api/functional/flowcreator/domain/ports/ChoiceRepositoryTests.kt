@@ -10,9 +10,6 @@ import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.Ch
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.OptionRepository
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.AlternativeRepositoryImpl
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.ChoiceRepositoryImpl
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters.OptionRepositoryImpl
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

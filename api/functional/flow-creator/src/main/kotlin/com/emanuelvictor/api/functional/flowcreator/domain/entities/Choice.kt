@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.Companion.SEPARATOR
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
@@ -46,15 +46,15 @@ class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
     /**
      *
      */
-    private fun getHeaderFromAlternative(alternative: Alternative, header: StringBuilder): StringBuilder {
+    private fun getHeaderFromAlternative(abstractAlternative: AbstractAlternative, header: StringBuilder): StringBuilder {
 
-        if (alternative is IntermediaryAlternative)
-            getHeaderFromAlternative(alternative.previous, header)
+        if (abstractAlternative is IntermediaryAlternative)
+            getHeaderFromAlternative(abstractAlternative.previous, header)
 
-        if (alternative is RootAlternative)
-            header.append(alternative.messageToNext)
+        if (abstractAlternative is RootAlternative)
+            header.append(abstractAlternative.messageToNext)
         else
-            header.append(SEPARATOR).append(alternative.messageToNext)
+            header.append(SEPARATOR).append(abstractAlternative.messageToNext)
 
         return header
     }
@@ -72,10 +72,10 @@ class Choice(val alternative: IntermediaryAlternative) : PersistentEntity() {
     /**
      *
      */
-    private fun getOptionFromAlternative(alternative: Alternative, options: HashSet<Option>) {
-        if (alternative is IntermediaryAlternative)
-            getOptionFromAlternative(alternative.previous, options)
-        options.addAll(alternative.options)
+    private fun getOptionFromAlternative(abstractAlternative: AbstractAlternative, options: HashSet<Option>) {
+        if (abstractAlternative is IntermediaryAlternative)
+            getOptionFromAlternative(abstractAlternative.previous, options)
+        options.addAll(abstractAlternative.options)
     }
 
     /**
