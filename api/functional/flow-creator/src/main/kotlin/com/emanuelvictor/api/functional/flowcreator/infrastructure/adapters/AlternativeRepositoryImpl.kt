@@ -4,7 +4,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.AbstractRepository
+import io.github.emanuelvictor.commons.persistence.generic.AbstractRepository
 import org.springframework.stereotype.Repository
 import java.util.stream.Stream
 

@@ -2,7 +2,7 @@ package com.emanuelvictor.api.functional.flowcreator.infrastructure.adapters
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
 import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.OptionRepository
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.AbstractRepository
+import io.github.emanuelvictor.commons.persistence.generic.AbstractRepository
 import org.springframework.stereotype.Repository
 import java.util.stream.Collectors
 

@@ -15,7 +15,7 @@ class AlternativeTests {
      *
      */
     @Test
-    fun `Must convert Set to String`() {
+    fun `Must create instance from Alternative`() {
         val twoValues = arrayListOf(PersonOption("Value One"), PersonOption("Value Two"))
         val alternativeWithTwoValues = object : Alternative("messageToNext", true, twoValues) {
             override val signature: String

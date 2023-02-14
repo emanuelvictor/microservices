@@ -1,13 +1,11 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.option
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
-
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class CompanyOption(val name: String) : Option(name) {
+class CompanyOption(name: String) : Option(name) {
 //    first name
     // e-mail
 //    document

@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.CrudRepository
+import io.github.emanuelvictor.commons.persistence.CrudRepository
 
 /**
  * @author Emanuel Victor

@@ -97,7 +97,7 @@ public class AlternativeService {
                     newAlternative.getPrevious(),
                     newAlternative.getMessageToNext(),
                     newAlternative.getNextIsMultipleChoice(),
-                    new ArrayList<>(optionsFromCombination) //TODO
+                    new ArrayList<>(optionsFromCombination)
             );
             newAlternativesGenerated.add(intermediaryAlternative);
         }

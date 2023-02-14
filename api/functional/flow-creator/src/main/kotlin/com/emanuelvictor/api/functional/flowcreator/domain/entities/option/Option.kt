@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.option
 
-import com.emanuelvictor.api.functional.flowcreator.infrastructure.persistence.generic.PersistentEntity
+import io.github.emanuelvictor.commons.persistence.generic.PersistentEntity
+
 
 /**
  * @author Emanuel Victor
