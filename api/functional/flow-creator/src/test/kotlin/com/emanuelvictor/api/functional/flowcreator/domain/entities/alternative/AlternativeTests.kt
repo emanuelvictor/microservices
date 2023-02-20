@@ -24,7 +24,7 @@ class AlternativeTests {
          *
          */
         @Test
-        fun `Must create instance from Alternative`() {
+        fun `Must create instance from AbstractAlternative`() {
             val twoValues = arrayListOf(PersonOption("Value One"), PersonOption("Value Two"))
             val abstractAlternativeWithTwoValues = object : AbstractAlternative("messageToNext", true, twoValues) {
                 override val signature: String
@@ -58,7 +58,7 @@ class AlternativeTests {
          *
          */
         @Test
-        fun `Instance Of Intermediary Alternative Tests`() {
+        fun `Must create a instance from IntermediaryAlternative`() {
             val value = "Bubblemix Tea"
             val clientSelected = RootAlternative("Selecione a unidade?", CompanyOption(value))
             val valueFromUnit = "BIG - Foz do Iguaçu"
