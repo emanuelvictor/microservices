@@ -15,13 +15,13 @@ public class Beans {
 
     /**
      * @param rootAlternativeRepository         {@link RootAlternativeRepository}
-     * @param abstractAlternativeRepository     {@link AbstractAlternativeRepository}
+     * @param alternativeRepository     {@link AlternativeRepository}
      * @param intermediaryAlternativeRepository {@link IntermediaryAlternativeRepository}
      * @return {@link AlternativeService}
      */
     @Bean
-    public AlternativeService alternativeService(final RootAlternativeRepository rootAlternativeRepository, final AbstractAlternativeRepository abstractAlternativeRepository, final IntermediaryAlternativeRepository intermediaryAlternativeRepository) {
-        return new AlternativeService(rootAlternativeRepository, abstractAlternativeRepository, intermediaryAlternativeRepository);
+    public AlternativeService alternativeService(final RootAlternativeRepository rootAlternativeRepository, final AlternativeRepository alternativeRepository, final IntermediaryAlternativeRepository intermediaryAlternativeRepository) {
+        return new AlternativeService(rootAlternativeRepository, alternativeRepository, intermediaryAlternativeRepository);
     }
 
     /**

@@ -12,25 +12,25 @@ import jakarta.persistence.ManyToOne
  * @since 1.0.0, 25/08/2021
  */
 @Entity
-class IntermediaryAlternative : AbstractAlternative {
+class IntermediaryAlternative : Alternative {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "alternative_id", nullable = false)
-    var previous: AbstractAlternative? = null
+    var previous: Alternative? = null
 
     constructor(
-        previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option
+        previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option
     ) : super(messageToNext, nextIsMultipleChoice, options.toList()) {
         this.previous = previous
         this.generatePath()
         this.generateSignature()
     }
 
-    constructor(previous: AbstractAlternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
+    constructor(previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
         previous, messageToNext, nextIsMultipleChoice, *values.toTypedArray()
     )
 
-    constructor(previous: AbstractAlternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, options.toList())
+    constructor(previous: Alternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, options.toList())
 
     /**
      * @return This recursive method return the total path from the alternative.

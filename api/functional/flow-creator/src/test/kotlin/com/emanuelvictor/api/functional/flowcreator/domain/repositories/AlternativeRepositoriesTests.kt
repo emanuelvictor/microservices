@@ -20,7 +20,7 @@ import org.springframework.test.context.jdbc.Sql
 class AlternativeRepositoriesTests(
     @Autowired private val optionRepository: OptionRepository,
     @Autowired private val rootAlternativeRepository: RootAlternativeRepository,
-    @Autowired private val abstractAlternativeRepository: AbstractAlternativeRepository,
+    @Autowired private val alternativeRepository: AlternativeRepository,
     @Autowired private val intermediaryAlternativeRepository: IntermediaryAlternativeRepository,
     @Autowired private val populateHelper: PopulateHelper
 ) {
@@ -39,7 +39,7 @@ class AlternativeRepositoriesTests(
     @Test
     @Sql("/dataset/truncate-all-tables.sql")
     fun `Must verify if the database is populated`() {
-        Assertions.assertThat(abstractAlternativeRepository.findAll().count()).isEqualTo(17)
+        Assertions.assertThat(alternativeRepository.findAll().count()).isEqualTo(17)
         Assertions.assertThat(rootAlternativeRepository.findAll().count()).isEqualTo(1)
         Assertions.assertThat(intermediaryAlternativeRepository.findAll().count()).isEqualTo(16)
 
@@ -68,12 +68,12 @@ class AlternativeRepositoriesTests(
     @Sql("/dataset/truncate-all-tables.sql")
     fun `Must save IntermediaryAlternative`() {
         val value = "BubbleFresh Tea"
-        val clientSelected = abstractAlternativeRepository.save(RootAlternative("Selecione a unidade?", optionRepository.save(CompanyOption(value))))
+        val clientSelected = alternativeRepository.save(RootAlternative("Selecione a unidade?", optionRepository.save(CompanyOption(value))))
         val valueFromUnit = "BIG - Foz do Iguaçu"
         val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", optionRepository.findByIdentifier(valueFromUnit).orElseGet { optionRepository.save(CompanyOption(valueFromUnit)) })
         Assertions.assertThat(unitSelected.id).isNull()
 
-        abstractAlternativeRepository.save(unitSelected)
+        alternativeRepository.save(unitSelected)
 
         Assertions.assertThat(unitSelected.id).isNotNull
     }
@@ -83,13 +83,13 @@ class AlternativeRepositoriesTests(
      */
     @Test
     @Sql("/dataset/truncate-all-tables.sql")
-    fun `Must find AbstractAlternatvie by path`() {
+    fun `Must find Alternatvie by path`() {
         val companyOption  = optionRepository.save(optionRepository.save(CompanyOption("Company")))
-        val companyAlternative = abstractAlternativeRepository.save(RootAlternative("Selecione a unidade?", companyOption))
+        val companyAlternative = alternativeRepository.save(RootAlternative("Selecione a unidade?", companyOption))
         val branchOption =  optionRepository.save(optionRepository.save(CompanyOption("Branch")))
-        val alternativeExpected = abstractAlternativeRepository.save(IntermediaryAlternative(companyAlternative, "Por quem você foi atendido?", branchOption))
+        val alternativeExpected = alternativeRepository.save(IntermediaryAlternative(companyAlternative, "Por quem você foi atendido?", branchOption))
 
-        val alternative = abstractAlternativeRepository.findByPath(alternativeExpected.path!!).orElseThrow()
+        val alternative = alternativeRepository.findByPath(alternativeExpected.path!!).orElseThrow()
 
         Assertions.assertThat(alternative.id).isEqualTo(alternativeExpected.id)
     }
@@ -104,7 +104,7 @@ class AlternativeRepositoriesTests(
         val clientSelected = RootAlternative("Selecione a unidade?", optionRepository.save(CompanyOption(value)))
         Assertions.assertThat(clientSelected.id).isNull()
 
-        abstractAlternativeRepository.save(clientSelected)
+        alternativeRepository.save(clientSelected)
 
         Assertions.assertThat(clientSelected.id).isNotNull
     }

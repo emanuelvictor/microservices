@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.application.resources;
 
 import com.emanuelvictor.api.functional.flowcreator.application.resources.generic.AbstractResource;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("alternatives")
-public class AlternativeResource extends AbstractResource<AbstractAlternative, Long> {
+public class AlternativeResource extends AbstractResource<Alternative, Long> {
 
     private final AlternativeService alternativeService;
 
     /**
      * @param defaultFilter String
-     * @return Page<AbstractAlternative>
+     * @return Page<Alternative>
      */
     @GetMapping
-    public Page<AbstractAlternative> listByFilters(final String defaultFilter, final boolean onlyRoot, final Pageable pageable) {
+    public Page<Alternative> listByFilters(final String defaultFilter, final boolean onlyRoot, final Pageable pageable) {
         return alternativeService.listByFilters(defaultFilter, onlyRoot, pageable);
     }
 }

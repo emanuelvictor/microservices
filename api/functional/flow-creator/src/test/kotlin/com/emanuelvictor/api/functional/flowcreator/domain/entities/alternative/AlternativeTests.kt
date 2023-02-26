@@ -19,22 +19,22 @@ class AlternativeTests {
      *
      */
     @Nested
-    inner class AbstractAlternativeTests {
+    inner class AlternativeTests {
 
         /**
          *
          */
         @Test
-        fun `Must create instance from AbstractAlternative`() {
+        fun `Must create instance from Alternative`() {
             val twoValues = arrayListOf(PersonOption("Value One"), PersonOption("Value Two"))
-            val abstractAlternativeWithTwoValues = object : AbstractAlternative("messageToNext", true, twoValues) {
+            val alternativeWithTwoValues = object : Alternative("messageToNext", true, twoValues) {
             }
             val oneValue = PersonOption("Value One")
-            val abstractAlternativeWithOneValue = object : AbstractAlternative("messageToNext", true, oneValue) {
+            val alternativeWithOneValue = object : Alternative("messageToNext", true, oneValue) {
             }
 
-            val toStringFromTwoValues = abstractAlternativeWithTwoValues.optionsValuesToString()
-            val toStringFromOneValue = abstractAlternativeWithOneValue.optionsValuesToString()
+            val toStringFromTwoValues = alternativeWithTwoValues.optionsValuesToString()
+            val toStringFromOneValue = alternativeWithOneValue.optionsValuesToString()
 
             Assertions.assertThat(toStringFromTwoValues).isEqualTo("[Value One, Value Two]")
             Assertions.assertThat(toStringFromOneValue).isEqualTo("Value One")
@@ -62,7 +62,7 @@ class AlternativeTests {
 
             Assertions.assertThat(choice).isNotNull
             Assertions.assertThat(choice.path).isNotNull
-            Assertions.assertThat(choice.path).isEqualTo(value + AbstractAlternative.SEPARATOR + valueFromUnit)
+            Assertions.assertThat(choice.path).isEqualTo(value + Alternative.SEPARATOR + valueFromUnit)
         }
 
         /**
@@ -81,7 +81,7 @@ class AlternativeTests {
 
             Assertions.assertThat(choice).isNotNull
             Assertions.assertThat(choice.path).isNotNull
-            Assertions.assertThat(choice.path).isEqualTo(value + AbstractAlternative.SEPARATOR + valueFromUnit + AbstractAlternative.SEPARATOR + valueFromAttendant)
+            Assertions.assertThat(choice.path).isEqualTo(value + Alternative.SEPARATOR + valueFromUnit + Alternative.SEPARATOR + valueFromAttendant)
         }
 
         /**

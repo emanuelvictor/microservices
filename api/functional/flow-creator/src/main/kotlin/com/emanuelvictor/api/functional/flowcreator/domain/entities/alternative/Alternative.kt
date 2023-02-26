@@ -12,7 +12,7 @@ import java.util.stream.Collectors
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-open class AbstractAlternative(@Column(nullable = false) open var messageToNext: String, @Column(nullable = false) open var nextIsMultipleChoice: Boolean, options: List<Option>) {
+open class Alternative(@Column(nullable = false) open var messageToNext: String, @Column(nullable = false) open var nextIsMultipleChoice: Boolean, options: List<Option>) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

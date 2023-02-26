@@ -1,6 +1,5 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption;
@@ -8,7 +7,6 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Compa
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.repositories.RootAlternativeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +24,7 @@ import java.util.stream.Stream;
  *
  */
 @SpringBootTest
-public class AbstractAlternativeServiceTests {
+public class AlternativeServiceTests {
 
     @Autowired
     private OptionRepository optionRepository;

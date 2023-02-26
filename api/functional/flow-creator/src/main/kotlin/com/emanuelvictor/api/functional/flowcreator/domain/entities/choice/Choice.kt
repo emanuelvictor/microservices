@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.choice
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import jakarta.persistence.*
@@ -47,15 +47,15 @@ class Choice(alternative: IntermediaryAlternative) {
     /**
      *
      */
-    private fun getHeaderFromAlternative(abstractAlternative: AbstractAlternative, header: StringBuilder): StringBuilder {
+    private fun getHeaderFromAlternative(alternative: Alternative, header: StringBuilder): StringBuilder {
 
-        if (abstractAlternative is IntermediaryAlternative)
-            getHeaderFromAlternative(abstractAlternative.previous!!, header)
+        if (alternative is IntermediaryAlternative)
+            getHeaderFromAlternative(alternative.previous!!, header)
 
-        if (abstractAlternative is RootAlternative)
-            header.append(abstractAlternative.messageToNext)
+        if (alternative is RootAlternative)
+            header.append(alternative.messageToNext)
         else
-            header.append(SEPARATOR).append(abstractAlternative.messageToNext)
+            header.append(SEPARATOR).append(alternative.messageToNext)
 
         return header
     }
@@ -83,12 +83,4 @@ class Choice(alternative: IntermediaryAlternative) {
         return paths.toList()
     }
 
-    //    /**
-//     *
-//     */
-//    private fun getOptionFromAlternative(abstractAlternative: AbstractAlternative, options: HashSet<Option>) {
-//        if (abstractAlternative is IntermediaryAlternative)
-//            getOptionFromAlternative(abstractAlternative.previous!!, options)
-//        options.addAll(abstractAlternative.options!!)
-//    }
 }

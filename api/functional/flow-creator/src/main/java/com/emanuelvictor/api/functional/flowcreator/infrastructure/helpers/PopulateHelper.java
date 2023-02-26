@@ -1,9 +1,8 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.helpers;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
@@ -16,7 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.SEPARATOR;
+import static com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.SEPARATOR;
 
 /**
  *
@@ -112,21 +111,21 @@ public class PopulateHelper {
     }
 
     private void startProgram(final Long alternativeId) {
-        final AbstractAlternative abstractAlternative = alternativeService.findById(alternativeId).orElseThrow();
-        final List<IntermediaryAlternative> intermediaryAlternatives = new ArrayList<>(alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()));
+        final Alternative alternative = alternativeService.findById(alternativeId).orElseThrow();
+        final List<IntermediaryAlternative> intermediaryAlternatives = new ArrayList<>(alternativeService.findChildrenFromAlternativeId(alternative.getId()));
 
         if (intermediaryAlternatives.size() == 0) {
-            System.out.println(abstractAlternative.getMessageToNext());
-            choiceService.makeChoice((IntermediaryAlternative) abstractAlternative);
+            System.out.println(alternative.getMessageToNext());
+            choiceService.makeChoice((IntermediaryAlternative) alternative);
 
             showRaw();
 
             startProgram();
         }
 
-        final HashMap<Integer, Long> alternativesMap = showAndReturnOptions(abstractAlternative, intermediaryAlternatives);
+        final HashMap<Integer, Long> alternativesMap = showAndReturnOptions(alternative, intermediaryAlternatives);
 
-        choice(alternativesMap, abstractAlternative.getNextIsMultipleChoice());
+        choice(alternativesMap, alternative.getNextIsMultipleChoice());
     }
 
     public void showGrouped() {
@@ -183,9 +182,9 @@ public class PopulateHelper {
         startProgram(alternativesMap.get(choice));
     }
 
-    private static HashMap<Integer, Long> showAndReturnOptions(final AbstractAlternative parentAbstractAlternative, final List<IntermediaryAlternative> intermediaryAlternatives) {
-        System.out.println(parentAbstractAlternative.getPath());
-        System.out.println("    " + parentAbstractAlternative.getMessageToNext());
+    private static HashMap<Integer, Long> showAndReturnOptions(final Alternative parentAlternative, final List<IntermediaryAlternative> intermediaryAlternatives) {
+        System.out.println(parentAlternative.getPath());
+        System.out.println("    " + parentAlternative.getMessageToNext());
 
         final HashMap<Integer, Long> alternativesMap = new HashMap<>();
         for (int i = 0; i < intermediaryAlternatives.size(); i++) {

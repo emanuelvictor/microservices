@@ -1,10 +1,10 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
-import com.emanuelvictor.api.functional.flowcreator.domain.repositories.AbstractAlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.AlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.IntermediaryAlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.RootAlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.generic.AbstractService;
@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  *
  */
 @RequiredArgsConstructor
-public class AlternativeService extends AbstractService<AbstractAlternative, Long> {
+public class AlternativeService extends AbstractService<Alternative, Long> {
 
 
     /**
@@ -33,7 +33,7 @@ public class AlternativeService extends AbstractService<AbstractAlternative, Lon
     /**
      *
      */
-    private final AbstractAlternativeRepository abstractAlternativeRepository;
+    private final AlternativeRepository alternativeRepository;
 
     /**
      *
@@ -43,12 +43,12 @@ public class AlternativeService extends AbstractService<AbstractAlternative, Lon
     /**
      * @param defaultFilter {@link String}
      * @param pageable      {@link Pageable}
-     * @return {@link Page<AbstractAlternative>}
+     * @return {@link Page< Alternative >}
      */
-    public Page<AbstractAlternative> listByFilters(final String defaultFilter, final boolean onlyRoot, final Pageable pageable) {
+    public Page<Alternative> listByFilters(final String defaultFilter, final boolean onlyRoot, final Pageable pageable) {
         if (onlyRoot)
-            return new PageImpl<>(rootAlternativeRepository.findAll().stream().map(rootAlternative -> (AbstractAlternative) rootAlternative).collect(Collectors.toList()));
-        return new PageImpl<>(abstractAlternativeRepository.findAll());
+            return new PageImpl<>(rootAlternativeRepository.findAll().stream().map(rootAlternative -> (Alternative) rootAlternative).collect(Collectors.toList()));
+        return new PageImpl<>(alternativeRepository.findAll());
     }
 
     /**
@@ -58,13 +58,13 @@ public class AlternativeService extends AbstractService<AbstractAlternative, Lon
     public IntermediaryAlternative save(final IntermediaryAlternative alternative) {
         if (Objects.requireNonNull(alternative.getPrevious()).getNextIsMultipleChoice()) {
             final Set<IntermediaryAlternative> alternatives = intermediaryAlternativeRepository.findAllByPreviousId(Objects.requireNonNull(alternative.getPrevious().getId()));
-            abstractAlternativeRepository.saveAll(generateAlternatives(alternatives, alternative));
+            alternativeRepository.saveAll(generateAlternatives(alternatives, alternative));
         }
-        return abstractAlternativeRepository.save(alternative);
+        return alternativeRepository.save(alternative);
     }
 
     /**
-     * @return {@link Stream<AbstractAlternative>}
+     * @return {@link Stream< Alternative >}
      */
     public List<RootAlternative> findAllRootAlternatives() {
         return rootAlternativeRepository.findAll();

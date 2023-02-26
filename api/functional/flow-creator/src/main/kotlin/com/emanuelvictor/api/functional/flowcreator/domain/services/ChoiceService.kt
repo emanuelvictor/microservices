@@ -2,7 +2,6 @@ package com.emanuelvictor.api.functional.flowcreator.domain.services
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
-import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ChoiceRepository
 import com.emanuelvictor.api.functional.flowcreator.domain.services.generic.AbstractService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl

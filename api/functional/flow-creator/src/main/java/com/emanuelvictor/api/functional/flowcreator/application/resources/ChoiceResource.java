@@ -21,7 +21,7 @@ public class ChoiceResource extends AbstractResource<Choice, Long> {
 
     /**
      * @param defaultFilter String
-     * @return Page<AbstractAlternative>
+     * @return Page<Alternative>
      */
     @GetMapping
     public Page<Choice> listByFilters(final String defaultFilter, final Pageable pageable) {

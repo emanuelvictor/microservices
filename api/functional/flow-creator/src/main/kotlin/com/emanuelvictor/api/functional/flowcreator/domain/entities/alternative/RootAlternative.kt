@@ -9,7 +9,7 @@ import jakarta.persistence.Entity
  * @since 1.0.0, 25/08/2021
  */
 @Entity
-class RootAlternative : AbstractAlternative {
+class RootAlternative : Alternative {
 
     constructor(messageToNext: String, nextIsMultipleChoice: Boolean = false, option: Option) : super(messageToNext, nextIsMultipleChoice, listOf(option)) {
         this.generatePath()
