@@ -16,7 +16,7 @@ public abstract class AbstractService<T, ID extends Serializable> {
     /**
      *
      */
-    @Autowired
+    @Autowired // TODO couple, must use inject from jakarta
     protected JpaRepository<T, ID> repository;
 
     /**

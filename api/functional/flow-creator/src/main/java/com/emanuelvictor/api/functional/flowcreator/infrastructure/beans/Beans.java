@@ -25,12 +25,11 @@ public class Beans {
     }
 
     /**
-     * @param choiceRepository {@link ChoiceRepository}
      * @return {@link ChoiceService}
      */
     @Bean
-    public ChoiceService choiceService(final ChoiceRepository choiceRepository) {
-        return new ChoiceService(choiceRepository);
+    public ChoiceService choiceService() {
+        return new ChoiceService();
     }
 
     /**

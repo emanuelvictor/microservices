@@ -11,20 +11,20 @@ import org.springframework.data.domain.Pageable
 /**
  *
  */
-class ChoiceService(private val choiceRepository: ChoiceRepository) : AbstractService<Choice, Long>() {
+class ChoiceService : AbstractService<Choice, Long>() {
 
     /**
      * @param alternative [IntermediaryAlternative]
      * @return [Choice]
      */
     fun makeChoice(alternative: IntermediaryAlternative): Choice {
-        return choiceRepository.save(Choice(alternative))
+        return repository.save(Choice(alternative))
     }
 
     /**
      *
      */
     fun listByFilters(defaultFilter: String?, pageable: Pageable): Page<Choice> {
-        return PageImpl(choiceRepository.findAll().toList())
+        return PageImpl(repository.findAll().toList())
     }
 }

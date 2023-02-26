@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.services;
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption;
@@ -7,6 +8,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Compa
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.RootAlternativeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +41,7 @@ public class AbstractAlternativeServiceTests {
      */
     @BeforeEach
     public void beforeEach() {
-        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Selecione a unidade?", false, optionRepository.save(new CompanyOption("Bubblemix Tea"))));
+        final RootAlternative clientSelected = (RootAlternative) alternativeService.save(new RootAlternative("Selecione a unidade?", false, optionRepository.save(new CompanyOption("Bubblemix Tea"))));
         firstIntermediaryAlternative = alternativeService.save(new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, optionRepository.save(new BranchOption("BIG - Foz do Iguaçu"))));
     }
 

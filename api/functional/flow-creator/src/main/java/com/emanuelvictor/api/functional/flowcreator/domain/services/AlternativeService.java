@@ -64,26 +64,10 @@ public class AlternativeService extends AbstractService<AbstractAlternative, Lon
     }
 
     /**
-     * @param alternative {@link RootAlternative}
-     * @return {@link RootAlternative}
-     */
-    public RootAlternative save(final RootAlternative alternative) {
-        return abstractAlternativeRepository.save(alternative);
-    }
-
-    /**
      * @return {@link Stream<AbstractAlternative>}
      */
     public List<RootAlternative> findAllRootAlternatives() {
         return rootAlternativeRepository.findAll();
-    }
-
-    /**
-     * @param alternativeId {@link Long}
-     * @return {@link Optional<AbstractAlternative>}
-     */
-    public Optional<AbstractAlternative> findById(final Long alternativeId) {
-        return abstractAlternativeRepository.findById(alternativeId);
     }
 
     /**
