@@ -7,6 +7,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Optio
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.AbstractAlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.IntermediaryAlternativeRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.RootAlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.services.generic.AbstractService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
  *
  */
 @RequiredArgsConstructor
-public class AlternativeService {
+public class AlternativeService extends AbstractService<AbstractAlternative, Long> {
 
 
     /**

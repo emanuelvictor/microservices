@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.application.resources;
 
+import com.emanuelvictor.api.functional.flowcreator.application.resources.generic.AbstractResource;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("alternatives")
-public class AlternativeResource {
+public class AlternativeResource extends AbstractResource<AbstractAlternative, Long> {
 
     private final AlternativeService alternativeService;
 
