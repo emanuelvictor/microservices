@@ -4,7 +4,13 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.AbstractAlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.IntermediaryAlternativeRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.RootAlternativeRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,12 +20,34 @@ import java.util.stream.Stream;
 /**
  *
  */
+@RequiredArgsConstructor
 public class AlternativeService {
 
-    private final AlternativeRepository alternativeRepository;
 
-    public AlternativeService(AlternativeRepository alternativeRepository) {
-        this.alternativeRepository = alternativeRepository;
+    /**
+     *
+     */
+    private final RootAlternativeRepository rootAlternativeRepository;
+
+    /**
+     *
+     */
+    private final AbstractAlternativeRepository abstractAlternativeRepository;
+
+    /**
+     *
+     */
+    private final IntermediaryAlternativeRepository intermediaryAlternativeRepository;
+
+    /**
+     * @param defaultFilter {@link String}
+     * @param pageable      {@link Pageable}
+     * @return {@link Page<AbstractAlternative>}
+     */
+    public Page<AbstractAlternative> listByFilters(final String defaultFilter, final boolean onlyRoot, final Pageable pageable) {
+        if (onlyRoot)
+            return new PageImpl<>(rootAlternativeRepository.findAll().stream().map(rootAlternative -> (AbstractAlternative) rootAlternative).collect(Collectors.toList()));
+        return new PageImpl<>(abstractAlternativeRepository.findAll());
     }
 
     /**
@@ -27,11 +55,11 @@ public class AlternativeService {
      * @return {@link IntermediaryAlternative}
      */
     public IntermediaryAlternative save(final IntermediaryAlternative alternative) {
-        if (alternative.getPrevious().getNextIsMultipleChoice()) {
-            final Set<IntermediaryAlternative> alternatives = this.alternativeRepository.findChildrenFromAlternativeId(alternative.getPrevious().getId()).collect(Collectors.toSet());
-            alternativeRepository.saveAll(generateAlternatives(alternatives, alternative));
+        if (Objects.requireNonNull(alternative.getPrevious()).getNextIsMultipleChoice()) {
+            final Set<IntermediaryAlternative> alternatives = intermediaryAlternativeRepository.findAllByPreviousId(Objects.requireNonNull(alternative.getPrevious().getId()));
+            abstractAlternativeRepository.saveAll(generateAlternatives(alternatives, alternative));
         }
-        return alternativeRepository.save(alternative);
+        return abstractAlternativeRepository.save(alternative);
     }
 
     /**
@@ -39,43 +67,36 @@ public class AlternativeService {
      * @return {@link RootAlternative}
      */
     public RootAlternative save(final RootAlternative alternative) {
-        return alternativeRepository.save(alternative);
+        return abstractAlternativeRepository.save(alternative);
     }
 
     /**
-     * @return {@link Stream< RootAlternative >}
+     * @return {@link Stream<AbstractAlternative>}
      */
-    public Stream<RootAlternative> findAllRootAlternatives() {
-        return alternativeRepository.findAllRootAlternatives();
+    public List<RootAlternative> findAllRootAlternatives() {
+        return rootAlternativeRepository.findAll();
     }
 
     /**
-     * @param alternativeId {@link Integer}
-     * @return {@link Optional<  AbstractAlternative  >}
+     * @param alternativeId {@link Long}
+     * @return {@link Optional<AbstractAlternative>}
      */
-    public Optional<AbstractAlternative> findById(final Integer alternativeId) {
-        return alternativeRepository.findById(alternativeId);
+    public Optional<AbstractAlternative> findById(final Long alternativeId) {
+        return abstractAlternativeRepository.findById(alternativeId);
     }
 
     /**
      * @param id {@link Integer}
-     * @return {@link Stream< IntermediaryAlternative >}
+     * @return {@link Stream<IntermediaryAlternative>}
      */
-    public Stream<IntermediaryAlternative> findChildrenFromAlternativeId(final Integer id) {
-        return alternativeRepository.findChildrenFromAlternativeId(id);
+    public Set<IntermediaryAlternative> findChildrenFromAlternativeId(final Long id) {
+        return intermediaryAlternativeRepository.findAllByPreviousId(id);
     }
 
     /**
-     *
-     */
-    public void eraseData() {
-        alternativeRepository.eraseData();
-    }
-
-    /**
-     * @param alternatives   {@link Set< IntermediaryAlternative >}
+     * @param alternatives   {@link Set<IntermediaryAlternative>}
      * @param newAlternative {@link IntermediaryAlternative}
-     * @return {@link Set< IntermediaryAlternative >}
+     * @return {@link Set<IntermediaryAlternative>}
      */
     public static Set<IntermediaryAlternative> generateAlternatives(final Set<IntermediaryAlternative> alternatives, final IntermediaryAlternative newAlternative) {
         alternatives.add(newAlternative);
@@ -94,9 +115,9 @@ public class AlternativeService {
             }
 
             final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
-                    newAlternative.getPrevious(),
-                    newAlternative.getMessageToNext(),
-                    newAlternative.getNextIsMultipleChoice(),
+                    Objects.requireNonNull(newAlternative.getPrevious()),
+                    Objects.requireNonNull(newAlternative.getMessageToNext()),
+                    Boolean.TRUE.equals(newAlternative.getNextIsMultipleChoice()),
                     new ArrayList<>(optionsFromCombination)
             );
             newAlternativesGenerated.add(intermediaryAlternative);
@@ -108,9 +129,9 @@ public class AlternativeService {
     /**
      * This method preserve current Alternatives and add new Alternatives.
      *
-     * @param alternativesToPreserve {@link Set< IntermediaryAlternative >}
-     * @param alternativesToMerge    {@link Set< IntermediaryAlternative >}
-     * @return {@link Set< IntermediaryAlternative >}
+     * @param alternativesToPreserve {@link Set<IntermediaryAlternative>}
+     * @param alternativesToMerge    {@link Set<IntermediaryAlternative>}
+     * @return {@link Set<IntermediaryAlternative>}
      */
     static Set<IntermediaryAlternative> mergeAlternativeLists(final Set<IntermediaryAlternative> alternativesToPreserve, final Set<IntermediaryAlternative> alternativesToMerge) {
 
@@ -142,14 +163,13 @@ public class AlternativeService {
      * This method extract the values from all alternatives.
      * Example: Emanuel, Sarah, [Emanuel, Sarah], Jackson, [Emanuel, Jackson], [Sarah, Jackson], [Sarah, Emanuel, Jackson] to Sarah, Emanuel, Jackson
      *
-     * @param alternatives {@link Stream< IntermediaryAlternative > }
+     * @param alternatives {@link Stream<IntermediaryAlternative> }
      * @return {@link Stream<String> }
      */
     static Stream<Option> extractIsolatedValuesFromAlternatives(final Stream<IntermediaryAlternative> alternatives) {
         return alternatives.
                 map(intermediaryAlternative ->
-                        Arrays.stream(intermediaryAlternative.getOptions())
-                                .collect(Collectors.toSet())
+                        new HashSet<>(Objects.requireNonNull(intermediaryAlternative.getOptions()))
                 ).flatMap(Collection::stream);
     }
 

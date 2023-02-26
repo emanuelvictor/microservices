@@ -1,7 +1,8 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.option.OptionAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
-import io.github.emanuelvictor.commons.persistence.generic.PersistentEntity
+import jakarta.persistence.*
 import java.util.stream.Collectors
 
 /**
@@ -9,23 +10,46 @@ import java.util.stream.Collectors
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-abstract class AbstractAlternative(val messageToNext: String, val nextIsMultipleChoice: Boolean, vararg val options: Option) : PersistentEntity() {
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+open class AbstractAlternative(@Column(nullable = false) open var messageToNext: String, @Column(nullable = false) open var nextIsMultipleChoice: Boolean, options: List<Option>) {
 
-    constructor(messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(messageToNext, nextIsMultipleChoice, *values.toTypedArray())
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    open var id: Long? = null
 
-    internal companion object {
-        const val SEPARATOR = "->"
+    @OneToMany(targetEntity = OptionAlternative::class, mappedBy = "alternative", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var optionsAlternatives: List<OptionAlternative>? = null
+
+    val options: MutableList<Option?>
+        get() {
+            return optionsAlternatives!!.stream().map { it.option }.toList()
+        }
+
+    /**
+     * TODO make a unique number
+     */
+    @Column(nullable = false, unique = true)
+    open var signature: String? = null
+
+    @Column(nullable = false, unique = true)
+    open var path: String? = null
+
+    init {
+        this.optionsAlternatives = options.stream().map { OptionAlternative(it, this) }.toList()
     }
 
-    /**
-     * @return the signature
-     */
-    abstract val signature: String
+    constructor(messageToNext: String, nextIsMultipleChoice: Boolean, vararg options: Option) : this(messageToNext, nextIsMultipleChoice, options.toList())
 
-    /**
-     * @return the path
-     */
-    abstract val path: String
+    open fun generatePath(): String {
+        this.path = optionsValuesToString()
+        return this.path!!
+    }
+
+    open fun generateSignature() {
+        this.signature = optionsIdsToString()
+    }
 
     /**
      * @param {@link Set<String>} The set who will be converted to String.
@@ -33,9 +57,9 @@ abstract class AbstractAlternative(val messageToNext: String, val nextIsMultiple
      */
     open fun optionsValuesToString(): String {
         if (options.size == 1) {
-            return options.first().identifier
+            return options.first()!!.identifier
         }
-        return options.toList().stream().map { it.identifier }.collect(Collectors.toList()).toString()
+        return options.toList().stream().map { it!!.identifier }.collect(Collectors.toList()).toString()
     }
 
     /**
@@ -44,8 +68,12 @@ abstract class AbstractAlternative(val messageToNext: String, val nextIsMultiple
      */
     open fun optionsIdsToString(): String {
         if (options.size == 1) {
-            return options.first().id.toString()
+            return options.first()!!.id.toString()
         }
-        return options.toList().stream().map { it.id }.collect(Collectors.toList()).toString()
+        return options.toList().stream().map { it!!.id }.collect(Collectors.toList()).toString()
+    }
+
+    internal companion object {
+        const val SEPARATOR = "->"
     }
 }

@@ -9,13 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.emanuelvictor.api.funcional</groupId>
-    <artifactId>flowcreator</artifactId>
+    <artifactId>flow-creator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>flowcreator</name>
-    <description>flowcreator</description>
+    <name>flow-creator</name>
+    <description>flow-creator</description>
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.7.22</kotlin.version>
+        <kotlin.version>1.8.0</kotlin.version>
+
+        <lombok.version>1.18.26</lombok.version>
     </properties>
     <dependencies>
         <dependency>
@@ -23,9 +25,26 @@
             <artifactId>commons</artifactId>
             <version>2.1</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -44,6 +63,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -71,9 +96,15 @@
                     </args>
                     <compilerPlugins>
                         <plugin>spring</plugin>
+                        <plugin>jpa</plugin>
                     </compilerPlugins>
                 </configuration>
                 <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-noarg</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
                     <dependency>
                         <groupId>org.jetbrains.kotlin</groupId>
                         <artifactId>kotlin-maven-allopen</artifactId>

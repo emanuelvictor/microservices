@@ -3,11 +3,14 @@ package com.emanuelvictor.api.functional.flowcreator.infrastructure.helpers;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative;
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.OptionRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ChoiceRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,32 +21,23 @@ import static com.emanuelvictor.api.functional.flowcreator.domain.entities.alter
 /**
  *
  */
+@RequiredArgsConstructor
 public class PopulateHelper {
-
     private final ChoiceService choiceService;
-
     private final OptionRepository optionRepository;
     private final ChoiceRepository choiceRepository;
-
     private final AlternativeService alternativeService;
 
-    public PopulateHelper(ChoiceService choiceService, OptionRepository optionRepository, ChoiceRepository choiceRepository, AlternativeService alternativeService) {
-        this.choiceService = choiceService;
-        this.optionRepository = optionRepository;
-        this.choiceRepository = choiceRepository;
-        this.alternativeService = alternativeService;
-    }
-
-//    @PostConstruct
-//    public void postConstruct(){
-//        populateData();
+    @PostConstruct
+    public void postConstruct() {
+//        populateBubbleMixData();
 //        startProgram();
-//    }
+    }
 
     /**
      * Populate Data
      */
-    public void populateData() {
+    public void populateBubbleMixData() {
 
         // Company
         final Option company = optionRepository.save(new CompanyOption("Bubblemix Tea"));
@@ -66,69 +60,60 @@ public class PopulateHelper {
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 1
-        final Option person1 = new PersonOption("Andressa");
+        final Option person1 = optionRepository.save(new PersonOption("Andressa"));
         final IntermediaryAlternative intermediaryAlternativePerson1 = new IntermediaryAlternative(unity1Selected, "Como você avalia o nível do atendimento?", false, person1);
 
         alternativeService.save(intermediaryAlternativePerson1);
 
         // Person 2 of Unity 1
-        final Option person2 = new PersonOption("Marta");
+        final Option person2 = optionRepository.save(new PersonOption("Marta"));
         final IntermediaryAlternative intermediaryAlternativePerson2 = new IntermediaryAlternative(unity1Selected, "Como você avalia o nível do atendimento?", false, person2);
 
         alternativeService.save(intermediaryAlternativePerson2);
 
         // Person 3 of Unity 1
-        final Option person3 = new PersonOption("Roberto");
+        final Option person3 = optionRepository.save(new PersonOption("Roberto"));
         final IntermediaryAlternative intermediaryAlternativePerson3 = new IntermediaryAlternative(unity1Selected, "Como você avalia o nível do atendimento?", false, person3);
 
         alternativeService.save(intermediaryAlternativePerson3);
 
         // ---- Persons of Unity 1
         // Person 1 of Unity 2
-        final Option person4 = new PersonOption("Edson");
+        final Option person4 = optionRepository.save(new PersonOption("Edson"));
         final IntermediaryAlternative intermediaryAlternativePerson4 = new IntermediaryAlternative(unity2Selected, "Como você avalia o nível do atendimento?", false, person4);
 
         alternativeService.save(intermediaryAlternativePerson4);
 
         // Person 2 of Unity 2
-        final Option person5 = new PersonOption("Valdir");
+        final Option person5 = optionRepository.save(new PersonOption("Valdir"));
         final IntermediaryAlternative intermediaryAlternativePerson5 = new IntermediaryAlternative(unity2Selected, "Como você avalia o nível do atendimento?", false, person5);
 
         alternativeService.save(intermediaryAlternativePerson5);
 
         // Person 3 of Unity 2
-        final Option person6 = new PersonOption("Vilma");
+        final Option person6 = optionRepository.save(new PersonOption("Vilma"));
         final IntermediaryAlternative intermediaryAlternativePerson6 = new IntermediaryAlternative(unity2Selected, "Como você avalia o nível do atendimento?", false, person6);
 
         alternativeService.save(intermediaryAlternativePerson6);
 
         alternativeService.findChildrenFromAlternativeId(companyAlternative.getId())
-                .toList()
                 .forEach(branchAlternative -> alternativeService.findChildrenFromAlternativeId(branchAlternative.getId())
-                        .toList()
                         .forEach(intermediaryAlternative -> {
                             for (int i = 1; i <= 5; i++) {
-                                var levelOption = optionRepository.listByValue(String.valueOf(i)).stream().findFirst().orElse(this.optionRepository.save(new LevelOption(i)));
-                                this.alternativeService.save(new IntermediaryAlternative(intermediaryAlternative, "Muito obrigado!", levelOption));
+//                      TODO          var levelOption = optionRepository.listByValue(String.valueOf(i)).stream().findFirst().orElse(this.optionRepository.save(new LevelOption(i)));
+//                                choiceRepository.save(new Choice(this.alternativeService.save(new IntermediaryAlternative(intermediaryAlternative, "Muito obrigado!", levelOption))));
                             }
                         }));
     }
 
-    /**
-     * Erase Data
-     */
-    public void eraseData() {
-        alternativeService.eraseData();
-    }
-
     public void startProgram() {
-        final RootAlternative rootAlternative = alternativeService.findAllRootAlternatives().findFirst().orElseThrow();
+        final RootAlternative rootAlternative = alternativeService.findAllRootAlternatives().stream().findFirst().orElseThrow();
         startProgram(rootAlternative.getId());
     }
 
-    private void startProgram(final Integer alternativeId) {
+    private void startProgram(final Long alternativeId) {
         final AbstractAlternative abstractAlternative = alternativeService.findById(alternativeId).orElseThrow();
-        final List<IntermediaryAlternative> intermediaryAlternatives = alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()).collect(Collectors.toList());
+        final List<IntermediaryAlternative> intermediaryAlternatives = new ArrayList<>(alternativeService.findChildrenFromAlternativeId(abstractAlternative.getId()));
 
         if (intermediaryAlternatives.size() == 0) {
             System.out.println(abstractAlternative.getMessageToNext());
@@ -139,14 +124,14 @@ public class PopulateHelper {
             startProgram();
         }
 
-        final HashMap<Integer, Integer> alternativesMap = showAndReturnOptions(abstractAlternative, intermediaryAlternatives);
+        final HashMap<Integer, Long> alternativesMap = showAndReturnOptions(abstractAlternative, intermediaryAlternatives);
 
         choice(alternativesMap, abstractAlternative.getNextIsMultipleChoice());
     }
 
     public void showGrouped() {
         final Map<String, List<String>> choicesMap =
-                choiceRepository.findAll()
+                choiceRepository.findAll().stream()
                         .map(choice -> Stream.of(choice.getSplittedPaths())
                                 .map(HashSet::new)
                                 .collect(Collectors.toSet())
@@ -156,13 +141,13 @@ public class PopulateHelper {
                         )
                         .collect(Collectors.groupingBy(s -> s));
         System.out.println("----------------------------Resultados------------------------------");
-        System.out.println(SEPARATOR + choiceRepository.findAll().findFirst().orElseThrow().getHeader());
+        System.out.println(SEPARATOR + choiceRepository.findAll().stream().findFirst().orElseThrow().getHeader());
         choicesMap.forEach((k, v) -> System.out.println(k + " = " + v.size()));
         System.out.println("--------------------------------------------------------------------");
     }
 
     public void showRaw() {
-        final Stream<String> paths = choiceRepository.findAll()
+        final Stream<String> paths = choiceRepository.findAll().stream()
                 .map(choice -> Stream.of(choice.getSplittedPaths())
                         .map(ArrayList::new)
                         .collect(Collectors.toList())
@@ -172,12 +157,12 @@ public class PopulateHelper {
                 )
                 .sorted();
         System.out.println("----------------------------Resultados------------------------------");
-        System.out.println(SEPARATOR + choiceRepository.findAll().findFirst().orElseThrow().getHeader());
+        System.out.println(SEPARATOR + choiceRepository.findAll().stream().findFirst().orElseThrow().getHeader());
         paths.forEach(System.out::println);
         System.out.println("--------------------------------------------------------------------");
     }
 
-    public void choice(final HashMap<Integer, Integer> alternativesMap, final boolean isMultipleChoice) {
+    public void choice(final HashMap<Integer, Long> alternativesMap, final boolean isMultipleChoice) {
 //        if (isMultipleChoice) {
 //            final Scanner myObj = new Scanner(System.in);
 //            final int choice = Integer.parseInt(myObj.nextLine());
@@ -193,18 +178,18 @@ public class PopulateHelper {
 //            startProgram(alternatives);
 //        }
         final Scanner myObj = new Scanner(System.in);
-        final int choice = Integer.parseInt(myObj.nextLine());
+        final long choice = Integer.parseInt(myObj.nextLine());
 
         startProgram(alternativesMap.get(choice));
     }
 
-    private static HashMap<Integer, Integer> showAndReturnOptions(final AbstractAlternative parentAbstractAlternative, final List<IntermediaryAlternative> intermediaryAlternatives) {
+    private static HashMap<Integer, Long> showAndReturnOptions(final AbstractAlternative parentAbstractAlternative, final List<IntermediaryAlternative> intermediaryAlternatives) {
         System.out.println(parentAbstractAlternative.getPath());
         System.out.println("    " + parentAbstractAlternative.getMessageToNext());
 
-        final HashMap<Integer, Integer> alternativesMap = new HashMap<>();
+        final HashMap<Integer, Long> alternativesMap = new HashMap<>();
         for (int i = 0; i < intermediaryAlternatives.size(); i++) {
-            System.out.println(i + 1 + " - " + String.join(",", Arrays.stream(intermediaryAlternatives.get(i).getOptions()).map(Option::getIdentifier).collect(Collectors.toList())));
+            System.out.println(i + 1 + " - " + Objects.requireNonNull(intermediaryAlternatives.get(i).getOptions()).stream().map(Option::getIdentifier).collect(Collectors.joining(",")));
             alternativesMap.put(i + 1, intermediaryAlternatives.get(i).getId());
         }
         return alternativesMap;

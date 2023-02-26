@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption
@@ -20,6 +20,7 @@ class AlternativeTests {
      */
     @Nested
     inner class AbstractAlternativeTests {
+
         /**
          *
          */
@@ -27,17 +28,9 @@ class AlternativeTests {
         fun `Must create instance from AbstractAlternative`() {
             val twoValues = arrayListOf(PersonOption("Value One"), PersonOption("Value Two"))
             val abstractAlternativeWithTwoValues = object : AbstractAlternative("messageToNext", true, twoValues) {
-                override val signature: String
-                    get() = ("Not yet implemented")
-                override val path: String
-                    get() = ("Not yet implemented")
             }
             val oneValue = PersonOption("Value One")
             val abstractAlternativeWithOneValue = object : AbstractAlternative("messageToNext", true, oneValue) {
-                override val signature: String
-                    get() = ("Not yet implemented")
-                override val path: String
-                    get() = ("Not yet implemented")
             }
 
             val toStringFromTwoValues = abstractAlternativeWithTwoValues.optionsValuesToString()
@@ -54,6 +47,7 @@ class AlternativeTests {
      */
     @Nested
     inner class IntermediaryAlternativeTests {
+
         /**
          *
          */

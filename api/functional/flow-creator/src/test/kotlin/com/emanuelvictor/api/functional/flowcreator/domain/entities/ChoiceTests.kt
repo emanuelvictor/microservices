@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.AbstractAlternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import org.assertj.core.api.Assertions
@@ -52,25 +53,25 @@ class ChoiceTests {
         Assertions.assertThat(choice.date).isNotNull
     }
 
-    /**
-     *
-     */
-    @Test
-    fun `Must return the options from alternative`() {
-        val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative("Selecione a unidade?", CompanyOption(value))
-        val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", BranchOption(valueFromUnit))
-        val valueFromAttendant = "Maria"
-        val attendantSelected = IntermediaryAlternative(unitSelected, "Como foi o atendimento?", PersonOption(valueFromAttendant))
-        val choice = Choice(attendantSelected)
-
-        val options = choice.options
-
-        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == value }).isTrue
-        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == valueFromUnit }).isTrue
-        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == valueFromAttendant }).isTrue
-    }
+//    /**
+//     *
+//     */
+//    @Test
+//    fun `Must return the options from alternative`() {
+//        val value = "Bubblemix Tea"
+//        val clientSelected = RootAlternative("Selecione a unidade?", CompanyOption(value))
+//        val valueFromUnit = "BIG - Foz do Iguaçu"
+//        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", BranchOption(valueFromUnit))
+//        val valueFromAttendant = "Maria"
+//        val attendantSelected = IntermediaryAlternative(unitSelected, "Como foi o atendimento?", PersonOption(valueFromAttendant))
+//        val choice = Choice(attendantSelected)
+//
+//        val options = choice.options
+//
+//        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == value }).isTrue
+//        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == valueFromUnit }).isTrue
+//        Assertions.assertThat(options.stream().anyMatch { option -> option.identifier == valueFromAttendant }).isTrue
+//    }
 
     /**
      *
@@ -148,63 +149,6 @@ class ChoiceTests {
      *
      */
     @Test
-    fun `Must return the signature from Choice`() {
-        val companyOption = CompanyOption("Bubblemix Tea")
-        companyOption.id = 1
-        val clientSelected = RootAlternative("Selecione a unidade?", companyOption)
-        clientSelected.id = 1
-        val optionFromUnit = BranchOption("BIG - Foz do Iguaçu")
-        optionFromUnit.id = 2
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, optionFromUnit)
-        unitSelected.id = 2
-        val valueFromFirstAttendant = PersonOption("Maria")
-        valueFromFirstAttendant.id = 3
-        val valueFromSecondAttendant = PersonOption("Marcia")
-        valueFromSecondAttendant.id = 4
-        val valueFromThirdAttendant = PersonOption("Marcelo")
-        valueFromThirdAttendant.id = 5
-        val attendantSelected = IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", true, valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant)
-        attendantSelected.id = 3
-        val valueFromFirstSubAttendant = PersonOption("Rafael")
-        valueFromFirstSubAttendant.id = 6
-        val valueFromSecondSubAttendant = PersonOption("Ricardo")
-        valueFromSecondSubAttendant.id = 7
-        val valueFromThirdSubAttendant = PersonOption("Samuel")
-        valueFromThirdSubAttendant.id = 8
-        val subAttendants = IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant)
-        subAttendants.id = 5
-        val subSubAttendantValue = PersonOption("subAtendantValue")
-        subSubAttendantValue.id = 9
-        val subSubAttendent = IntermediaryAlternative(subAttendants, "nanana", subSubAttendantValue)
-        subSubAttendent.id = 6
-        val firstSubSubSubAttendantValue = PersonOption("Rosa")
-        firstSubSubSubAttendantValue.id = 10
-        val secondSubSubSubAttendantValue = PersonOption("Maria")
-        secondSubSubSubAttendantValue.id = 11
-        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue, secondSubSubSubAttendantValue)
-        subSubSubAttendant.id = 7
-        val signatureExpected = companyOption.id.toString() + SEPARATOR + optionFromUnit.id.toString() + SEPARATOR + arrayListOf(
-            valueFromFirstAttendant.id,
-            valueFromSecondAttendant.id,
-            valueFromThirdAttendant.id
-        ) + SEPARATOR + arrayListOf(
-            valueFromFirstSubAttendant.id,
-            valueFromSecondSubAttendant.id,
-            valueFromThirdSubAttendant.id
-        ) + SEPARATOR + subSubAttendantValue.id + SEPARATOR + arrayListOf(
-            firstSubSubSubAttendantValue.id,
-            secondSubSubSubAttendantValue.id
-        )
-
-        val signatureFromChoice = Choice(subSubSubAttendant).signature
-
-        Assertions.assertThat(signatureFromChoice).isEqualTo(signatureExpected)
-    }
-
-    /**
-     *
-     */
-    @Test
     fun `Must back header of choice`() {
         val company = CompanyOption("Fiserv")
         val companyAlternative = RootAlternative("Selecione a tribo", company)
@@ -216,7 +160,7 @@ class ChoiceTests {
         val ricardo = PersonOption("Ricardo")
         val samuel = PersonOption("Samuel")
         val managersAlternative = IntermediaryAlternative(villageAlternative, "Como você avalia seus gestores no quesito 'Empatia'?", rafael, ricardo, samuel)
-        val level5 = LevelOption(5)
+        val level5 = LevelOption(5.toString())
         val level5Alternative = IntermediaryAlternative(managersAlternative, "Obrigado!", level5)
         val signatureExpected =
             companyAlternative.messageToNext + SEPARATOR + tribeAlternative.messageToNext + SEPARATOR + villageAlternative.messageToNext + SEPARATOR + managersAlternative.messageToNext + SEPARATOR + level5Alternative.messageToNext

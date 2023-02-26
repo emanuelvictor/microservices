@@ -6,13 +6,14 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Branc
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -26,58 +27,64 @@ import java.util.stream.Stream;
 public class AbstractAlternativeServiceTests {
 
     @Autowired
+    private OptionRepository optionRepository;
+
+    @Autowired
     private AlternativeService alternativeService;
 
-    private IntermediaryAlternative unity1Selected;
+    private IntermediaryAlternative firstIntermediaryAlternative;
 
     /**
      *
      */
     @BeforeEach
     public void beforeEach() {
-        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Selecione a unidade?", false, new CompanyOption("Bubblemix Tea")));
-        unity1Selected = alternativeService.save(new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, new BranchOption("BIG - Foz do Iguaçu")));
+        final RootAlternative clientSelected = alternativeService.save(new RootAlternative("Selecione a unidade?", false, optionRepository.save(new CompanyOption("Bubblemix Tea"))));
+        firstIntermediaryAlternative = alternativeService.save(new IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, optionRepository.save(new BranchOption("BIG - Foz do Iguaçu"))));
     }
 
     /**
      *
      */
     @Test
+    @Sql({"/dataset/truncate-all-tables.sql"})
     public void mustPersistSevenCombinationsFromTrheeAlternatives() {
         final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
 
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Sarah"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Emanuel"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Israel"))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Sarah")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Emanuel")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Israel")))));
 
-        Assertions.assertThat(AlternativeService.generateCombinations(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
+        Assertions.assertThat(AlternativeService.generateCombinations(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(firstIntermediaryAlternative.getId()).size());
     }
 
     /**
      *
      */
     @Test
+    @Sql({"/dataset/truncate-all-tables.sql"})
     public void mustPersistThirtyOneCombinationsFromFiveAlternatives() {
         final Set<IntermediaryAlternative> alternativesSaved = new HashSet<>();
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Sarah"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Emanuel"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Israel"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Tais"))));
-        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Francielly"))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Sarah")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Emanuel")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Israel")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Tais")))));
+        alternativesSaved.add(alternativeService.save(new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, this.optionRepository.save(new PersonOption("Francielly")))));
 
-        Assertions.assertThat(AlternativeService.generateCombinations(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).count());
+        Assertions.assertThat(AlternativeService.generateCombinations(alternativesSaved.size()).size()).isEqualTo(alternativeService.findChildrenFromAlternativeId(firstIntermediaryAlternative.getId()).size());
 
-        alternativeService.findChildrenFromAlternativeId(unity1Selected.getId()).forEach(intermediaryAlternative -> System.out.println(Arrays.stream(intermediaryAlternative.getOptions()).map(Option::getIdentifier).collect(Collectors.joining(","))));
+        alternativeService.findChildrenFromAlternativeId(firstIntermediaryAlternative.getId()).forEach(intermediaryAlternative -> System.out.println(intermediaryAlternative.getOptions().stream().map(Option::getIdentifier).collect(Collectors.joining(","))));
     }
 
     @Test
+    @Sql({"/dataset/truncate-all-tables.sql"})
     public void mustGenerateSevenCombinationsFromThreeAlternatives() {
         Set<IntermediaryAlternative> alternatives = new HashSet<>();
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Sarah"));
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Sarah"));
         alternatives = AlternativeService.generateAlternatives(alternatives, sarah);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Emanuel"));
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Emanuel"));
         alternatives = AlternativeService.generateAlternatives(alternatives, emanuel);
-        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Israel"));
+        final IntermediaryAlternative israel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Israel"));
         alternatives = AlternativeService.generateAlternatives(alternatives, israel);
 
         Assertions.assertThat(7).isEqualTo(alternatives.size());
@@ -88,13 +95,13 @@ public class AbstractAlternativeServiceTests {
         final Option sarahOption = new PersonOption("Sarah");
         final Option emanuelOption = new PersonOption("Emanuel");
         final Option jacksonOption = new PersonOption("Jackson");
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption);
-        final IntermediaryAlternative jackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, jacksonOption);
-        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption, emanuelOption);
-        final IntermediaryAlternative sarahEJackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, sarahOption, jacksonOption);
-        final IntermediaryAlternative emanuelEJackson = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption, jacksonOption);
-        final IntermediaryAlternative emanuelEJacksonESarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, emanuelOption, jacksonOption, sarahOption);
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, sarahOption);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, emanuelOption);
+        final IntermediaryAlternative jackson = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, jacksonOption);
+        final IntermediaryAlternative sarahEEmanuel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, sarahOption, emanuelOption);
+        final IntermediaryAlternative sarahEJackson = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, sarahOption, jacksonOption);
+        final IntermediaryAlternative emanuelEJackson = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, emanuelOption, jacksonOption);
+        final IntermediaryAlternative emanuelEJacksonESarah = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, emanuelOption, jacksonOption, sarahOption);
         final Stream<IntermediaryAlternative> alternatives = Stream.of(sarah, emanuel, jackson, sarahEEmanuel, sarahEJackson, emanuelEJackson, emanuelEJacksonESarah);
 
         final Set<Option> values = AlternativeService.extractIsolatedValuesFromAlternatives(alternatives).collect(Collectors.toSet());
@@ -103,16 +110,17 @@ public class AbstractAlternativeServiceTests {
     }
 
     @Test
+    @Sql({"/dataset/truncate-all-tables.sql"})
     public void mustBeTheMergeBeetweenTwoListsOfAlternativesAndTheValuesFromTheFirstListMustBePreserved() {
-        final IntermediaryAlternative sarah = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Sarah"));
-        sarah.setId(1);
-        final IntermediaryAlternative emanuel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Emanuel"));
-        emanuel.setId(2);
+        final IntermediaryAlternative sarah = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Sarah"));
+        sarah.setId(1L);
+        final IntermediaryAlternative emanuel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Emanuel"));
+        emanuel.setId(2L);
         final Set<IntermediaryAlternative> firstCollection = new HashSet<>();
         firstCollection.add(sarah);
         firstCollection.add(emanuel);
-        final IntermediaryAlternative israel = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Israel"));
-        final IntermediaryAlternative tais = new IntermediaryAlternative(unity1Selected, "Como foi o atendimento?", false, new PersonOption("Tais"));
+        final IntermediaryAlternative israel = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Israel"));
+        final IntermediaryAlternative tais = new IntermediaryAlternative(firstIntermediaryAlternative, "Como foi o atendimento?", false, new PersonOption("Tais"));
         final Set<IntermediaryAlternative> secondCollection = new HashSet<>();
         secondCollection.add(israel);
         secondCollection.add(tais);

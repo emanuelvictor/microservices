@@ -1,8 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.beans;
 
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.AlternativeRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository;
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.OptionRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.*;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helpers.PopulateHelper;
@@ -16,12 +14,14 @@ import org.springframework.context.annotation.Configuration;
 public class Beans {
 
     /**
-     * @param alternativeRepository {@link AlternativeRepository}
+     * @param rootAlternativeRepository         {@link RootAlternativeRepository}
+     * @param abstractAlternativeRepository     {@link AbstractAlternativeRepository}
+     * @param intermediaryAlternativeRepository {@link IntermediaryAlternativeRepository}
      * @return {@link AlternativeService}
      */
     @Bean
-    public AlternativeService alternativeService(final AlternativeRepository alternativeRepository) {
-        return new AlternativeService(alternativeRepository);
+    public AlternativeService alternativeService(final RootAlternativeRepository rootAlternativeRepository, final AbstractAlternativeRepository abstractAlternativeRepository, final IntermediaryAlternativeRepository intermediaryAlternativeRepository) {
+        return new AlternativeService(rootAlternativeRepository, abstractAlternativeRepository, intermediaryAlternativeRepository);
     }
 
     /**

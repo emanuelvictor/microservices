@@ -1,20 +1,16 @@
-package com.emanuelvictor.api.functional.flowcreator.domain.ports
+package com.emanuelvictor.api.functional.flowcreator.domain.repositories
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.Choice
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.BranchOption
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.ChoiceRepository
-import com.emanuelvictor.api.functional.flowcreator.domain.ports.repositories.OptionRepository
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.util.stream.Collectors
+import org.springframework.test.context.jdbc.Sql
 
 /**
  * @author Emanuel Victor
@@ -34,28 +30,29 @@ class ChoiceRepositoryTests(
      * TODO we need to save in some place the individual graphs
      */
     @Test
+    @Sql("/dataset/truncate-all-tables.sql")
     fun `Must list choices by values`() {
         val choices = ArrayList<Choice>()
         val companyOption = this.optionRepository.save(CompanyOption("Company"))
         val companyAlternative = this.alternativeService.save(RootAlternative("Select the branch", companyOption))
         for (i in 1..3) {
             val branchName = "Branch $i"
-            val branchOption = optionRepository.listByValue(branchName).stream().findFirst().orElse(this.optionRepository.save(BranchOption(branchName)))
+            val branchOption = optionRepository.listByValue(branchName).stream().findFirst().orElseGet { this.optionRepository.save(BranchOption(branchName)) }
             val branchAlternative = this.alternativeService.save(IntermediaryAlternative(companyAlternative, "Select the sector", branchOption))
             for (j in 1..3) {
                 val sectorName = "Sector $j"
-                val sectorOption = optionRepository.listByValue(sectorName).stream().findFirst().orElse(this.optionRepository.save(SectorOption(sectorName)))
+                val sectorOption = optionRepository.listByValue(sectorName).stream().findFirst().orElseGet { this.optionRepository.save(SectorOption(sectorName)) }
                 val sectorAlternative = this.alternativeService.save(IntermediaryAlternative(branchAlternative, "Select the attendants", true, sectorOption))
                 for (k in 1..3) {
                     val attendantName = "Attendant $k"
-                    val attendantAlternative = optionRepository.listByValue(attendantName).stream().findFirst().orElse(this.optionRepository.save(PersonOption(attendantName)))
+                    val attendantAlternative = optionRepository.listByValue(attendantName).stream().findFirst().orElseGet { this.optionRepository.save(PersonOption(attendantName)) }
                     this.alternativeService.save(IntermediaryAlternative(sectorAlternative, "Select the level from service!", this.optionRepository.save(attendantAlternative)))
                 }
-                val attendantsAlternatives = alternativeService.findChildrenFromAlternativeId(sectorAlternative.id).collect(Collectors.toList())
+                val attendantsAlternatives = alternativeService.findChildrenFromAlternativeId(sectorAlternative.id).stream().toList()
                 for (c in 0 until attendantsAlternatives.count()) {
                     for (k in 1..5) {
                         val levelName = "Level $k"
-                        val levelOption = optionRepository.listByValue(levelName).stream().findFirst().orElse(this.optionRepository.save(LevelOption(k)))
+                        val levelOption = optionRepository.listByValue(levelName).stream().findAny().orElseGet { this.optionRepository.save(LevelOption(levelName)) }
                         val levelAlternative = this.alternativeService.save(IntermediaryAlternative(attendantsAlternatives[c], "Thanks!", levelOption))
                         choices.add(choiceService.makeChoice(levelAlternative))
                     }
@@ -63,6 +60,6 @@ class ChoiceRepositoryTests(
             }
         }
 
-        Assertions.assertThat(choiceRepository.listChoicesByOptionsValues("Attendant 1", "Branch 1").count()).isEqualTo(60)
+        Assertions.assertThat(choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1").count()).isEqualTo(147)
     }
 }

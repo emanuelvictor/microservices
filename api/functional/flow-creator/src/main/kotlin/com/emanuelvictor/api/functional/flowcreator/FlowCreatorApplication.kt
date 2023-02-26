@@ -1,7 +1,8 @@
 package com.emanuelvictor.api.functional.flowcreator
-// TODO coupling
+
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 /**
  *

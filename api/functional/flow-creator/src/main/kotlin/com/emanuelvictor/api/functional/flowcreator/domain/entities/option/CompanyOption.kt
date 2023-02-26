@@ -1,11 +1,14 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.option
 
+import jakarta.persistence.Entity
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-class CompanyOption(name: String) : Option(name) {
+@Entity
+class CompanyOption(identifier: String): Option(identifier) {
 //    first name
     // e-mail
 //    document

@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.option
 
-import io.github.emanuelvictor.commons.persistence.generic.PersistentEntity
+import jakarta.persistence.*
 
 
 /**
@@ -8,4 +8,13 @@ import io.github.emanuelvictor.commons.persistence.generic.PersistentEntity
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-abstract class Option(val identifier: String) : PersistentEntity()
+@Entity
+open class Option(
+    @Column(nullable = false, unique = true)
+    open var identifier: String
+) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    open var id: Long? = null
+}
