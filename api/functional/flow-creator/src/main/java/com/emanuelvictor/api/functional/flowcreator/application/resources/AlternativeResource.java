@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("alternatives")
+@RequestMapping("v1/alternatives")
 public class AlternativeResource extends AbstractResource<Alternative, Long> {
 
     private final AlternativeService alternativeService;

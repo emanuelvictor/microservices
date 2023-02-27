@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("choices")
+@RequestMapping("v1/choices")
 public class ChoiceResource extends AbstractResource<Choice, Long> {
 
     private final ChoiceService choiceService;

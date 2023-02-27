@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("options")
+@RequestMapping("v1/options")
 public class OptionResource extends AbstractResource<Option, Long> {
 }
