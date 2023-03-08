@@ -7,28 +7,21 @@ import jakarta.validation.constraints.NotNull
 
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["alternative_id", "option_id"])])
-class OptionAlternative() {
+class OptionAlternative(option: Option, alternative: Alternative) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     var id: Long? = null
 
-    /**
-     *
-     */
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "alternative_id")
-    var alternative: Alternative? = null
+    var alternative: Alternative? = alternative
 
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "option_id")
-    var option: Option? = null
+    var option: Option? = option
 
-    constructor(option: Option, alternative: Alternative) : this() {
-        this.option = option
-        this.alternative = alternative
-    }
 }

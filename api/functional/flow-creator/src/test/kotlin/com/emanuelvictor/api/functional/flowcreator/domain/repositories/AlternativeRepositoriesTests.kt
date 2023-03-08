@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.flowcreator.domain.repositories
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.CompanyOption
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helpers.PopulateHelper
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -19,6 +20,7 @@ import org.springframework.test.context.jdbc.Sql
 @SpringBootTest
 class AlternativeRepositoriesTests(
     @Autowired private val optionRepository: OptionRepository,
+    @Autowired private val questionRepository: QuestionRepository,
     @Autowired private val rootAlternativeRepository: RootAlternativeRepository,
     @Autowired private val alternativeRepository: AlternativeRepository,
     @Autowired private val intermediaryAlternativeRepository: IntermediaryAlternativeRepository,
@@ -67,10 +69,12 @@ class AlternativeRepositoriesTests(
     @Test
     @Sql("/dataset/truncate-all-tables.sql")
     fun `Must save IntermediaryAlternative`() {
+        val unitiesQuestion = questionRepository.save(Question("unities", "Selecione a unidade?"))
         val value = "BubbleFresh Tea"
-        val clientSelected = alternativeRepository.save(RootAlternative("Selecione a unidade?", optionRepository.save(CompanyOption(value))))
+        val clientSelected = alternativeRepository.save(RootAlternative(unitiesQuestion, optionRepository.save(CompanyOption(value))))
+        val attendantsQuestion = questionRepository.save(Question("attendants", "Por quem você foi atendido?"))
         val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", optionRepository.findByIdentifier(valueFromUnit).orElseGet { optionRepository.save(CompanyOption(valueFromUnit)) })
+        val unitSelected = IntermediaryAlternative(clientSelected, attendantsQuestion, optionRepository.findByIdentifier(valueFromUnit).orElseGet { optionRepository.save(CompanyOption(valueFromUnit)) })
         Assertions.assertThat(unitSelected.id).isNull()
 
         alternativeRepository.save(unitSelected)
@@ -84,10 +88,12 @@ class AlternativeRepositoriesTests(
     @Test
     @Sql("/dataset/truncate-all-tables.sql")
     fun `Must find Alternatvie by path`() {
+        val unitiesQuestion = questionRepository.save(Question("unities", "Selecione a unidade?"))
         val companyOption  = optionRepository.save(optionRepository.save(CompanyOption("Company")))
-        val companyAlternative = alternativeRepository.save(RootAlternative("Selecione a unidade?", companyOption))
+        val companyAlternative = alternativeRepository.save(RootAlternative(unitiesQuestion, companyOption))
         val branchOption =  optionRepository.save(optionRepository.save(CompanyOption("Branch")))
-        val alternativeExpected = alternativeRepository.save(IntermediaryAlternative(companyAlternative, "Por quem você foi atendido?", branchOption))
+        val attendantsQuestion = questionRepository.save(Question("attendants", "Por quem você foi atendido?"))
+        val alternativeExpected = alternativeRepository.save(IntermediaryAlternative(companyAlternative, attendantsQuestion, branchOption))
 
         val alternative = alternativeRepository.findByPath(alternativeExpected.path!!).orElseThrow()
 
@@ -100,8 +106,9 @@ class AlternativeRepositoriesTests(
     @Test
     @Sql("/dataset/truncate-all-tables.sql")
     fun `Must save RootAlternative`() {
+        val unitiesQuestion = questionRepository.save(Question("unities", "Selecione a unidade?"))
         val value = "BubbleFresh Tea"
-        val clientSelected = RootAlternative("Selecione a unidade?", optionRepository.save(CompanyOption(value)))
+        val clientSelected = RootAlternative(unitiesQuestion, optionRepository.save(CompanyOption(value)))
         Assertions.assertThat(clientSelected.id).isNull()
 
         alternativeRepository.save(clientSelected)

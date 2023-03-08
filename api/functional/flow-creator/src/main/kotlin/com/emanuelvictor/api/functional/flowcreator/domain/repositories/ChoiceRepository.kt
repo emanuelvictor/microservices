@@ -1,7 +1,6 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.repositories
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
-import io.github.emanuelvictor.commons.persistence.CrudRepository
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 

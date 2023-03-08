@@ -101,7 +101,7 @@ public class AlternativeService extends AbstractService<Alternative, Long> {
 
             final IntermediaryAlternative intermediaryAlternative = new IntermediaryAlternative(
                     Objects.requireNonNull(newAlternative.getPrevious()),
-                    Objects.requireNonNull(newAlternative.getMessageToNext()),
+                    Objects.requireNonNull(newAlternative.getQuestion()),
                     Boolean.TRUE.equals(newAlternative.getNextIsMultipleChoice()),
                     new ArrayList<>(optionsFromCombination)
             );

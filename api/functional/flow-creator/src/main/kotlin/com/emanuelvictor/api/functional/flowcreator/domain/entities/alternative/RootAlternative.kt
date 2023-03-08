@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import jakarta.persistence.Entity
 
 /**
@@ -11,11 +12,11 @@ import jakarta.persistence.Entity
 @Entity
 class RootAlternative : Alternative {
 
-    constructor(messageToNext: String, nextIsMultipleChoice: Boolean = false, option: Option) : super(messageToNext, nextIsMultipleChoice, listOf(option)) {
+    constructor(question: Question, nextIsMultipleChoice: Boolean = false, option: Option) : super(question, nextIsMultipleChoice, listOf(option)) {
         this.generatePath()
         this.generateSignature()
     }
 
-    constructor(messageToNext: String, option: Option) : this(messageToNext, false, option)
+    constructor(question: Question, option: Option) : this(question, false, option)
 
 }

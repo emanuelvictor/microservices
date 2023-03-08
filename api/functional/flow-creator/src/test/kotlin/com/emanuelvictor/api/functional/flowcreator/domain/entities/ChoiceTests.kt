@@ -5,6 +5,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
@@ -20,10 +21,12 @@ class ChoiceTests {
      */
     @Test
     fun `Instance Of Choice Tests`() {
+        val unitiesQuestion = Question("unidades", "Selecione a unidade?")
         val rootValue = "Bubblemix Tea"
-        val rootAlternative = RootAlternative("Selecione a unidade?", CompanyOption(rootValue))
+        val rootAlternative = RootAlternative(unitiesQuestion, CompanyOption(rootValue))
+        val whateverQuestion = Question("whatever", "Whatever?")
         val intermediaryValue = "intermediary value"
-        val intermediaryAlternative = IntermediaryAlternative(rootAlternative, "Whatever?", PersonOption(intermediaryValue))
+        val intermediaryAlternative = IntermediaryAlternative(rootAlternative, whateverQuestion, PersonOption(intermediaryValue))
 
         val choice = Choice(intermediaryAlternative)
 
@@ -38,12 +41,15 @@ class ChoiceTests {
      */
     @Test
     fun `Must return a long path from the choice`() {
+        val unitiesQuestion = Question("unidades", "Selecione a unidade?")
         val value = "Bubblemix Tea"
-        val clientSelected = RootAlternative("Selecione a unidade?", CompanyOption(value))
+        val clientSelected = RootAlternative(unitiesQuestion, CompanyOption(value))
         val valueFromUnit = "BIG - Foz do Iguaçu"
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", BranchOption(valueFromUnit))
+        val attendantsQuestion = Question("atendentes", "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, attendantsQuestion, BranchOption(valueFromUnit))
         val valueFromAttendant = "Maria"
-        val attendantSelected = IntermediaryAlternative(unitSelected, "Como foi o atendimento?", PersonOption(valueFromAttendant))
+        val levelQuestion = Question("level", "Como foi o atendimento?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, levelQuestion, PersonOption(valueFromAttendant))
 
         val choice = Choice(attendantSelected)
 
@@ -79,22 +85,27 @@ class ChoiceTests {
     @Test
     fun `Get all paths from parents`() {
         val value = CompanyOption("Bubblemix Tea")
-        val clientSelected = RootAlternative("Selecione a unidade?", value)
+        val unitiesQuestion = Question("unidades", "Selecione a unidade?")
+        val clientSelected = RootAlternative(unitiesQuestion, value)
         val valueFromUnit = BranchOption("BIG - Foz do Iguaçu")
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", true, valueFromUnit)
+        val attendantsQuestion = Question("atendentes", "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, attendantsQuestion, true, valueFromUnit)
         val valueFromFirstAttendant = PersonOption("Maria")
         val valueFromSecondAttendant = PersonOption("Marcia")
         val valueFromThirdAttendant = PersonOption("Marcelo")
-        val attendantSelected = IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", true, valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant)
+        val subAttendantsQuestion = Question("sub-atendentes", "Selecione os sub atendentes?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, subAttendantsQuestion, true, valueFromFirstAttendant, valueFromSecondAttendant, valueFromThirdAttendant)
         val valueFromFirstSubAttendant = PersonOption("Rafael")
         val valueFromSecondSubAttendant = PersonOption("Ricardo")
         val valueFromThirdSubAttendant = PersonOption("Samuel")
-        val subAttendants = IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant)
+        val levelQuestion = Question("level", "Como foi o atendimento?")
+        val subAttendants = IntermediaryAlternative(attendantSelected, levelQuestion, valueFromFirstSubAttendant, valueFromSecondSubAttendant, valueFromThirdSubAttendant)
         val subSubAttendantValue = PersonOption("subAtendantValue")
-        val subSubAttendent = IntermediaryAlternative(subAttendants, "nanana", subSubAttendantValue)
+        val nanana = Question("nanana", "nanana")
+        val subSubAttendent = IntermediaryAlternative(subAttendants, nanana, subSubAttendantValue)
         val firstSubSubSubAttendantValue = PersonOption("Rosa")
         val secondSubSubSubAttendantValue = PersonOption("Maria")
-        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue, secondSubSubSubAttendantValue)
+        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, nanana, firstSubSubSubAttendantValue, secondSubSubSubAttendantValue)
 
         val fullPaths = Choice(subSubSubAttendant).splittedPaths
 
@@ -127,17 +138,22 @@ class ChoiceTests {
     @Test
     fun `Get all paths from parents without multiple choices`() {
         val value = CompanyOption("Bubblemix Tea")
-        val clientSelected = RootAlternative("Selecione a unidade?", value)
+        val unitiesQuestion = Question("unidades", "Selecione a unidade?")
+        val clientSelected = RootAlternative(unitiesQuestion, value)
         val valueFromUnit = BranchOption("BIG - Foz do Iguaçu")
-        val unitSelected = IntermediaryAlternative(clientSelected, "Por quem você foi atendido?", false, valueFromUnit)
+        val attendantsQuestion = Question("atendentes", "Por quem você foi atendido?")
+        val unitSelected = IntermediaryAlternative(clientSelected, attendantsQuestion, false, valueFromUnit)
         val valueFromFirstAttendant = PersonOption("Maria")
-        val attendantSelected = IntermediaryAlternative(unitSelected, "Selecione os sub atendentes?", false, valueFromFirstAttendant)
+        val subAttendantsQuestion = Question("sub-atendentes", "Selecione os sub atendentes?")
+        val attendantSelected = IntermediaryAlternative(unitSelected, subAttendantsQuestion, false, valueFromFirstAttendant)
         val valueFromFirstSubAttendant = PersonOption("Rafael")
-        val subAttendants = IntermediaryAlternative(attendantSelected, "Como foi o atendimento?", valueFromFirstSubAttendant)
+        val levelQuestion = Question("level", "Como foi o atendimento?")
+        val subAttendants = IntermediaryAlternative(attendantSelected, levelQuestion, valueFromFirstSubAttendant)
         val subSubAttendantValue = PersonOption("subAtendantValue")
-        val subSubAttendent = IntermediaryAlternative(subAttendants, "nanana", subSubAttendantValue)
+        val nanana = Question("nanana", "nanana")
+        val subSubAttendent = IntermediaryAlternative(subAttendants, nanana, subSubAttendantValue)
         val firstSubSubSubAttendantValue = PersonOption("Rosa")
-        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, "nanana", firstSubSubSubAttendantValue)
+        val subSubSubAttendant = IntermediaryAlternative(subSubAttendent, nanana, firstSubSubSubAttendantValue)
 
         val fullPaths = Choice(subSubSubAttendant).splittedPaths
 
@@ -151,19 +167,24 @@ class ChoiceTests {
     @Test
     fun `Must back header of choice`() {
         val company = CompanyOption("Fiserv")
-        val companyAlternative = RootAlternative("Selecione a tribo", company)
+        val tribeQuestion = Question("unidades", "Selecione a unidade")
+        val companyAlternative = RootAlternative(tribeQuestion, company)
         val tribe = SectorOption("Onboard")
-        val tribeAlternative = IntermediaryAlternative(companyAlternative, "Selecione a sua aldeia", tribe)
+        val villageQuestion = Question("village", "Selecione a sua aldeia")
+        val tribeAlternative = IntermediaryAlternative(companyAlternative, villageQuestion, tribe)
         val village = SectorOption("Register")
-        val villageAlternative = IntermediaryAlternative(tribeAlternative, "Quem são seus líderes?", true, village)
+        val leadersQuestion = Question("leaders", "Quem são seus líderes?")
+        val villageAlternative = IntermediaryAlternative(tribeAlternative, leadersQuestion, true, village)
         val rafael = PersonOption("Rafael")
         val ricardo = PersonOption("Ricardo")
         val samuel = PersonOption("Samuel")
-        val managersAlternative = IntermediaryAlternative(villageAlternative, "Como você avalia seus gestores no quesito 'Empatia'?", rafael, ricardo, samuel)
+        val managersQuestion = Question("managers", "Como você avalia seus gestores no quesito 'Empatia'?")
+        val managersAlternative = IntermediaryAlternative(villageAlternative, managersQuestion, rafael, ricardo, samuel)
         val level5 = LevelOption(5.toString())
-        val level5Alternative = IntermediaryAlternative(managersAlternative, "Obrigado!", level5)
+        val thx = Question("thx", "Obrigado!")
+        val level5Alternative = IntermediaryAlternative(managersAlternative, thx, level5)
         val signatureExpected =
-            companyAlternative.messageToNext + SEPARATOR + tribeAlternative.messageToNext + SEPARATOR + villageAlternative.messageToNext + SEPARATOR + managersAlternative.messageToNext + SEPARATOR + level5Alternative.messageToNext
+            companyAlternative.question!!.message + SEPARATOR + tribeAlternative.question!!.message + SEPARATOR + villageAlternative.question!!.message + SEPARATOR + managersAlternative.question!!.message + SEPARATOR + level5Alternative.question!!.message
 
         val headerFromChoice = Choice(level5Alternative).header
 

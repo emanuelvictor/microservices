@@ -15,7 +15,7 @@ public class Beans {
 
     /**
      * @param rootAlternativeRepository         {@link RootAlternativeRepository}
-     * @param alternativeRepository     {@link AlternativeRepository}
+     * @param alternativeRepository             {@link AlternativeRepository}
      * @param intermediaryAlternativeRepository {@link IntermediaryAlternativeRepository}
      * @return {@link AlternativeService}
      */
@@ -36,11 +36,12 @@ public class Beans {
      * @param choiceService      {@link ChoiceService}
      * @param optionRepository   {@link OptionRepository}
      * @param choiceRepository   {@link ChoiceRepository}
+     * @param questionRepository {@link QuestionRepository}
      * @param alternativeService {@link AlternativeService}
      * @return {@link PopulateHelper}
      */
     @Bean
-    public PopulateHelper populateHelper(final ChoiceService choiceService, final OptionRepository optionRepository, final ChoiceRepository choiceRepository, final AlternativeService alternativeService) {
-        return new PopulateHelper(choiceService, optionRepository, choiceRepository, alternativeService);
+    public PopulateHelper populateHelper(final ChoiceService choiceService, final OptionRepository optionRepository, final ChoiceRepository choiceRepository, final QuestionRepository questionRepository, final AlternativeService alternativeService) {
+        return new PopulateHelper(choiceService, optionRepository, choiceRepository, questionRepository, alternativeService);
     }
 }

@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
@@ -19,18 +20,18 @@ class IntermediaryAlternative : Alternative {
     var previous: Alternative? = null
 
     constructor(
-        previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, vararg options: Option
-    ) : super(messageToNext, nextIsMultipleChoice, options.toList()) {
+        previous: Alternative, question: Question, nextIsMultipleChoice: Boolean = false, vararg options: Option
+    ) : super(question, nextIsMultipleChoice, options.toList()) {
         this.previous = previous
         this.generatePath()
         this.generateSignature()
     }
 
-    constructor(previous: Alternative, messageToNext: String, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
-        previous, messageToNext, nextIsMultipleChoice, *values.toTypedArray()
+    constructor(previous: Alternative, question: Question, nextIsMultipleChoice: Boolean = false, values: List<Option>) : this(
+        previous, question, nextIsMultipleChoice, *values.toTypedArray()
     )
 
-    constructor(previous: Alternative, messageToNext: String, vararg options: Option) : this(previous, messageToNext, false, options.toList())
+    constructor(previous: Alternative, question: Question, vararg options: Option) : this(previous, question, false, options.toList())
 
     /**
      * @return This recursive method return the total path from the alternative.

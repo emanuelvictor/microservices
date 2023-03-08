@@ -2,7 +2,9 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative
 
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.option.OptionAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
 import java.util.stream.Collectors
 
 /**
@@ -12,7 +14,7 @@ import java.util.stream.Collectors
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-open class Alternative(@Column(nullable = false) open var messageToNext: String, @Column(nullable = false) open var nextIsMultipleChoice: Boolean, options: List<Option>) {
+open class Alternative(@Column(nullable = false) open var nextIsMultipleChoice: Boolean, options: List<Option>) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,11 @@ open class Alternative(@Column(nullable = false) open var messageToNext: String,
 
     @OneToMany(targetEntity = OptionAlternative::class, mappedBy = "alternative", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     open var optionsAlternatives: List<OptionAlternative>? = null
+
+    @NotNull
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "question_id")
+    var question: Question? = null
 
     val options: MutableList<Option?>
         get() {
@@ -40,7 +47,11 @@ open class Alternative(@Column(nullable = false) open var messageToNext: String,
         this.optionsAlternatives = options.stream().map { OptionAlternative(it, this) }.toList()
     }
 
-    constructor(messageToNext: String, nextIsMultipleChoice: Boolean, vararg options: Option) : this(messageToNext, nextIsMultipleChoice, options.toList())
+    constructor(question: Question, nextIsMultipleChoice: Boolean, vararg options: Option) : this(question, nextIsMultipleChoice, options.toList())
+
+    constructor(question: Question, nextIsMultipleChoice: Boolean, options: List<Option>) : this(nextIsMultipleChoice, options.toList()) {
+        this.question = question
+    }
 
     open fun generatePath(): String {
         this.path = optionsValuesToString()

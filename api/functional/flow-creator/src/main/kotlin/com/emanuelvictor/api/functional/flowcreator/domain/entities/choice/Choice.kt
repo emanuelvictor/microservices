@@ -53,9 +53,9 @@ class Choice(alternative: IntermediaryAlternative) {
             getHeaderFromAlternative(alternative.previous!!, header)
 
         if (alternative is RootAlternative)
-            header.append(alternative.messageToNext)
+            header.append(alternative.question!!.message)
         else
-            header.append(SEPARATOR).append(alternative.messageToNext)
+            header.append(SEPARATOR).append(alternative.question!!.message)
 
         return header
     }
