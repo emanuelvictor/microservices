@@ -57,7 +57,7 @@ class ChoiceServiceTests(
                         val levelName = "Level $k"
                         val levelOption = optionRepository.listByValue(levelName).stream().findAny().orElseGet { this.optionRepository.save(LevelOption(levelName)) }
                         val levelAlternative = this.alternativeService.save(IntermediaryAlternative(attendantsAlternatives[c], thx, levelOption))
-                        choices.add(choiceService.makeChoice(levelAlternative))
+                        choices.add(choiceService.choose(levelAlternative))
                     }
                 }
             }

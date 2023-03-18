@@ -125,7 +125,7 @@ public class PopulateHelper {
 
         if (intermediaryAlternatives.size() == 0) {
             System.out.println(alternative.getQuestion());
-            choiceService.makeChoice((IntermediaryAlternative) alternative);
+            choiceService.choose((IntermediaryAlternative) alternative);
 
             showRaw();
 

@@ -34,6 +34,6 @@ public class ChoiceResource extends AbstractResource<Choice, Long> {
      */
     @GetMapping("make")
     public Choice makeChoice(@RequestBody final IntermediaryAlternative intermediaryAlternative) {
-        return choiceService.makeChoice(intermediaryAlternative);
+        return choiceService.choose(intermediaryAlternative);
     }
 }

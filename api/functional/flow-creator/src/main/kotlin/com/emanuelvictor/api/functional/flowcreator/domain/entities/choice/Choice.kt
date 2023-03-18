@@ -4,6 +4,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.Alternative.Companion.SEPARATOR
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.generic.Entity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.function.Consumer
@@ -14,13 +15,8 @@ import java.util.function.Consumer
  * @version 1.0.0
  * @since 1.0.0, 25/08/2021
  */
-@Entity
-class Choice(alternative: IntermediaryAlternative) {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    var id: Long? = null
+@jakarta.persistence.Entity
+class Choice(alternative: IntermediaryAlternative) : Entity<ChoiceId>() {
 
     @Column(nullable = false)
     val date: LocalDateTime = LocalDateTime.now()

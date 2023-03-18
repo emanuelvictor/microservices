@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.flowcreator.domain.repositories
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choice
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.ChoiceId
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
@@ -63,12 +64,14 @@ class ChoiceRepositoryTests(
                         val levelName = "Level $k"
                         val levelOption = optionRepository.listByValue(levelName).stream().findAny().orElseGet { this.optionRepository.save(LevelOption(levelName)) }
                         val levelAlternative = this.alternativeService.save(IntermediaryAlternative(attendantsAlternatives[c], thx, levelOption))
-                        choices.add(choiceService.makeChoice(levelAlternative))
+                        choices.add(choiceService.choose(levelAlternative))
                     }
                 }
             }
         }
 
         Assertions.assertThat(choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1").count()).isEqualTo(147)
+        val choice = choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1")[0];
+        Assertions.assertThat(choiceRepository.findById(ChoiceId(choice.id?.id))).isNotNull
     }
 }

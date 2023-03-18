@@ -27,7 +27,7 @@ public abstract class AbstractResource<T, ID extends Serializable> {
     /**
      *
      */
-    @Autowired
+    @Autowired(required = false)
     protected JpaRepository<T, ID> repository;
 
     /**
