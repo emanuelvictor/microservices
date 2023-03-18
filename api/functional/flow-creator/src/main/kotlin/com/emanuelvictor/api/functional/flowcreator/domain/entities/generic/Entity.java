@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 @MappedSuperclass
-public abstract class Entity<ID extends UniqueIdentifier<String>> implements IEntity {
+public abstract class Entity<ID extends UniqueIdentifier<?>> implements IEntity<String> {
 
     @EmbeddedId
     public UniqueIdentifier<String> id;
@@ -16,7 +16,7 @@ public abstract class Entity<ID extends UniqueIdentifier<String>> implements IEn
     @PrePersist
     void prePersist() {
         if (getId() == null) {
-            setId(new UniqueIdentifier<String>() {
+            setId(new UniqueIdentifier<>() {
                 @Nullable
                 @Override
                 public String getId() {
@@ -26,7 +26,6 @@ public abstract class Entity<ID extends UniqueIdentifier<String>> implements IEn
         }
         if (getId().getId() == null)
             getId().setId(UUID.randomUUID().toString().replace("-", ""));
-        System.out.println("AQUI!");
     }
 
     @Override

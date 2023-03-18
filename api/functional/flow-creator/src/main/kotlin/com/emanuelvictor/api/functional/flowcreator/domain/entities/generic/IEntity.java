@@ -1,9 +1,8 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.generic;
 
-public interface IEntity {
+public interface IEntity<ID> {
 
+    UniqueIdentifier<ID> getId();
 
-    UniqueIdentifier<String> getId();
-
-    void setId(final UniqueIdentifier<String> id);
+    void setId(final UniqueIdentifier<ID> id);
 }
