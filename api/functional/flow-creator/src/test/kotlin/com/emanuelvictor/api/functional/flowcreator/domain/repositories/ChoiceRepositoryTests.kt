@@ -71,7 +71,21 @@ class ChoiceRepositoryTests(
         }
 
         Assertions.assertThat(choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1").count()).isEqualTo(147)
-        val choice = choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1")[0];
-        Assertions.assertThat(choiceRepository.findById(ChoiceId(choice.id?.id))).isNotNull
+        var choice = choiceRepository.listChoicesByOptionsValues("Branch 1, Attendant 1,Level 1")[0];
+        Assertions.assertThat(choiceRepository.findById(ChoiceId(choice.identifier.id))).isNotNull
+        val oldId = choice.identifier.id
+
+        val intermediaryAlternativeTest = this.alternativeService.save(IntermediaryAlternative(companyAlternative, selectBranch))
+        Assertions.assertThat(choice.alternative?.path).isNotEqualTo(intermediaryAlternativeTest.path)
+
+        choice = Choice(intermediaryAlternativeTest as IntermediaryAlternative)
+        choice.identifier = ChoiceId(oldId)
+
+        choice = choiceRepository.save(choice)
+        Assertions.assertThat(choice.alternative?.path).isEqualTo(intermediaryAlternativeTest.path)
+
+//        choice = choiceRepository.findById(ChoiceId(choice.identifier.id)).get()
+        choice = choiceRepository.findById(choice.identifier as ChoiceId).get() // TODO wtf it does not work
+        Assertions.assertThat(choice.alternative?.path).isEqualTo(intermediaryAlternativeTest.path)
     }
 }

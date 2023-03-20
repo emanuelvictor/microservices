@@ -5,6 +5,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.IntermediaryAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.alternative.RootAlternative
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.generic.Entity
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.generic.UniqueIdentifierJava
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.function.Consumer

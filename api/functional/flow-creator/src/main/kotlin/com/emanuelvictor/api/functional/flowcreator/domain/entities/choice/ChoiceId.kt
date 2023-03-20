@@ -1,14 +1,9 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.choice
 
-import com.emanuelvictor.api.functional.flowcreator.domain.entities.generic.UniqueIdentifier
+import com.emanuelvictor.api.functional.flowcreator.domain.entities.generic.UniqueIdentifierJava
 import jakarta.persistence.Embeddable
 
 @Embeddable
-class ChoiceId() : UniqueIdentifier<String>() {
+class ChoiceId(id: String?) : UniqueIdentifierJava<String>(id) {
 
-    override var id: String? = null
-
-    constructor(id: String?) : this() {
-        this.id = id
-    }
 }
