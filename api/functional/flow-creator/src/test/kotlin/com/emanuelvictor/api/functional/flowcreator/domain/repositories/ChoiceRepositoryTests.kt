@@ -84,8 +84,8 @@ class ChoiceRepositoryTests(
         choice = choiceRepository.save(choice)
         Assertions.assertThat(choice.alternative?.path).isEqualTo(intermediaryAlternativeTest.path)
 
-//        choice = choiceRepository.findById(ChoiceId(choice.identifier.id)).get()
-        choice = choiceRepository.findById(choice.identifier as ChoiceId).get() // TODO wtf it does not work
+        choice = choiceRepository.findById(ChoiceId(choice.identifier.id)).get()
+//        choice = choiceRepository.findById(choice.identifier as ChoiceId).get() // TODO wtf it does not work
         Assertions.assertThat(choice.alternative?.path).isEqualTo(intermediaryAlternativeTest.path)
     }
 }

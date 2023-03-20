@@ -2,7 +2,7 @@ package com.emanuelvictor.api.functional.flowcreator.domain.entities.generic;
 
 public interface IEntity<ID> {
 
-    UniqueIdentifierJava<ID> getIdentifier();
+    IUniqueIdentifier<ID> getIdentifier();
 
-    void setIdentifier(final UniqueIdentifierJava<ID> id);
+    void setIdentifier(final IUniqueIdentifier<ID> id);
 }

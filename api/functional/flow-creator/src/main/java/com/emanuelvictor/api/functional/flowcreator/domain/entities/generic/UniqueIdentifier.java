@@ -1,14 +1,12 @@
 package com.emanuelvictor.api.functional.flowcreator.domain.entities.generic;
 
-import java.io.Serializable;
-
-public class UniqueIdentifierJava<ID> implements Serializable {
+public class UniqueIdentifier<ID> implements IUniqueIdentifier<ID> {
     private ID id;
 
-    public UniqueIdentifierJava() {
+    public UniqueIdentifier() {
     }
 
-    public UniqueIdentifierJava(ID id) {
+    public UniqueIdentifier(ID id) {
         this.id = id;
     }
 
