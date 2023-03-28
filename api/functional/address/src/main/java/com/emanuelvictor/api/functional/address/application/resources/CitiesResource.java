@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.address.application.resources;
 import com.emanuelvictor.api.functional.address.domain.model.address.City;
 import com.emanuelvictor.api.functional.address.domain.repository.AddressRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,13 +16,13 @@ import java.util.Optional;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/cities")
-public class AddressResource {
+@RequestMapping(value = "v1/cities", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+public class CitiesResource {
 
     /**
      *
      */
-    private final AddressRepository enderecoRepository;
+    private final AddressRepository addressRepository;
 
     /**
      * TODO must return
@@ -32,6 +33,6 @@ public class AddressResource {
      */
     @GetMapping
     public Optional<City> listCitiesByNameAndAbbreviationFromState(@RequestParam final String nameOfCity, @RequestParam final String abbreviationFromState) {
-        return enderecoRepository.listCitiesByNameAndAbbreviationFromState(nameOfCity, abbreviationFromState);
+        return addressRepository.listCitiesByNameAndAbbreviationFromState(nameOfCity, abbreviationFromState);
     }
 }
