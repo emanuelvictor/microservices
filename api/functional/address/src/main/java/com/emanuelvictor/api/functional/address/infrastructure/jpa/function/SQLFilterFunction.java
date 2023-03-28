@@ -1,0 +1,71 @@
+package com.emanuelvictor.api.functional.address.infrastructure.jpa.function;
+
+import org.hibernate.dialect.function.CastStrEmulation;
+import org.hibernate.query.ReturnableType;
+import org.hibernate.query.spi.QueryEngine;
+import org.hibernate.query.sqm.function.FunctionRenderingSupport;
+import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
+import org.hibernate.query.sqm.produce.function.StandardArgumentsValidators;
+import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
+import org.hibernate.query.sqm.tree.SqmTypedNode;
+import org.hibernate.sql.ast.SqlAstTranslator;
+import org.hibernate.sql.ast.spi.SqlAppender;
+import org.hibernate.sql.ast.tree.SqlAstNode;
+import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.spi.TypeConfiguration;
+
+import java.util.List;
+
+
+public class SQLFilterFunction extends CastStrEmulation implements FunctionRenderingSupport {
+
+    public SQLFilterFunction(TypeConfiguration typeConfiguration) {
+        super(
+                "filter",
+                StandardArgumentsValidators.between( 1, 3 ),
+                StandardFunctionReturnTypeResolvers.invariant(
+                        typeConfiguration.getBasicTypeRegistry().resolve( StandardBasicTypes.BOOLEAN )
+                )
+        );
+    }
+
+    @Override
+    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(
+            List<? extends SqmTypedNode<?>> arguments,
+            ReturnableType<T> impliedResultType,
+            QueryEngine queryEngine,
+            TypeConfiguration typeConfiguration) {
+        if ( arguments.size() == 1 ) {
+            return super.generateSqmFunctionExpression(
+                    arguments,
+                    impliedResultType,
+                    queryEngine,
+                    typeConfiguration
+            );
+        }
+
+        return new SelfRenderingSqmFunction<>(
+                this,
+                this,
+                arguments,
+                impliedResultType,
+                getArgumentsValidator(),
+                getReturnTypeResolver(),
+                queryEngine.getCriteriaBuilder(),
+                getName()
+        );
+    }
+
+
+
+    @Override
+    public void render(SqlAppender sqlAppender, List<? extends SqlAstNode> arguments, SqlAstTranslator<?> walker) {
+        sqlAppender.appendSql( "FILTER(" );
+        arguments.get( 0 ).accept( walker );
+        for ( int i = 1; i < arguments.size(); i++ ) {
+            sqlAppender.appendSql( ',' );
+            arguments.get( i ).accept( walker );
+        }
+        sqlAppender.appendSql( ')' );
+    }
+}

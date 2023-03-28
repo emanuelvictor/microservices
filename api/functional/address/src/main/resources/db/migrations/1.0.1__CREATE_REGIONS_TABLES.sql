@@ -1,0 +1,16 @@
+alter table if exists public.address drop constraint if exists fk_address_city;
+alter table if exists public.city drop constraint if exists fk_city_state;
+alter table if exists public.state drop constraint if exists fk_state_country;
+drop table if exists public.address cascade;
+drop table if exists public.city cascade;
+drop table if exists public.country cascade;
+drop table if exists public.state cascade;
+create table public.address (id bigserial not null, cep varchar(255), complments varchar(200), neighborhood varchar(200), number varchar(20), street varchar(200), city_id bigint, primary key (id));
+create table public.city (id bigserial not null, name varchar(200) not null, state_id bigint not null, primary key (id));
+create table public.country (id bigserial not null, name varchar(200) not null, primary key (id));
+create table public.state (id bigserial not null, abbreviation varchar(2) not null, name varchar(200) not null, country_id bigint not null, primary key (id));
+alter table if exists public.city add constraint uk_city unique (name, state_id);
+alter table if exists public.state add constraint uk_state unique (name, country_id);
+alter table if exists public.address add constraint fk_address_city foreign key (city_id) references public.city;
+alter table if exists public.city add constraint fk_city_state foreign key (state_id) references public.state;
+alter table if exists public.state add constraint fk_state_country foreign key (country_id) references public.country;
