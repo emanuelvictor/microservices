@@ -180,7 +180,7 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
         });
       }
 
-      console.log(this.entity.groupPermissions.map(a => a.permission.name));
+      console.log(this.entity.groupPermissions.map(a => a.permission.authority));
 
     }
 
@@ -239,7 +239,7 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
       }
     }
 
-    console.log(this.entity.groupPermissions.map(a => a.permission.name));
+    console.log(this.entity.groupPermissions.map(a => a.permission.authority));
   }
 
 

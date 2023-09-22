@@ -2,24 +2,29 @@ import {Abstract} from "./abstract/abstract.model";
 
 export class Permission extends Abstract {
 
-  /**
-   *
-   */
-  public name: string;
+    /**
+     *
+     */
+    public name: string;
 
-  /**
-   *
-   */
-  private identifier: string;
+    /**
+     *
+     */
+    private identifier: string;
 
-  /**
-   *
-   */
-  public upperPermission: number;
+    /**
+     *
+     */
+    public authority: string;
 
-  /**
-   *
-   */
-  public lowerPermissions: Permission[]
+    /**
+     *
+     */
+    public upperPermission: number;
+
+    /**
+     *
+     */
+    public lowerPermissions: Permission[]
 
 }
