@@ -80,9 +80,6 @@ export class ViewGroupComponent implements OnInit {
               this.markToDelete(this.permissions[i]);
 
             this.deletePermissionsMarked(this.permissions);
-
-            for (let i = 0; i < this.permissions.length; i++)
-              console.log(this.permissions[i]);
           })
       })
   }

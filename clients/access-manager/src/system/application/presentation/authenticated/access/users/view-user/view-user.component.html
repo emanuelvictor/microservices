@@ -50,8 +50,10 @@
       <label class='title'>Ativo:</label>
       <label class='text'>{{ user.enabled ? 'Sim' : 'Não' }}</label>
     </div>
-    <horizontal-space></horizontal-space>
-    <div layout='column' *ngIf='user?.group?.id'>
+  </div>
+  <vertical-space></vertical-space>
+  <div layout='row' layout-sm='column' layout-xs='column'>
+    <div layout='column' flex>
       <label class='title'>Grupo de Acesso:</label>
       <label class='text'>{{ user?.group?.name }}</label>
     </div>
@@ -74,7 +76,7 @@
         <div flex>
           <div flex layout-margin style="overflow-wrap: break-word; text-overflow: ellipsis;">{{session?.value}}</div>
           <div layout='column' flex layout-margin layout-align="end end">
-            <button layout-align='end end' flex 
+            <button layout-align='end end' flex
             layout-margin style='margin: 0' mat-button color="warn"
               *ngIf='!session?.revoked'
               (click)='revoke(session)'>
