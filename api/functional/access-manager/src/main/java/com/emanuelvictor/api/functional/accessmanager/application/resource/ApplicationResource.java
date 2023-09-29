@@ -19,7 +19,7 @@ import static com.emanuelvictor.api.functional.accessmanager.application.resourc
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({APPLICATION_MAPPING_RESOURCE})
+@RequestMapping("applications")
 public class ApplicationResource {
 
     /**

@@ -17,7 +17,7 @@ import static com.emanuelvictor.api.functional.accessmanager.application.resourc
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({USER_MAPPING_RESOURCE})
+@RequestMapping("users")
 public class UserResource {
 
     /**

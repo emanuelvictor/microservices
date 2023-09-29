@@ -133,9 +133,9 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
 
   /**
    *
-   * @param permission
+   * @param permissionToAdd
    */
-  addPermission(permission: Permission) {
+  addPermission(permissionToAdd: Permission) {
 
     const groupPermission: GroupPermission = new GroupPermission();
 
@@ -146,18 +146,21 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
     group.name = this.entity.name;
 
     groupPermission.group = group;
-    groupPermission.permission = permission;
+    groupPermission.permission = permissionToAdd;
 
     this.entity.groupPermissions.push(groupPermission);
 
-    if ((permission.upperPermission && this.findPermission(this.permissions, permission.upperPermission)) && this.findPermission(this.permissions, permission.upperPermission).lowerPermissions.length === this.entity.groupPermissions.map(a => a.permission).filter(a => a.upperPermission === permission.upperPermission).length) {
+    const permissionFound = this.findPermission(this.permissions, permissionToAdd.upperPermission);
 
-      this.entity.groupPermissions = this.entity.groupPermissions.filter(a => a.permission.upperPermission !== permission.upperPermission);
+    if ((permissionToAdd.upperPermission && permissionFound) && permissionFound.lowerPermissions.length === this.entity.groupPermissions.map(gp => gp.permission).filter(p => p.upperPermission === permissionToAdd.upperPermission).length) {
 
-      this.addPermission(this.findPermission(this.permissions, permission.upperPermission))
+      this.entity.groupPermissions = this.entity.groupPermissions.filter(a => a.permission.upperPermission !== permissionToAdd.upperPermission);
+
+      this.addPermission(this.findPermission(this.permissions, permissionToAdd.upperPermission))
 
     } else {
 
+      // console.log('Permissões não duplicadas', this.organize(this.entity.groupPermissions.map(a => a.permission)));
       let permissions: Permission[] = this.removeDuplicates(this.organize(this.entity.groupPermissions.map(a => a.permission)));
 
       // Apenas verificação cautelar
@@ -180,11 +183,9 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
         });
       }
 
-      console.log(this.entity.groupPermissions.map(a => a.permission.authority));
-
+      console.log('--------------------------------------------------------------------------------------------------------------------');
+      this.entity.groupPermissions.forEach(a => console.log(a.permission.authority))
     }
-
-
   }
 
   /**
@@ -194,7 +195,7 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
   removeDuplicates(permissionsLineares: Permission[]): Permission[] {
     for (let i = 0; i < permissionsLineares.length; i++) {
       for (let k = 0; k < permissionsLineares.length; k++) {
-        if (permissionsLineares[i] && permissionsLineares[k]) {
+        if (i !== k && permissionsLineares[i] && permissionsLineares[k]) {
 
           // Se encontrou nos filhos de dentro
           const founded = this.findPermission(permissionsLineares[i].lowerPermissions, permissionsLineares[k].id);
@@ -239,7 +240,8 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
       }
     }
 
-    console.log(this.entity.groupPermissions.map(a => a.permission.authority));
+    console.log('--------------------------------------------------------------------------------------------------------------------');
+    this.entity.groupPermissions.forEach(a => console.log(a.permission.authority))
   }
 
 

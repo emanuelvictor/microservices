@@ -46,7 +46,7 @@ public class TokenResource {
      */
     @GetMapping("must-return-403")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("#oauth2.hasScope('root/access-manager/sessions/get')")
+//    @PreAuthorize("#oauth2.hasScope('root.access-manager.sessions.get')")
     public ResponseEntity<String> mustReturn403() {
         return tokenService.mustReturn403();
     }

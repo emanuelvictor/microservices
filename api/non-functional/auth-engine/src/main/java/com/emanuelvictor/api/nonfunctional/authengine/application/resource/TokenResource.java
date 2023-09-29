@@ -28,7 +28,7 @@ public class TokenResource {
      */
     @DeleteMapping("{token}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAnyAuthority('root/access-manager/sessions/delete')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.sessions.delete')")
     public void delete(@PathVariable final String token) {
         tokenService.revokeToken(token);
     }
@@ -39,7 +39,7 @@ public class TokenResource {
      */
     @GetMapping("{name}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('root/access-manager/sessions/get')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.sessions.get')")
     public Set<IToken> findTokenByName(@PathVariable final String name) {
         return tokenService.listTokensByName(name);
     }
@@ -51,7 +51,7 @@ public class TokenResource {
      */
     @GetMapping("must-return-403")
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("#oauth2.hasScope('root/access-manager/sessions/get')")
+//    @PreAuthorize("#oauth2.hasScope('root.access-manager.sessions.get')")
     @PreAuthorize("hasAnyAuthority('asdf')")
     public ResponseEntity<String> mustReturn403() {
         return ResponseEntity.ok("Oh no! Should did not have access :(");
@@ -62,7 +62,7 @@ public class TokenResource {
      */
     @GetMapping("must-return-200")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAnyAuthority('root/access-manager/sessions/get')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.sessions.get')")
     public ResponseEntity<String> mustReturn200() {
         return ResponseEntity.ok("Yeah baby! We should did have access ;)");
     }

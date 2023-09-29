@@ -80,7 +80,6 @@ export class AuthenticationService implements CanActivate, CanActivateChild {
     this.getPromiseLoggedUserInstance = this.getPromiseLoggedUserInstance ? this.getPromiseLoggedUserInstance : new Promise<UserDetails>((resolve, reject) => {
 
       const authorizationCode: string = getParameterByName('code');
-      console.log(authorizationCode);
       if (this.access && this.access.isInvalidAccessToken) { // Have the access token and it is invalid, but have the refresh token, get the access token by refresh token
 
         this.getAccessTokenByRefreshToken(this.access.refresh_token).subscribe(result => {

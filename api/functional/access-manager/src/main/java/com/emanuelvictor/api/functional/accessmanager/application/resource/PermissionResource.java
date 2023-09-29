@@ -21,7 +21,7 @@ import static com.emanuelvictor.api.functional.accessmanager.application.resourc
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(PERMISSION_MAPPING_RESOURCE)
+@RequestMapping("permissions")
 public class PermissionResource {
 
     /**

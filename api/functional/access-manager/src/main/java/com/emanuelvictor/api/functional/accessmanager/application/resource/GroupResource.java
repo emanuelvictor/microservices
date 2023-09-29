@@ -17,7 +17,7 @@ import static com.emanuelvictor.api.functional.accessmanager.application.resourc
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping({GROUP_MAPPING_RESOURCE})
+@RequestMapping("groups")
 public class GroupResource {
 
     /**

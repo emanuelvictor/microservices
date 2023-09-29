@@ -27,4 +27,8 @@
     </div>
   </div>
 
+  <view-permissions [permissions]='permissions'
+                    details *ngIf='permissions?.length'>
+  </view-permissions>
+
 </detail-page>

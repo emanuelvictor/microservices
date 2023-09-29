@@ -277,6 +277,8 @@ public abstract class AbstractTokenService implements ITokenService {
         return abstractTokenRepository.listTokensByName(name);
     }
 
+    static final String SEPARATOR = ".";
+
     /**
      * @param grantedAuthorities Collection<? extends GrantedAuthority>
      * @return Set<String>
@@ -285,7 +287,7 @@ public abstract class AbstractTokenService implements ITokenService {
         Objects.requireNonNull(grantedAuthorities);
         return grantedAuthorities.stream()
                 .map(GrantedAuthority::getAuthority)
-                .map(authority -> authority.contains("/") ? authority.substring(authority.indexOf("/") + 1) : authority).map(authority -> authority.contains("/") ? authority.substring(0, authority.indexOf("/")) : authority)
+                .map(authority -> authority.contains(SEPARATOR) ? authority.substring(authority.indexOf(SEPARATOR) + 1) : authority).map(authority -> authority.contains(SEPARATOR) ? authority.substring(0, authority.indexOf(SEPARATOR)) : authority)
                 .filter(authority -> !authority.equals("root"))
                 .collect(Collectors.toSet());
     }

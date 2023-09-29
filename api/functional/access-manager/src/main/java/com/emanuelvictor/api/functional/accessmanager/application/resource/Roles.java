@@ -9,7 +9,7 @@ package com.emanuelvictor.api.functional.accessmanager.application.resource;
  */
 public class Roles {
 
-    private static final String SEPARATOR = "/";
+    private static final String SEPARATOR = ".";
 
     private static final String ROOT = "root";
 
@@ -52,8 +52,8 @@ public class Roles {
     static final String APPLICATION_GET_ROLE = BASE_APPLICATION_ROLE + SEPARATOR + "get";
     static final String APPLICATION_PUT_ACTIVATE_ROLE = APPLICATION_PUT_ROLE + SEPARATOR + "activate";
     static final String APPLICATION_PUT_CHANGE_PASSWORD_ROLE = APPLICATION_PUT_ROLE + SEPARATOR + "change-password";
-    
-    
+
+
     /**
      * Permissões
      */

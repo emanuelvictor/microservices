@@ -19,12 +19,12 @@ public class TokenServiceTests extends AbstractsTests {
 
         final Set<SimpleGrantedAuthority> authorities = Set.of(
                 new SimpleGrantedAuthority("root"),
-                new SimpleGrantedAuthority("root/account-manager/access-groups/put/activate"),
-                new SimpleGrantedAuthority("root/account-manager"),
-                new SimpleGrantedAuthority("root/financial"),
-                new SimpleGrantedAuthority("root/financial/insert-coin"),
-                new SimpleGrantedAuthority("root/falcatrua"),
-                new SimpleGrantedAuthority("root/falcatrua/outra")
+                new SimpleGrantedAuthority("root.account-manager.access-groups.put.activate"),
+                new SimpleGrantedAuthority("root.account-manager"),
+                new SimpleGrantedAuthority("root.financial"),
+                new SimpleGrantedAuthority("root.financial.insert-coin"),
+                new SimpleGrantedAuthority("root.falcatrua"),
+                new SimpleGrantedAuthority("root.falcatrua.outra")
         );
 
         Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", TokenService.extractClientsId(authorities))), "");

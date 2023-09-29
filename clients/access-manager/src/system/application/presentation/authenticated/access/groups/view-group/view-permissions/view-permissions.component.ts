@@ -2,8 +2,8 @@ import {SelectionModel} from '@angular/cdk/collections';
 import {FlatTreeControl} from '@angular/cdk/tree';
 import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material/tree';
 import {BehaviorSubject} from 'rxjs';
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Permission} from "../../../../../../../../domain/entity/permission.model";
+import {Component, Input, OnInit} from '@angular/core';
+import {Permission} from "../../../../../../../domain/entity/permission.model";
 
 /**
  * Node for to-do item
@@ -26,22 +26,16 @@ export class TodoItemFlatNode {
 
 // @ts-ignore
 @Component({
-  selector: 'link-permissions',
-  templateUrl: 'link-permissions.component.html',
-  styleUrls: ['link-permissions.component.scss']
+  selector: 'view-permissions',
+  templateUrl: 'view-permissions.component.html',
+  styleUrls: ['view-permissions.component.scss']
 })
-export class LinkPermissionsComponent implements OnInit {
+export class ViewPermissionsComponent implements OnInit {
 
   /**
    *
    */
   dataChange = new BehaviorSubject<TodoItemNode[]>([]);
-
-  @Output()
-  save: EventEmitter<Permission> = new EventEmitter();
-
-  @Output()
-  remove: EventEmitter<Permission> = new EventEmitter();
 
   @Input()
   permissions: Permission[];
@@ -148,88 +142,10 @@ export class LinkPermissionsComponent implements OnInit {
     return flatNode
   };
 
-  /** Whether all the descendants of the node are selected. */
-  descendantsAllSelected(node: TodoItemFlatNode): boolean {
-    const descendants = this.treeControl.getDescendants(node);
-    return descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-  }
-
-  /** Whether part of the descendants are selected */
-  descendantsPartiallySelected(node: TodoItemFlatNode): boolean {
-    const descendants = this.treeControl.getDescendants(node);
-    const result = descendants.some(child => this.checklistSelection.isSelected(child));
-    return result && !this.descendantsAllSelected(node);
-  }
-
-  /** Toggle the to-do item selection. Select/deselect all the descendants node */
-  initTodoItemSelectionToggle(node: TodoItemFlatNode): void {
-    this.checklistSelection.toggle(node);
-    const descendants = this.treeControl.getDescendants(node);
-    this.checklistSelection.isSelected(node)
-      ? this.checklistSelection.select(...descendants)
-      : this.checklistSelection.deselect(...descendants);
-
-    // Force update for the parent
-    descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-    this.checkAllParentsSelection(node);
-  }
-
-  /** Toggle the to-do item selection. Select/deselect all the descendants node */
-  todoItemSelectionToggle(node: TodoItemFlatNode): void {
-    this.checklistSelection.toggle(node);
-    const descendants = this.treeControl.getDescendants(node);
-    this.checklistSelection.isSelected(node)
-      ? this.checklistSelection.select(...descendants)
-      : this.checklistSelection.deselect(...descendants);
-
-    // Force update for the parent
-    descendants.every(child =>
-      this.checklistSelection.isSelected(child)
-    );
-    this.checkAllParentsSelection(node);
-
-    if (this.checklistSelection.isSelected(node)) {
-      this.save.emit(this.findPermission(this.permissions, node.id));
-    } else this.remove.emit(this.findPermission(this.permissions, node.id));
-  }
-
-  /**
-   * Pesqusia a permissão pelo ID
-   * @param permissions
-   * @param id
-   */
-  public findPermission(permissions: Permission[], id: number): Permission {
-    for (let i = 0; i < permissions.length; i++) {
-      if (permissions[i]) {
-        if (permissions[i].id === id)
-          return permissions[i];
-        else if (permissions[i].lowerPermissions && permissions[i].lowerPermissions.length) {
-          const permissao: Permission = this.findPermission(permissions[i].lowerPermissions, id);
-          if (permissao)
-            return permissao;
-        }
-      }
-    }
-  }
-
   /** Toggle a leaf to-do item selection. Check all the parents to see if they changed */
   initTodoLeafItemSelectionToggle(node: TodoItemFlatNode): void {
     this.checklistSelection.toggle(node);
     this.checkAllParentsSelection(node);
-  }
-
-  /** Toggle a leaf to-do item selection. Check all the parents to see if they changed */
-  todoLeafItemSelectionToggle(node: TodoItemFlatNode): void {
-    this.checklistSelection.toggle(node);
-    this.checkAllParentsSelection(node);
-
-    if (this.checklistSelection.isSelected(node)) {
-      this.save.emit(this.findPermission(this.permissions, node.id));
-    } else this.remove.emit(this.findPermission(this.permissions, node.id));
   }
 
   /* Checks all the parents when a leaf node is selected/unselected */
