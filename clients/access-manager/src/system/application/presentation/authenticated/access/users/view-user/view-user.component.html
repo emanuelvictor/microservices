@@ -51,21 +51,14 @@
       <label class='text'>{{ user.enabled ? 'Sim' : 'Não' }}</label>
     </div>
   </div>
-  <vertical-space></vertical-space>
-  <div layout='row' layout-sm='column' layout-xs='column'>
-    <div layout='column' flex>
-      <label class='title'>Grupo de Acesso:</label>
-      <label class='text'>{{ user?.group?.name }}</label>
-    </div>
-  </div>
   <vertical-space *ngIf='user?.sessions?.length'></vertical-space>
   <div flex layout='column' *ngIf='user?.sessions?.length'>
     <label class='title'>Sessões({{user?.sessions?.length}}):</label>
 
     <mat-accordion class="example-headers-align" multi style='margin-left: -23px'>
       <mat-expansion-panel *ngFor='let session of user.sessions'
-        style='box-shadow: none; padding-bottom: 0; margin-bottom: 0;'
-        [ngStyle]="{'background-color': (session.revoked ? 'gray' : 'white')}">
+                           style='box-shadow: none; padding-bottom: 0; margin-bottom: 0;'
+                           [ngStyle]="{'background-color': (session.revoked ? 'gray' : 'white')}">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{session.createdOn | date:'dd/MM/yyyy HH:mm:ss'}} -
@@ -77,14 +70,25 @@
           <div flex layout-margin style="overflow-wrap: break-word; text-overflow: ellipsis;">{{session?.value}}</div>
           <div layout='column' flex layout-margin layout-align="end end">
             <button layout-align='end end' flex
-            layout-margin style='margin: 0' mat-button color="warn"
-              *ngIf='!session?.revoked'
-              (click)='revoke(session)'>
+                    layout-margin style='margin: 0' mat-button color="warn"
+                    *ngIf='!session?.revoked'
+                    (click)='revoke(session)'>
               Revogar
             </button>
           </div>
         </div>
       </mat-expansion-panel>
     </mat-accordion>
+  </div>
+  <vertical-space></vertical-space>
+  <div layout='row' layout-sm='column' layout-xs='column'>
+    <access-group-data-view [group]='user?.group'>
+      <div accessGroupLabelName layout="row" *ngIf='user?.group'>
+        <div layout="column" flex>
+          <label class="title">Grupo de Acesso:</label>
+          <label class="text">{{ user?.group?.name }}</label>
+        </div>
+      </div>
+    </access-group-data-view>
   </div>
 </mat-card>

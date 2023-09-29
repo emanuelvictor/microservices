@@ -36,11 +36,14 @@
       <label class='title'>Ativo:</label>
       <label class='text'>{{ application?.enabled ? 'Sim' : 'Não' }}</label>
     </div>
-
   </div>
   <vertical-space></vertical-space>
-  <div layout='column' *ngIf='application?.group?.id'>
-    <label class='title'>Grupo de Acesso:</label>
-    <label class='text'>{{ application?.group?.name }}</label>
-  </div>
+  <access-group-data-view [group]='application?.group'>
+    <div accessGroupLabelName layout="row" *ngIf='application?.group'>
+      <div layout="column" flex>
+        <label class="title">Grupo de Acesso:</label>
+        <label class="text">{{ application?.group?.name }}</label>
+      </div>
+    </div>
+  </access-group-data-view>
 </mat-card>

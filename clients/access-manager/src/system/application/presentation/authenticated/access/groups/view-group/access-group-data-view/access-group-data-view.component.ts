@@ -1,20 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthenticatedViewComponent} from '../../../authenticated-view.component';
-import {MessageService} from '../../../../../../domain/services/message.service';
-import {GroupRepository} from "../../../../../../domain/repository/group.repository";
-import {DialogService} from "../../../../../../domain/services/dialog.service";
-import {Group} from "../../../../../../domain/entity/group.model";
-import {PermissionRepository} from "../../../../../../domain/repository/permission.repository";
-import {Permission} from "../../../../../../domain/entity/permission.model";
+import {AuthenticatedViewComponent} from '../../../../authenticated-view.component';
+import {MessageService} from '../../../../../../../domain/services/message.service';
+import {GroupRepository} from "../../../../../../../domain/repository/group.repository";
+import {DialogService} from "../../../../../../../domain/services/dialog.service";
+import {Group} from "../../../../../../../domain/entity/group.model";
+import {PermissionRepository} from "../../../../../../../domain/repository/permission.repository";
+import {Permission} from "../../../../../../../domain/entity/permission.model";
 
 // @ts-ignore
 @Component({
-  selector: 'view-groups',
-  templateUrl: 'view-group.component.html',
-  styleUrls: ['../groups.component.scss']
+  selector: 'access-group-data-view',
+  templateUrl: 'access-group-data-view.component.html',
+  styleUrls: ['../../groups.component.scss']
 })
-export class ViewGroupComponent implements OnInit {
+export class AccessGroupDataViewComponent implements OnInit {
 
   /**
    *
@@ -24,7 +24,8 @@ export class ViewGroupComponent implements OnInit {
   /**
    *
    */
-  group: Group = new Group();
+  @Input()
+  group: Group;
 
   /**
    *
@@ -44,7 +45,6 @@ export class ViewGroupComponent implements OnInit {
               private groupRepository: GroupRepository,
               private permissionRepository: PermissionRepository) {
 
-    this.group.id = +this.activatedRoute.snapshot.params.id || null;
     homeView.toolbar.subhead = 'Grupo de Acesso / Detalhes';
 
   }
@@ -53,32 +53,26 @@ export class ViewGroupComponent implements OnInit {
    *
    */
   ngOnInit() {
-    if (this.group && this.group.id) {
-      this.findById();
-    }
+    this.findPermissions();
   }
 
   /**
    *
    */
-  public findById() {
-    this.groupRepository.findById(this.group.id)
-      .subscribe((result) => {
-        this.group = result;
+  public findPermissions() {
 
-        this.permissionRepository.listByFilters({branch: true})
-          .subscribe(result => {
-            this.permissions = result.content;
+    this.permissionRepository.listByFilters({branch: true})
+      .subscribe(result => {
+        this.permissions = result.content;
 
-            let permissions = this.group.groupPermissions.map(a => a.permission);
-            permissions = this.organize(permissions);
-            this.organizeTheSelecteds(permissions, this.permissions);
+        let permissions = this.group.groupPermissions.map(a => a.permission);
+        permissions = this.organize(permissions);
+        this.organizeTheSelecteds(permissions, this.permissions);
 
-            for (let i = 0; i < this.permissions.length; i++)
-              this.markToDelete(this.permissions[i]);
+        for (let i = 0; i < this.permissions.length; i++)
+          this.markToDelete(this.permissions[i]);
 
-            this.deletePermissionsMarked(this.permissions);
-          })
+        this.deletePermissionsMarked(this.permissions);
       })
   }
 

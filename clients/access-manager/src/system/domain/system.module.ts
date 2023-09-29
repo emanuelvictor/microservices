@@ -79,6 +79,9 @@ import {TokenRepository} from "./repository/token.repository";
 import {
   ViewPermissionsComponent
 } from "../application/presentation/authenticated/access/groups/view-group/view-permissions/view-permissions.component";
+import {
+  AccessGroupDataViewComponent
+} from "../application/presentation/authenticated/access/groups/view-group/access-group-data-view/access-group-data-view.component";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -140,6 +143,7 @@ export function customTranslateLoader(http: HttpClient) {
     ConsultGroupsComponent,
     ViewGroupComponent,
     GroupsViewComponent,
+    AccessGroupDataViewComponent,
 
     // User
     UserViewComponent,
@@ -196,7 +200,7 @@ export function customTranslateLoader(http: HttpClient) {
   entryComponents: [
     DeleteDialogComponent,
     UpdatePasswordComponent,
-    UpdatePasswordDialogComponent,],
+    UpdatePasswordDialogComponent],
   providers: [
 
     // Repositories
