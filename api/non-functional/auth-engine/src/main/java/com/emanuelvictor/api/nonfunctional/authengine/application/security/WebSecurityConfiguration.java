@@ -17,9 +17,6 @@ import org.springframework.session.config.annotation.web.http.EnableSpringHttpSe
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
-
 /**
  * @author Emanuel Victor
  * @version 1.0.0
@@ -29,7 +26,8 @@ import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableSpringHttpSession // It's required only to session repository, that is, only to removing jsessionid from session repository.
+@EnableSpringHttpSession
+// It's required only to session repository, that is, only to removing jsessionid from session repository.
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -57,6 +55,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * Repository from jsessionid's
      * Necessary to revoke session after revoke token
+     *
      * @return MapSessionRepository
      */
     @Bean
@@ -94,15 +93,20 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
 
                 .requestMatchers()
-                .antMatchers("/" , "/ui/**", "/login", "/oauth/authorize")
+                .antMatchers("/", "/ui/**", "/login", "/oauth/authorize", "/logout")
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/ui/public/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll()
-        ;
+                .formLogin()
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .addLogoutHandler(customLogoutHandler)
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
 
 
 //        http
