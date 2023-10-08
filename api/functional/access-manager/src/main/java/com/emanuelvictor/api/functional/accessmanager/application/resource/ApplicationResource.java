@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static com.emanuelvictor.api.functional.accessmanager.application.resource.Roles.*;
-
 /**
  *
  */
@@ -28,7 +26,7 @@ public class ApplicationResource {
     private final ApplicationService applicationService;
 
     /**
-     *
+     * TODO SEM PERMISSÃO?
      */
     //TODO make in bach in future
     @ResponseStatus(HttpStatus.OK)
@@ -45,7 +43,7 @@ public class ApplicationResource {
      * @return Page<Application>
      */
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('" + APPLICATION_GET_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
     public Page<Application> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
         return this.applicationService.listByFilters(defaultFilter, enableFilter, pageable);
     }
@@ -55,13 +53,19 @@ public class ApplicationResource {
      * @return Application
      */
     @GetMapping("{id}")
-//    @PreAuthorize("hasAnyAuthority('" + APPLICATION_GET_ROLE + "')")
-    public Optional<Application> findById(@PathVariable final Object id) {
-        if (id == null)
-            return Optional.empty();
-        if (id instanceof String && !Utils.isNumeric((String) id))
-            return this.applicationService.loadClientByClientId((String) id);
-        return this.applicationService.findById(Long.parseLong((String) id));
+//    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
+    public Optional<Application> findById(@PathVariable final Long id) {
+        return this.applicationService.findById(id);
+    }
+
+    /**
+     * @param clienteId long
+     * @return Application
+     */
+    @GetMapping("{clienteId}/load")
+//    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
+    public Optional<Application> findById(@PathVariable final String clienteId) {
+        return this.applicationService.loadClientByClientId(clienteId);
     }
 
     /**
@@ -69,7 +73,7 @@ public class ApplicationResource {
      * @return Application
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('" + APPLICATION_POST_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.post','root.access-manager.applications','root.access-manager','root')")
     public Application save(@RequestBody final Application application) {
         return this.applicationService.save(application);
     }
@@ -80,7 +84,7 @@ public class ApplicationResource {
      * @return Application
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('" + APPLICATION_PUT_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.put','root.access-manager.applications','root.access-manager','root')")
     public Application updateApplication(@PathVariable final long id, @RequestBody final Application application) {
         return this.applicationService.save(id, application);
     }

@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.services;
 import com.emanuelvictor.api.functional.accessmanager.application.resource.ApplicationResource;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
+import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationSavingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationUpdatingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.ApplicationRepository;
@@ -119,10 +120,23 @@ public class ApplicationService {
 
     /**
      * @param clientId String
-     * @return ClientDetails
+     * @return {@link Optional<Application>}
      */
     public Optional<Application> loadClientByClientId(final String clientId) {
-        return this.applicationRepository.findByClientId(clientId);
+        final Optional<Application> applicationOptional = this.applicationRepository.findByClientId(clientId);
+
+        applicationOptional.ifPresent(this::removeLowerPermissions);
+
+        return applicationOptional;
+    }
+
+    /**
+     * Remove lowerPermissions to keep only the upperPermissions (rootPermissions).
+     *
+     * @param application {@link Application}
+     */
+    private void removeLowerPermissions(final Application application) {
+        application.getGroup().getGroupPermissions().forEach(groupPermission -> groupPermission.getPermission().setLowerPermissions(null));
     }
 
     /**

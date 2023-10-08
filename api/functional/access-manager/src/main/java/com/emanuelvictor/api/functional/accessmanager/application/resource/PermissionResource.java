@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.emanuelvictor.api.functional.accessmanager.application.resource.Roles.PERMISSION_MAPPING_RESOURCE;
-
 
 /**
  * RESTFul de Permissões
@@ -30,6 +28,8 @@ public class PermissionResource {
     private final PermissionRepository permissionRepository;
 
     /**
+     * TODO este serviço é público?
+     *
      * @param defaultFilter String
      * @param branch        Boolean
      * @param pageable      Pageable

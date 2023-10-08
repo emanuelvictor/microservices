@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.emanuelvictor.api.functional.accessmanager.application.resource.Roles.*;
-
 /**
  *
  */
@@ -32,7 +30,7 @@ public class UserResource {
      * @return Page<User>
      */
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('" + USER_GET_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.get','root.access-manager.users','root.access-manager','root')")
     public Page<User> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
         return this.userService.listByFilters(defaultFilter, enableFilter, pageable);
     }
@@ -42,7 +40,7 @@ public class UserResource {
      * @return User
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('" + USER_GET_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.get','root.access-manager.users','root.access-manager','root')")
     public User findById(@PathVariable final long id) {
         return this.userService.findById(id);
     }
@@ -52,7 +50,7 @@ public class UserResource {
      * @return User
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('" + USER_POST_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.post','root.access-manager.users','root.access-manager','root')")
     public User save(@RequestBody final User user) {
         return this.userService.save(user);
     }
@@ -63,7 +61,7 @@ public class UserResource {
      * @return User
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('" + USER_PUT_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.put','root.access-manager.users','root.access-manager','root')")
     public User updateUser(@PathVariable final long id, @RequestBody final User user) {
         return this.userService.save(id, user);
     }
@@ -73,7 +71,7 @@ public class UserResource {
      * @return boolean
      */
     @PutMapping("/enable")
-    @PreAuthorize("hasAnyAuthority('" + USER_PUT_ACTIVATE_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.put.activate','root.access-manager.users.put','root.access-manager.users','root.access-manager','root')")
     public boolean updateEnable(@RequestBody final long id) {
         return this.userService.updateEnable(id).getEnabled();
     }
@@ -82,6 +80,7 @@ public class UserResource {
      * @param id Long
      */
     @PutMapping("/update-password/{id}")
+//    @PreAuthorize("hasAnyAuthority('root.access-manager.users.put.change-password','root.access-manager.users.put','root.access-manager.users','root.access-manager','root')")
     public void updatePassword(@PathVariable final long id, final HttpServletRequest request) {
         final String currentPassword = request.getParameter("actualPassword");
         final String newPassword = request.getParameter("newPassword");
@@ -90,11 +89,13 @@ public class UserResource {
     }
 
     /**
+     * TODO sem permissionamento
+     *
      * @return UserDetails
      */
-    @GetMapping("{username}/username")
+    @GetMapping("{username}/username") // TODO mudar para load
     public User loadUserByUsername(@PathVariable final String username) {
-        return userService.findByUsername(username);
+        return userService.loadUserByUsername(username);
     }
 
     /**
@@ -103,7 +104,7 @@ public class UserResource {
      * @return User
      */
     @GetMapping("{userId}/change-password")
-    @PreAuthorize("hasAnyAuthority('" + USER_PUT_CHANGE_PASSWORD_ROLE + "')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.put.change-password','root.access-manager.users.put','root.access-manager.users','root.access-manager','root')")
     User changePassword(@PathVariable final long userId, @RequestParam final String newPassword) {
         return this.userService.changePassword(userId, newPassword);
     }

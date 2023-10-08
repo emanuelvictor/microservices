@@ -73,11 +73,6 @@ export class ViewGroupComponent implements OnInit {
             let permissions = this.group.groupPermissions.map(a => a.permission);
             permissions = this.organize(permissions);
             this.organizeTheSelecteds(permissions, this.permissions);
-
-            for (let i = 0; i < this.permissions.length; i++)
-              this.markToDelete(this.permissions[i]);
-
-            this.deletePermissionsMarked(this.permissions);
           })
       })
   }

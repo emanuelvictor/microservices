@@ -62,7 +62,8 @@ export class ViewPermissionsComponent implements OnInit {
 
     this.dataChange.subscribe(data => {
       this.dataSource.data = data;
-      this.treeControl.expandAll();
+      // this.treeControl.expandAll();
+      this.treeControl.expand(this.treeControl.dataNodes[0])
     });
 
     if (this.permissions && this.permissions.length) {

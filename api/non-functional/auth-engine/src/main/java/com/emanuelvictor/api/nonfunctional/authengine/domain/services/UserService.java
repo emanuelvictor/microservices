@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IUserFeignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,8 @@ public class UserService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        return this.userFeignRepository.loadUserByUsername(username)
+        final User user = this.userFeignRepository.loadUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not founded!"));
+        return user;
     }
 }
