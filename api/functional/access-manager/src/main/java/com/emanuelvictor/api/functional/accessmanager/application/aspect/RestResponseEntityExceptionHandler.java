@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolation;
 import java.util.logging.Logger;
 
 /**
@@ -107,8 +107,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     /**
      * Trata exceções geradas pelo Hibernate antes de enviar para o banco
      */
-    @ExceptionHandler(javax.validation.ConstraintViolationException.class)
-    public ResponseEntity<Object> handleException(final javax.validation.ConstraintViolationException exception, final WebRequest request) {
+    @ExceptionHandler(jakarta.validation.ConstraintViolationException.class)
+    public ResponseEntity<Object> handleException(final jakarta.validation.ConstraintViolationException exception, final WebRequest request) {
         final StringBuilder message = new StringBuilder();
         //for (ConstraintViolation<?> constraint : exception.getConstraintViolations()) {
         ConstraintViolation<?> constraint = exception.getConstraintViolations().iterator().next();
@@ -116,13 +116,13 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
         /*
          * Dependendo da versão do spring a validação pode estar no pacote
-         * "javax.validation.constraints.*" ou "org.hibernate.validator.constraints.*"
+         * "jakarta.validation.constraints.*" ou "org.hibernate.validator.constraints.*"
          */
-        if (annotationType.equals("javax.validation.constraints.NotNull")
-                || annotationType.equals("javax.validation.constraints.NotEmpty")
+        if (annotationType.equals("jakarta.validation.constraints.NotNull")
+                || annotationType.equals("jakarta.validation.constraints.NotEmpty")
                 || annotationType.equals("org.hibernate.validator.constraints.NotEmpty")
                 || annotationType.equals("org.hibernate.validator.constraints.NotBlank")
-                || annotationType.equals("javax.validation.constraints.NotBlank")) {
+                || annotationType.equals("jakarta.validation.constraints.NotBlank")) {
 
             //converte camel case para legivel
             message.append("\nO campo ").append(camelCaseToHumanReadable(constraint.getPropertyPath().toString())).append(" deve ser informado.");

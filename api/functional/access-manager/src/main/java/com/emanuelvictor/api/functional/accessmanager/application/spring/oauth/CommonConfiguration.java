@@ -3,8 +3,10 @@ package com.emanuelvictor.api.functional.accessmanager.application.spring.oauth;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtAccessTokenConverter;
@@ -57,6 +59,13 @@ public class CommonConfiguration {
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(12);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        OAuth2AuthenticationManager authenticationManager = new OAuth2AuthenticationManager();
+        authenticationManager.setTokenServices(tokenServices());
+        return authenticationManager;
     }
 
 }

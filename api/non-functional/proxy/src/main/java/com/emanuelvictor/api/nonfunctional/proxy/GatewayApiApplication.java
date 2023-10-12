@@ -14,13 +14,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableZuulProxy
 @SpringBootApplication
 @EnableDiscoveryClient
-public class ProxyApplication {
+public class GatewayApiApplication {
 
     /**
      * @param args String[]
      */
     public static void main(final String[] args) {
-        SpringApplication.run(ProxyApplication.class, args);
+        SpringApplication.run(GatewayApiApplication.class, args);
     }
 
     /**

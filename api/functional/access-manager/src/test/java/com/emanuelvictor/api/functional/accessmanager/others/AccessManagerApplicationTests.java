@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager;
+package com.emanuelvictor.api.functional.accessmanager.others;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

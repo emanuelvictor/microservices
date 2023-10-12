@@ -4,9 +4,8 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.Pe
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * @author Emanuel Victor
@@ -15,7 +14,6 @@ import javax.persistence.*;
  */
 @Data
 @Entity
-@Audited
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(uniqueConstraints = {
@@ -23,23 +21,16 @@ import javax.persistence.*;
 })
 public class GroupPermission extends PersistentEntity {
 
-    /**
-     *
-     */
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Permission permission;
 
-    /**
-     *
-     */
     @ManyToOne(optional = false)
     @JoinColumn(name = "group_permission_id")
     private Group group;
 
-    /**
-     * @param permission Permissao
-     */
-    public GroupPermission(final Permission permission) {
-        this.permission = permission;
-    }
+//    public GroupPermission(final Long id, final Group group, final Long permissionId, final String permissionName, final String permissionAuthority, final String permissionDescription) {
+//        this.id = id;
+//        this.group = group;
+//        this.permission = new Permission(permissionId, permissionName, permissionAuthority, permissionDescription);
+//    }
 }

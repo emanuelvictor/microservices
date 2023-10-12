@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 
@@ -22,7 +21,6 @@ import java.util.Set;
  */
 @Data
 @Entity
-@Audited
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonIdentityInfo(
@@ -44,8 +42,9 @@ public class Group extends PersistentEntity {
     /**
      *
      */
+    @Transient
     @EqualsAndHashCode.Exclude
-    @OneToMany(targetEntity = GroupPermission.class, mappedBy = "group", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+//    @OneToMany(targetEntity = GroupPermission.class, mappedBy = "group", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private Set<GroupPermission> groupPermissions;
 
 }

@@ -2,8 +2,6 @@ package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
 import com.emanuelvictor.api.functional.accessmanager.application.context.ContextHolder;
 import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSourceHolder;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.UserRepository;
 import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,6 +27,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserService {
 
+
     /**
      *
      */
@@ -40,6 +37,11 @@ public class UserService {
      *
      */
     private final PasswordEncoder passwordEncoder;
+
+    /**
+     *
+     */
+    private final ServiceToRemoveLowerPermissions serviceToRemoveLowerPermissions;
 
     /**
      * @param defaultFilter String
@@ -60,7 +62,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User loadUserByUsername(final String username) {
 
-        final User user = this.userRepository.findByUsername(username)
+        final User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundByUsername", username)));
 
 //        final GroupPermission groupPermission = new GroupPermission();
@@ -75,12 +77,13 @@ public class UserService {
     }
 
     /**
+     * TODO deve virar um serviço a parte
      * Remove lowerPermissions to keep only the upperPermissions (rootPermissions).
      *
      * @param user {@link User}
      */
     private void removeLowerPermissions(final User user) {
-        user.getGroup().getGroupPermissions().forEach(groupPermission -> groupPermission.getPermission().setLowerPermissions(null));
+        serviceToRemoveLowerPermissions.remove(user.getGroup().getGroupPermissions());
     }
 
     /**

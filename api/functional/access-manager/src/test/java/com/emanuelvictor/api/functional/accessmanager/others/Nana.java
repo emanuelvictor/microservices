@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager;
+package com.emanuelvictor.api.functional.accessmanager.others;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;

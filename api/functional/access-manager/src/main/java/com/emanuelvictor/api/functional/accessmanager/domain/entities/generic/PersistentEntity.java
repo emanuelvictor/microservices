@@ -2,7 +2,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.entities.generic;
 
 import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -26,6 +26,7 @@ public abstract class PersistentEntity implements IPersistentEntity<Long> {
     @Getter
     @Column(name = "created_on", nullable = false, updatable = false)
     protected LocalDateTime createdOn;
+
     @Getter
     @Column(name = "updated_on")
     protected LocalDateTime updatedOn;

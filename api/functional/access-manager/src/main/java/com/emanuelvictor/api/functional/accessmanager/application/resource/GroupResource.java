@@ -1,6 +1,8 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
+import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.AccessGroupPermissionDTO;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 /**
  *
@@ -24,6 +27,11 @@ public class GroupResource {
     private final GroupService groupService;
 
     /**
+     *
+     */
+    private final GroupRepository groupRepository;
+
+    /**
      * @param defaultFilter String
      * @param pageable      Pageable
      * @return Page<group>
@@ -31,7 +39,7 @@ public class GroupResource {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
     public Page<Group> listByFilters(final String defaultFilter, final Pageable pageable) {
-        return this.groupService.listByFilters(defaultFilter, pageable);
+        return groupService.listByFilters(defaultFilter, pageable);
     }
 
     /**
@@ -41,7 +49,7 @@ public class GroupResource {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
     public Optional<Group> findById(@PathVariable final long id) {
-        return this.groupService.findById(id);
+        return groupService.findById(id);
     }
 
     /**
@@ -54,21 +62,7 @@ public class GroupResource {
         grupoAcesso.getGroupPermissions().forEach(grupoAcessoPermissao ->
                 grupoAcessoPermissao.setGroup(grupoAcesso)
         );
-        return this.groupService.save(grupoAcesso);
-    }
-
-    /**
-     * @param id          long
-     * @param grupoAcesso group
-     * @return group
-     */
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.put','root.access-manager.groups','root.access-manager','root')")
-    public Group save(@PathVariable final long id, @RequestBody final Group grupoAcesso) {
-        grupoAcesso.getGroupPermissions().forEach(grupoAcessoPermissao ->
-                grupoAcessoPermissao.setGroup(grupoAcesso)
-        );
-        return this.groupService.save(id, grupoAcesso);
+        return groupService.save(grupoAcesso);
     }
 
     /**
@@ -78,8 +72,19 @@ public class GroupResource {
     @DeleteMapping("{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.delete','root.access-manager.groups','root.access-manager','root')")
     public Boolean delete(@PathVariable final long id) {
-        this.groupService.delete(id);
+        groupService.delete(id);
         return true;
+    }
+
+    /**
+     * @param id long
+     * @return User
+     */
+    @GetMapping("{id}/access-group-permissions")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
+    public Set<AccessGroupPermissionDTO> findAccessGroupPermissionsByUserId(@PathVariable final long id) {
+        return null;
+//        return groupRepository.findAccessGroupPermissionsByUserId(id);
     }
 
 }

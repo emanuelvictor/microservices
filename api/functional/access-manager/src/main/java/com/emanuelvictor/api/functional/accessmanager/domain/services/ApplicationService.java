@@ -131,12 +131,13 @@ public class ApplicationService {
     }
 
     /**
+     * todo remover
      * Remove lowerPermissions to keep only the upperPermissions (rootPermissions).
      *
      * @param application {@link Application}
      */
     private void removeLowerPermissions(final Application application) {
-        application.getGroup().getGroupPermissions().forEach(groupPermission -> groupPermission.getPermission().setLowerPermissions(null));
+//        application.getGroup().getGroupPermissions().forEach(groupPermission -> groupPermission.getPermission().setLowerPermissions(null));
     }
 
     /**

@@ -35,6 +35,11 @@ public class GroupService {
     private final GroupPermissionRepository groupPermissionRepository;
 
     /**
+     *
+     */
+    private final ServiceToRemoveLowerPermissions serviceToRemoveLowerPermissions;
+
+    /**
      * @param defaultFilter String
      * @param pageable      Pageable
      * @return Page<AccessGroup>
@@ -57,12 +62,12 @@ public class GroupService {
      */
     @Transactional
     public Group save(final Group group) {
-        Assert.notEmpty(group.getGroupPermissions(), "Defina permissões para esse Grupo de Acesso");
+//        Assert.notEmpty(group.getGroupPermissions(), "Defina permissões para esse Grupo de Acesso");
         return groupRepository.save(group);
     }
 
     /**
-     * @param id          long
+     * @param id    long
      * @param group {@link Group}
      * @return {@link Group}
      */
@@ -84,7 +89,10 @@ public class GroupService {
         /*
          * Atualizo o grupo de acesso
          */
-        this.groupRepository.save(group);
+        groupRepository.save(group);
+
+//        // Remove as permissões desnecessárias
+//        serviceToRemoveLowerPermissions.remove(groupPermissionList);
 
         /*
          * Insiro todos os grupo acesso permissao
@@ -92,7 +100,7 @@ public class GroupService {
         groupPermissionList.forEach(groupPermission -> {
             if (groupPermission.getId() == null)
                 groupPermission.setId(null);
-            this.groupPermissionRepository.save(groupPermission);
+            groupPermissionRepository.save(groupPermission);
         });
 
         return group;

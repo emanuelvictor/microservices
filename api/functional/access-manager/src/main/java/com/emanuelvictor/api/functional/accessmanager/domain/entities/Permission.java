@@ -7,11 +7,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Set;
 
 
@@ -22,7 +21,6 @@ import java.util.Set;
  */
 @Data
 @Entity
-@Audited
 @EqualsAndHashCode(callSuper = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id",
@@ -88,6 +86,13 @@ public class Permission extends PersistentEntity {
         this.upperPermission = upperPermission;
         this.lowerPermissions = lowerPermissions;
     }
+
+//    public Permission(final Long id, final String name, final String authority, final String description) {
+//        this.id = id;
+//        this.name = name;
+//        this.authority = authority;
+//        this.description = description;
+//    }
 
     /**
      * @return Permission
