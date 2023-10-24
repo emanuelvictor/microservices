@@ -21,7 +21,6 @@ import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.c
 public class CommonConfiguration {
 
     private final static String DEFAULT_KEY = "integrator";
-    private final static String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
 
     /**
      * @return TokenStore
@@ -62,7 +61,7 @@ public class CommonConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
+    public AuthenticationManager authenticationManagerBean() {
         OAuth2AuthenticationManager authenticationManager = new OAuth2AuthenticationManager();
         authenticationManager.setTokenServices(tokenServices());
         return authenticationManager;

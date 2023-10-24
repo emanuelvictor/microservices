@@ -7,7 +7,10 @@ import {Group} from "../entity/group.model";
 export class GroupRepository extends BaseRepository<Group> {
 
   constructor(httpClient: HttpClient) {
-    super(httpClient, 'access-manager/groups');
+    super(httpClient, 'access-manager/v1/groups');
   }
 
+  findAccessGroupPermissionsByUserId(id: number): any {
+    return this.httpClient.get<any>(this.collectionName + '/' + id + '/access-group-permissions')
+  }
 }

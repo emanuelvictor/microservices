@@ -1,6 +1,8 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.repositories;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,13 +19,10 @@ import java.util.List;
 public interface GroupPermissionRepository extends JpaRepository<GroupPermission, Long> {
 
     /**
-     * @param groupId long
-     * @return List<AccessGroupPermission>
+     * @param groupId  {@link Long}
+     * @param pageable {@link Pageable}
+     * @return {@link Page}
      */
-    @EntityGraph(attributePaths = {"group", "permission.id", "permission.name", "permission.authority", "permission.description"})
-    @Query("select groupPermission " +
-            " FROM GroupPermission groupPermission " +
-            " WHERE groupPermission.group.id = :groupId ")
-    List<GroupPermission> listByGroupId(final long groupId);
+    Page<GroupPermission> findByGroupId(final long groupId, final Pageable pageable);
 
 }

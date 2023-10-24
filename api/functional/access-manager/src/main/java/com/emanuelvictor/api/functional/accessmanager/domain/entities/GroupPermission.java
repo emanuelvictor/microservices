@@ -1,9 +1,7 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.entities;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.persistence.*;
 
@@ -12,8 +10,8 @@ import jakarta.persistence.*;
  * @version 1.0.0
  * @since 1.0.0, 10/09/2019
  */
-@Data
 @Entity
+@Getter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(uniqueConstraints = {
@@ -28,6 +26,23 @@ public class GroupPermission extends PersistentEntity {
     @JoinColumn(name = "group_permission_id")
     private Group group;
 
+    @Builder
+    private GroupPermission(Long id, Permission permission, Group group) {
+        super(id);
+        this.permission = permission;
+        this.group = group;
+    }
+
+    //    /**
+//     * Constructor to not make recursive queries.
+//     *
+//     * @param id
+//     * @param group
+//     * @param permissionId
+//     * @param permissionName
+//     * @param permissionAuthority
+//     * @param permissionDescription
+//     */
 //    public GroupPermission(final Long id, final Group group, final Long permissionId, final String permissionName, final String permissionAuthority, final String permissionDescription) {
 //        this.id = id;
 //        this.group = group;

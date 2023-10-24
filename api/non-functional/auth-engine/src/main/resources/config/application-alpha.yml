@@ -26,6 +26,7 @@ eureka:
 oauth:
   endpoints:
     users: http://localhost:8080/access-manager/users/
+    access-groups: http://localhost:8080/access-manager/v1/access-groups/
     applications: http://localhost:8080/access-manager/applications/
   token: http://localhost:8080/auth-engine/oauth/token
   clientId: auth-engine

@@ -7,6 +7,7 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationSavingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationUpdatingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.ApplicationRepository;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.infrastructure.misc.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +43,7 @@ public class ApplicationService {
 
     private final PermissionRepository permissionRepository;
     private final ApplicationRepository applicationRepository;
+    private final GroupPermissionRepository groupPermissionRepository;
 
     private final List<ApplicationSavingLogic> applicationSavingLogics;
     private final List<ApplicationUpdatingLogic> userUpdatingLogics;
@@ -112,7 +115,7 @@ public class ApplicationService {
         this.applicationRepository.findById(id)
                 .ifPresent(application -> {
                     application.setClientSecret(this.passwordEncoder.encode(password));
-                    this.applicationRepository.save(application);
+                    applicationRepository.save(application);
                 });
 
         return password;
@@ -123,28 +126,14 @@ public class ApplicationService {
      * @return {@link Optional<Application>}
      */
     public Optional<Application> loadClientByClientId(final String clientId) {
-        final Optional<Application> applicationOptional = this.applicationRepository.findByClientId(clientId);
-
-        applicationOptional.ifPresent(this::removeLowerPermissions);
-
-        return applicationOptional;
-    }
-
-    /**
-     * todo remover
-     * Remove lowerPermissions to keep only the upperPermissions (rootPermissions).
-     *
-     * @param application {@link Application}
-     */
-    private void removeLowerPermissions(final Application application) {
-//        application.getGroup().getGroupPermissions().forEach(groupPermission -> groupPermission.getPermission().setLowerPermissions(null));
+        return applicationRepository.findByClientId(clientId);
     }
 
     /**
      * @return List<Aplicacao>
      */
     public List<Application> findAll() {
-        return this.applicationRepository.findAll();
+        return applicationRepository.findAll();
     }
 
     /**

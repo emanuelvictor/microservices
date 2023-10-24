@@ -45,7 +45,7 @@ public class ApplicationResource {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
     public Page<Application> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
-        return this.applicationService.listByFilters(defaultFilter, enableFilter, pageable);
+        return applicationService.listByFilters(defaultFilter, enableFilter, pageable);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ApplicationResource {
     @GetMapping("{id}")
 //    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
     public Optional<Application> findById(@PathVariable final Long id) {
-        return this.applicationService.findById(id);
+        return applicationService.findById(id);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ApplicationResource {
     @GetMapping("{clienteId}/load")
 //    @PreAuthorize("hasAnyAuthority('root.access-manager.applications.get','root.access-manager.applications','root.access-manager','root')")
     public Optional<Application> findById(@PathVariable final String clienteId) {
-        return this.applicationService.loadClientByClientId(clienteId);
+        return applicationService.loadClientByClientId(clienteId);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ApplicationResource {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.applications.post','root.access-manager.applications','root.access-manager','root')")
     public Application save(@RequestBody final Application application) {
-        return this.applicationService.save(application);
+        return applicationService.save(application);
     }
 
     /**
@@ -86,7 +86,7 @@ public class ApplicationResource {
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.applications.put','root.access-manager.applications','root.access-manager','root')")
     public Application updateApplication(@PathVariable final long id, @RequestBody final Application application) {
-        return this.applicationService.save(id, application);
+        return applicationService.save(id, application);
     }
 
 //    /**

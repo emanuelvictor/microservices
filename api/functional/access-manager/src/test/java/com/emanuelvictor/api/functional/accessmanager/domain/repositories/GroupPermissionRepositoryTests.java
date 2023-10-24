@@ -4,12 +4,16 @@ import com.emanuelvictor.api.functional.accessmanager.AbstractIntegrationTests;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
+import jakarta.persistence.EntityManager;
+import org.assertj.core.api.Assertions;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.InternetProtocol;
@@ -36,27 +40,87 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
     @Autowired
     private GroupPermissionRepository groupPermissionRepository;
 
-    private final Group group = new Group();
     private Permission rootPermission;
 
     @BeforeEach
     void setUp() {
-        group.setName("Access Group Name");
-        groupRepository.save(group);
         rootPermission = permissionRepository.findById(1L).orElseThrow();
     }
 
     @Test
-    public void mustListGroupsPermissionsByGroupId() {
-        System.out.println(" ------ ");
-        final GroupPermission groupPermission = new GroupPermission();
-        groupPermission.setPermission(rootPermission);
-        groupPermission.setGroup(group);
-        groupPermissionRepository.save(groupPermission);
+    public void mustSaveGroupPermission() {
+        final var group = Group.builder().name("Access Group Name").build();
+        groupRepository.save(group);
+        var groupPermissionToSave = GroupPermission.builder()
+                .permission(rootPermission)
+                .group(group)
+                .build();
 
-        final List<GroupPermission> groupsPermissionsSaved = groupPermissionRepository.listByGroupId(group.getId());
+        final GroupPermission groupPermissionSaved = groupPermissionRepository.save(groupPermissionToSave);
 
-        System.out.println(groupsPermissionsSaved.size());
+        Assertions.assertThat(groupPermissionSaved).isEqualTo(groupPermissionToSave);
+    }
+
+    @Test
+    public void saveTwoGroupPermissionsAndMustReturnOnlyGroupPermissionsFromFistGroup() {
+        var groupOne = Group.builder().name("groupOne").build();
+        var groupTwo = Group.builder().name("groupTwo").build();
+        groupRepository.saveAll(Arrays.asList(groupOne, groupTwo));
+        var permissionOne = Permission.builder()
+                .upperPermission(rootPermission)
+                .name("permissionOne")
+                .authority("authorityPermissionOne")
+                .build();
+        var permissionTwo = Permission.builder()
+                .upperPermission(rootPermission)
+                .name("permissionTwo")
+                .authority("authorityPermissionTwo")
+                .build();
+        permissionRepository.saveAll(Arrays.asList(permissionOne, permissionTwo));
+        var groupPermissionToGroupOne = GroupPermission.builder()
+                .permission(permissionOne)
+                .group(groupOne)
+                .build();
+        var groupPermissionToGroupTwo = GroupPermission.builder()
+                .permission(permissionTwo)
+                .group(groupTwo)
+                .build();
+        groupPermissionRepository.saveAll(Arrays.asList(groupPermissionToGroupOne, groupPermissionToGroupTwo));
+
+        var groupPermissions = groupPermissionRepository.findByGroupId(groupOne.getId(), Pageable.unpaged());
+
+        Assertions.assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupOne);
+    }
+
+    @Test
+    public void saveTwoGroupPermissionsAndMustReturnOnlyGroupPermissionsSecondFistGroup() {
+        var groupOne = Group.builder().name("groupOne").build();
+        var groupTwo = Group.builder().name("groupTwo").build();
+        groupRepository.saveAll(Arrays.asList(groupOne, groupTwo));
+        var permissionOne = Permission.builder()
+                .upperPermission(rootPermission)
+                .name("permissionOne")
+                .authority("authorityPermissionOne")
+                .build();
+        var permissionTwo = Permission.builder()
+                .upperPermission(rootPermission)
+                .name("permissionTwo")
+                .authority("authorityPermissionTwo")
+                .build();
+        permissionRepository.saveAll(Arrays.asList(permissionOne, permissionTwo));
+        var groupPermissionToGroupOne = GroupPermission.builder()
+                .permission(permissionOne)
+                .group(groupOne)
+                .build();
+        var groupPermissionToGroupTwo = GroupPermission.builder()
+                .permission(permissionTwo)
+                .group(groupTwo)
+                .build();
+        groupPermissionRepository.saveAll(Arrays.asList(groupPermissionToGroupOne, groupPermissionToGroupTwo));
+
+        var groupPermissions = groupPermissionRepository.findByGroupId(groupTwo.getId(), Pageable.unpaged());
+
+        Assertions.assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupTwo);
     }
 
 }

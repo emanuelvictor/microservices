@@ -1,24 +1,24 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
-import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.AccessGroupPermissionDTO;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
+import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
-import java.util.Set;
 
 /**
  *
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("groups")
+@RequestMapping({"v1/groups", "v1/access-groups"})
 public class GroupResource {
 
     /**
@@ -29,7 +29,7 @@ public class GroupResource {
     /**
      *
      */
-    private final GroupRepository groupRepository;
+    private final GroupPermissionRepository groupPermissionRepository;
 
     /**
      * @param defaultFilter String
@@ -59,9 +59,6 @@ public class GroupResource {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.post','root.access-manager.groups','root.access-manager','root')")
     public Group save(@RequestBody final Group grupoAcesso) {
-        grupoAcesso.getGroupPermissions().forEach(grupoAcessoPermissao ->
-                grupoAcessoPermissao.setGroup(grupoAcesso)
-        );
         return groupService.save(grupoAcesso);
     }
 
@@ -78,13 +75,13 @@ public class GroupResource {
 
     /**
      * @param id long
-     * @return User
+     * @return Page<GroupPermission>
      */
     @GetMapping("{id}/access-group-permissions")
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
-    public Set<AccessGroupPermissionDTO> findAccessGroupPermissionsByUserId(@PathVariable final long id) {
-        return null;
-//        return groupRepository.findAccessGroupPermissionsByUserId(id);
+    public Page<GroupPermission> findAccessGroupPermissionsByUserId(@PathVariable final long id,
+                                                                    final Pageable pageable) {
+        return groupPermissionRepository.findByGroupId(id, pageable);
     }
 
 }

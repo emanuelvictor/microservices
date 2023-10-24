@@ -50,6 +50,7 @@ public class OAuth2ClientConfiguration {
         resource.setAccessTokenUri(tokenUrl);
         resource.setClientId(clientId);
         resource.setClientSecret(clientSecret);
+//        resource.setScope();
 //        resource.setUsername(username);
 //        resource.setPassword(password);
         return resource;

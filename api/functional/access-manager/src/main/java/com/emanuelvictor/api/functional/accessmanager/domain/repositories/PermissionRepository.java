@@ -23,15 +23,18 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
      * @return Page<Permission>
      */
     @Query("FROM Permission permission WHERE" +
-            "   ((:branch = TRUE AND permission.upperPermission.id IS NULL) OR (:branch IS NULL)) " +
-            "   AND " +
             "   (   " +
             "       (" +
             "               FILTER(:filter, permission.authority) = TRUE" +
             "       )" +
-            "   )"
+            "   )" +
+            "   AND " +
+            "   ((:upperPermissionId IS NOT NULL AND permission.upperPermission.id = :upperPermissionId) OR (:upperPermissionId IS NULL))" +
+            "   AND " +
+            "   ((:branch = TRUE AND permission.upperPermission.id IS NULL) OR (:branch IS NULL))"
     )
     Page<Permission> listByFilters(@Param("filter") final String filter,
+                                   @Param("upperPermissionId") final Long upperPermissionId,
                                    @Param("branch") final Boolean branch,
                                    final Pageable pageable);
 }

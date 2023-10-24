@@ -16,28 +16,25 @@ public class GroupRepositoryTests extends AbstractIntegrationTests {
 
     @Test
     public void mustFindGroupById() {
-        final String groupName = "Access Group Name";
-        final Group group = new Group();
-        group.setName(groupName);
+        final var groupName = "Access Group Name";
+        final var group = Group.builder().name(groupName).build();
         groupRepository.save(group);
         Assertions.assertThat(group.getId()).isNotNull();
 
-        final Group groupSaved = groupRepository.findById(group.getId()).orElseThrow();
+        final var groupSaved = groupRepository.findById(group.getId()).orElseThrow();
 
         Assertions.assertThat(groupSaved.getName()).isEqualTo(groupName);
     }
 
     @Test
     public void mustListGroupsByFilters() {
-        final String firstGroupName = "First Group";
-        final Group firstGroup = new Group();
-        firstGroup.setName(firstGroupName);
-        final String secondGroupName = "Second Group";
-        final Group secondGroup = new Group();
-        secondGroup.setName(secondGroupName);
+        final var firstGroupName = "First Group";
+        final var firstGroup = Group.builder().name(firstGroupName).build();
+        final var secondGroupName = "Second Group";
+        final var secondGroup = Group.builder().name(secondGroupName).build();
         groupRepository.saveAll(Arrays.asList(firstGroup, secondGroup));
 
-        final Page<Group> filteredGroups = groupRepository.listByFilters(firstGroupName, null);
+        final var filteredGroups = groupRepository.listByFilters(firstGroupName, null);
 
         Assertions.assertThat(filteredGroups.getContent()).extracting(Group::getName).containsAnyOf(firstGroupName);
     }

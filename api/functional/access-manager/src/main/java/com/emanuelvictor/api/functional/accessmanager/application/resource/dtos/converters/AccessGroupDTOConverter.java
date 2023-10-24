@@ -25,8 +25,8 @@ public class AccessGroupDTOConverter extends Converter<Group, AccessGroupDTO> {
         final Group destiny = convertWithoutRecursive(origin);
 
         final AccessGroupPermissionDTOConverter groupPermissionDTOConverter = new AccessGroupPermissionDTOConverter(pool);
-        if (origin.getGroupPermissions() != null)
-            destiny.setGroupPermissions(groupPermissionDTOConverter.convertRecursive(origin.getGroupPermissions()));
+//        if (origin.getGroupPermissions() != null)
+//            destiny.setGroupPermissions(groupPermissionDTOConverter.convertRecursive(origin.getGroupPermissions()));
 
         return destiny;
     }
@@ -34,7 +34,7 @@ public class AccessGroupDTOConverter extends Converter<Group, AccessGroupDTO> {
     @Override
     public Group convertWithoutRecursive(final AccessGroupDTO origin) {
         final Group accessGroup = new Group();
-        accessGroup.setName(origin.getName());
+//        accessGroup.setName(origin.getName());
         accessGroup.setId(origin.getId());
         return accessGroup;
     }

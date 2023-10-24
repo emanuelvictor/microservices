@@ -19,10 +19,10 @@ public class AccessGroupPermissionDTOConverter extends Converter<GroupPermission
 
         final GroupPermission destiny = convertWithoutRecursive(origin);
 
-        final PermissionDTOConverter permissionDTOConverter = new PermissionDTOConverter(pool);
-        destiny.setPermission(permissionDTOConverter.convertRecursive(origin.getPermission()));
-        final AccessGroupDTOConverter accessGroupDTOConverter = new AccessGroupDTOConverter(pool);
-        destiny.setGroup(accessGroupDTOConverter.convertRecursive(origin.getGroup()));
+//        final PermissionDTOConverter permissionDTOConverter = new PermissionDTOConverter(pool);
+//        destiny.setPermission(permissionDTOConverter.convertRecursive(origin.getPermission()));
+//        final AccessGroupDTOConverter accessGroupDTOConverter = new AccessGroupDTOConverter(pool);
+//        destiny.setGroup(accessGroupDTOConverter.convertRecursive(origin.getGroup()));
 
         return destiny;
     }

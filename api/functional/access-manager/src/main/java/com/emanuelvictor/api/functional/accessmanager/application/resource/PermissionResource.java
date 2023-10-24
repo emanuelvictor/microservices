@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 
 /**
@@ -36,8 +39,17 @@ public class PermissionResource {
      * @return Page<Permission>
      */
     @GetMapping
-    public Page<Permission> listByFilters(final String defaultFilter, final Boolean branch, final Pageable pageable) {
-        return this.permissionRepository.listByFilters(defaultFilter, branch, pageable);
+    public Page<Permission> listByFilters(final String defaultFilter, final Long upperPermissionId, final Boolean branch, final Pageable pageable) {
+        return permissionRepository.listByFilters(defaultFilter, upperPermissionId, branch, pageable);
+    }
+
+    /**
+     * @param id {@link Long}
+     * @return {@link Permission}
+     */
+    @GetMapping("/{id}")
+    public Optional<Permission> findById(@PathVariable final long id) {
+        return permissionRepository.findById(id);
     }
 
 }

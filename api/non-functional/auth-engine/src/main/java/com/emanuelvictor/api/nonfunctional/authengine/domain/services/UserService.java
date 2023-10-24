@@ -1,12 +1,17 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GroupPermission;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IAccessGroupPermissionFeignRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IUserFeignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Emanuel Victor
@@ -17,10 +22,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-    /**
-     *
-     */
     private final IUserFeignRepository userFeignRepository;
+    private final IAccessGroupPermissionFeignRepository accessGroupPermissionFeignRepository;
 
     /**
      * @param username String
@@ -29,8 +32,10 @@ public class UserService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final User user = this.userFeignRepository.loadUserByUsername(username)
+        final User user = userFeignRepository.loadUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not founded!"));
+        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByUserId(user.getGroup().getId()).getContent());
+        user.getGroup().setGroupPermissions(groupPermissions);
         return user;
     }
 }

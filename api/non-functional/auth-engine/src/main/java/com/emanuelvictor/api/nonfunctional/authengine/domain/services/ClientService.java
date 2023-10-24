@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.ClientBuilder;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.*;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IAccessGroupPermissionFeignRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IClientFeignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +10,9 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Emanuel Victor
@@ -22,19 +25,9 @@ public class ClientService implements ClientDetailsService {
 
     private static final String[] ALL_GRANT_TYPES = new String[]{GrantType.AUTHORIZATION_CODE.getValue(), GrantType.CLIENT_CREDENTIALS.getValue(), GrantType.IMPLICIT.getValue(), GrantType.PASSWORD.getValue(), GrantType.REFRESH_TOKEN.getValue(), "implicit"};
 
-    /**
-     *
-     */
     private final PasswordEncoder passwordEncoder;
-
-    /**
-     *
-     */
     private final IClientFeignRepository clientFeignRepository;
-
-    /**
-     *
-     */
+    private final IAccessGroupPermissionFeignRepository accessGroupPermissionFeignRepository;
     private final org.springframework.core.env.Environment env;
 
     /**
@@ -57,8 +50,12 @@ public class ClientService implements ClientDetailsService {
                     .build();
         }
 
-        return this.clientFeignRepository.loadClientByClientId(clientId)
+        final Client client = clientFeignRepository.loadClientByClientId(clientId)
                 .orElseThrow(() -> new UsernameNotFoundException("ClientId " + clientId + " não localizado!"));
+        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByUserId(client.getGroup().getId()).getContent());
+        client.getGroup().setGroupPermissions(groupPermissions);
+        return client;
+
     }
 
 }

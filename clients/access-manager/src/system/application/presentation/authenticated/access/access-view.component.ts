@@ -5,7 +5,7 @@ import {Router} from "@angular/router";
 
 // @ts-ignore
 @Component({
-  selector: 'configurations-view',
+  selector: 'configurations-view', /// TODO deve ser access view
   templateUrl: './access-view.component.html',
   styleUrls: ['./access-view.component.scss']
 })

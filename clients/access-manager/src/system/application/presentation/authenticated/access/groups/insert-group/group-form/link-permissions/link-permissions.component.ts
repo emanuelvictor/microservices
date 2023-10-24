@@ -73,6 +73,7 @@ export class LinkPermissionsComponent implements OnInit {
     });
 
     if (this.permissions && this.permissions.length) {
+      console.log(this.permissions);
       const data = this.buildFileTree(this.reduce(this.permissions), 0, false);
       this.dataChange.next(data);
     }

@@ -82,6 +82,7 @@ import {
 import {
   AccessGroupDataViewComponent
 } from "../application/presentation/authenticated/access/groups/view-group/access-group-data-view/access-group-data-view.component";
+import {ChildViewComponent} from "../application/presentation/authenticated/access/recursive/child-view.component";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -171,6 +172,8 @@ export function customTranslateLoader(http: HttpClient) {
     // Has Permission
     HasPermissionDirective,
     ApplicationFormComponent,
+
+    ChildViewComponent
 
   ],
   imports: [

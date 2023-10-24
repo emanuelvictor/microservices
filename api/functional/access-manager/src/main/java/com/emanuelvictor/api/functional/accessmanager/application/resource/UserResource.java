@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Optional;
+
 /**
  *
  */
@@ -94,7 +96,7 @@ public class UserResource {
      * @return UserDetails
      */
     @GetMapping("{username}/username") // TODO mudar para load
-    public User loadUserByUsername(@PathVariable final String username) {
+    public Optional<User> loadUserByUsername(@PathVariable final String username) {
         return userService.loadUserByUsername(username);
     }
 

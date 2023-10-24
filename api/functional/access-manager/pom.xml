@@ -61,6 +61,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
         </dependency>
+        <!--        necessary only to org.springframework.security.oauth2.client.registration.ClientRegistration-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+        </dependency>
         <!--        <dependency> TODO remove-->
         <!--            <groupId>org.springframework.security</groupId>-->
         <!--            <artifactId>spring-security-config</artifactId>-->
@@ -101,11 +106,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <!--        </dependency>-->
         <!--        Validação de CPF e CNPJ &ndash;&gt;-->
         <!--        todo remover stella-->
-<!--        <dependency>-->
-<!--            <groupId>br.com.caelum.stella</groupId>-->
-<!--            <artifactId>caelum-stella-core</artifactId>-->
-<!--            <version>${stella.caelumn.version}</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>br.com.caelum.stella</groupId>-->
+        <!--            <artifactId>caelum-stella-core</artifactId>-->
+        <!--            <version>${stella.caelumn.version}</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>io.github.emanuelvictor</groupId>
             <artifactId>commons</artifactId>

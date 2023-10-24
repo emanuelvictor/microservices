@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /**
+ * TODO REMOVER
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020

@@ -7,6 +7,7 @@ import {PermissionRepository} from "../../../../../../../domain/repository/permi
 import {Permission} from "../../../../../../../domain/entity/permission.model";
 import {Group} from "../../../../../../../domain/entity/group.model";
 import {GroupPermission} from "../../../../../../../domain/entity/group-permission.model";
+import {GroupRepository} from "../../../../../../../domain/repository/group.repository";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -49,6 +50,7 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
   constructor(public snackBar: MatSnackBar,
               public activatedRoute: ActivatedRoute,
               @Inject(ElementRef) public element: ElementRef,
+              private groupRepository: GroupRepository,
               private permissionRepository: PermissionRepository,
               public fb: FormBuilder, public renderer: Renderer) {
     super(snackBar, element, fb, renderer, activatedRoute);
@@ -63,35 +65,49 @@ export class GroupFormComponent extends CrudViewComponent implements OnInit {
       name: ['name', [Validators.required]]
     });
 
-    this.permissionRepository.listByFilters({branch: true})
-      .subscribe(result => {
-        this.permissions = result.content;
+    this.groupRepository.findAccessGroupPermissionsByUserId(this.entity.id).subscribe(resultFromGroupPermissionRequest => {
+      this.entity.groupPermissions = resultFromGroupPermissionRequest.content;
+      this.permissionRepository.listByFilters({branch: true}).subscribe(result => {
+        this.asdfasda(result.content).then(resultt => {
+          this.permissions = resultt;
+          console.log(this.permissions);
+          if (this.entity.id) {
+            let permissions = this.entity.groupPermissions.map(a => a.permission);
+            permissions = this.organize(permissions);
+            this.organizeTheSelecteds(permissions, this.permissions);
 
-        if (this.entity.id) {
-          let permissions = this.entity.groupPermissions.map(a => a.permission);
-          permissions = this.organize(permissions);
-          this.organizeTheSelecteds(permissions, this.permissions);
+            console.log(this.permissions);
+            this.entity.groupPermissions = [];
 
-          this.entity.groupPermissions = [];
+            for (let i = 0; i < permissions.length; i++) {
+              if (permissions[i]) {
+                const groupPermission: GroupPermission = new GroupPermission();
 
-          for (let i = 0; i < permissions.length; i++) {
-            if (permissions[i]) {
-              const groupPermission: GroupPermission = new GroupPermission();
+                // Remove recursividade
+                const group: Group = new Group();
+                group.id = this.entity.id;
+                group.enable = this.entity.enable;
+                group.name = this.entity.name;
 
-              // Remove recursividade
-              const group: Group = new Group();
-              group.id = this.entity.id;
-              group.enable = this.entity.enable;
-              group.name = this.entity.name;
+                groupPermission.group = group;
+                groupPermission.permission = permissions[i];
 
-              groupPermission.group = group;
-              groupPermission.permission = permissions[i];
-
-              this.entity.groupPermissions.push(groupPermission)
+                this.entity.groupPermissions.push(groupPermission)
+              }
             }
           }
-        }
+        });
       })
+    });
+  }
+
+  async asdfasda(permissions: Permission[]) {
+    for (let i = 0; i < permissions.length; i++) {
+      permissions[i].lowerPermissions = (await this.permissionRepository.listByFilters({upperPermissionId: permissions[i].id}).toPromise()).content;
+      if (permissions[i].lowerPermissions && permissions[i].lowerPermissions.length)
+        await this.asdfasda(permissions[i].lowerPermissions)
+    }
+    return permissions;
   }
 
   /**
