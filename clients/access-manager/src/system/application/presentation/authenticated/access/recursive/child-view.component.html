@@ -15,9 +15,8 @@
                   [indeterminate]="upperPermission.indeterminate"
                   (change)="setChecked(upperPermission, $event.checked)"
                   style="padding: 10px; padding-left: 0">
-      {{upperPermission?.name}}
+      {{upperPermission?.name}} - {{!!upperPermission?.checked}}
     </mat-checkbox>
-    {{!!upperPermission?.checked}}
   </div>
   <div layout='column' *ngIf="expanded">
     <child-view style="margin-left: 15px"

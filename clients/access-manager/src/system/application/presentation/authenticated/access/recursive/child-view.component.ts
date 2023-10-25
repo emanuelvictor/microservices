@@ -29,19 +29,7 @@ export class ChildViewComponent implements OnInit {
         })
   }
 
-  areUpperPermissionsChecked(permission: Permission): boolean {
-    return permission.upperPermission && permission.upperPermission.checked && this.areUpperPermissionsChecked(permission.upperPermission)
-  }
-
-  areTheLowersPermissionsChecked(permission: Permission): boolean {
-    if (permission.lowerPermissions && permission.lowerPermissions.filter(value => value.checked).length === permission.lowerPermissions.length)
-      permission.checked = true
-    else if (permission.lowerPermissions && permission.lowerPermissions.filter(value => value.checked).length !== permission.lowerPermissions.length)
-      permission.checked = false;
-    return permission.checked
-  }
-
-  areTheLowersPermissionsChecked2(permission: Permission) {
+  areTheLowersPermissionsChecked(permission: Permission) {
     if (permission) {
       const contOfLowerPermissionChecked = permission.lowerPermissions.filter(value => value.checked).length;
       if (permission.lowerPermissions && contOfLowerPermissionChecked === permission.lowerPermissions.length) {
@@ -51,12 +39,9 @@ export class ChildViewComponent implements OnInit {
         permission.checked = false;
         if (contOfLowerPermissionChecked > 0)
           permission.indeterminate = true;
-        else if (permission.lowerPermissions.filter(value => value.indeterminate).length > 0)
-          permission.indeterminate = true;
-        else
-          permission.indeterminate = false;
+        else permission.indeterminate = permission.lowerPermissions.filter(value => value.indeterminate).length > 0;
       }
-      this.areTheLowersPermissionsChecked2(permission.upperPermission)
+      this.areTheLowersPermissionsChecked(permission.upperPermission)
     }
   }
 
@@ -83,6 +68,6 @@ export class ChildViewComponent implements OnInit {
     permission.checked = checked
     if (permission.lowerPermissions != null)
       permission.lowerPermissions.forEach(p => (this.setChecked(p, checked)))
-    this.areTheLowersPermissionsChecked2(permission.upperPermission)
+    this.areTheLowersPermissionsChecked(permission.upperPermission)
   }
 }
