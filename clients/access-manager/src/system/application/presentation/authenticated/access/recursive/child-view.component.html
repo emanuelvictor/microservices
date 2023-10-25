@@ -12,6 +12,7 @@
     <!--      {{upperPermission?.name}}-->
     <!--    </mat-checkbox>-->
     <mat-checkbox [checked]="upperPermission.checked"
+                  [indeterminate]="upperPermission.indeterminate"
                   (change)="setChecked(upperPermission, $event.checked)"
                   style="padding: 10px; padding-left: 0">
       {{upperPermission?.name}}
