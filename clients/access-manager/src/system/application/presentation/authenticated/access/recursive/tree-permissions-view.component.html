@@ -19,9 +19,9 @@
     </mat-checkbox>
   </div>
   <div layout='column' *ngIf="expanded">
-    <child-view style="margin-left: 15px"
-                [upperPermission]="lowerPermission"
-                *ngFor="let lowerPermission of upperPermission.lowerPermissions">
-    </child-view>
+    <tree-permissions-view style="margin-left: 15px"
+                           [upperPermission]="lowerPermission"
+                           *ngFor="let lowerPermission of upperPermission.lowerPermissions">
+    </tree-permissions-view>
   </div>
 </div>

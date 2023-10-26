@@ -4,11 +4,11 @@ import {Permission} from "../../../../../domain/entity/permission.model";
 
 // @ts-ignore
 @Component({
-  selector: 'child-view',
-  templateUrl: './child-view.component.html',
-  styleUrls: ['./child-view.component.scss']
+  selector: 'tree-permissions-view',
+  templateUrl: './tree-permissions-view.component.html',
+  styleUrls: ['./tree-permissions-view.component.scss']
 })
-export class ChildViewComponent implements OnInit {
+export class TreePermissionsViewComponent implements OnInit {
 
   expanded: boolean = false;
 
