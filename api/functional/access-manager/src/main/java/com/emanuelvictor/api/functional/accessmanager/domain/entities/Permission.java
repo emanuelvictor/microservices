@@ -5,13 +5,14 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.Pe
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.*;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.Set;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 
 /**
@@ -21,7 +22,6 @@ import java.util.Set;
  */
 @Entity
 @Getter
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id",
@@ -43,7 +43,9 @@ public class Permission extends PersistentEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     private Permission upperPermission;
 
-    @Builder
+    public Permission() {
+    }
+
     public Permission(Long id, String name, String authority, String description, Permission upperPermission) {
         super(id);
         this.name = name;

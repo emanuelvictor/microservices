@@ -66,14 +66,14 @@ export class ViewGroupComponent implements OnInit {
       .subscribe((result) => {
         this.group = result;
 
-        this.permissionRepository.listByFilters({branch: true})
-          .subscribe(result => {
-            this.permissions = result.content;
-
-            let permissions = this.group.groupPermissions.map(a => a.permission);
-            permissions = this.organize(permissions);
-            this.organizeTheSelecteds(permissions, this.permissions);
-          })
+        // this.permissionRepository.listByFilters({branch: true}) TODO remove
+        //   .subscribe(result => {
+        //     this.permissions = result.content;
+        //
+        //     let permissions = this.group.groupPermissions.map(a => a.permission);
+        //     permissions = this.organize(permissions);
+        //     this.organizeTheSelecteds(permissions, this.permissions);
+        //   })
       })
   }
 

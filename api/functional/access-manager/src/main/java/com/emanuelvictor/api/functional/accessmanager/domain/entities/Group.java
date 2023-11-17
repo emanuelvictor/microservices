@@ -24,8 +24,7 @@ public class Group extends PersistentEntity {
     @Column(nullable = false, unique = true, length = 50)
     private String name;
 
-    @Builder
-    private Group(Long id, String name) {
+    public Group(Long id, String name) {
         super(id);
         this.name = name;
     }

@@ -1,6 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {PermissionRepository} from "../../../../../domain/repository/permission.repository";
 import {Permission} from "../../../../../domain/entity/permission.model";
+import {Group} from "../../../../../domain/entity/group.model";
+import {GroupRepository} from "../../../../../domain/repository/group.repository";
 
 // @ts-ignore
 @Component({
@@ -10,12 +12,15 @@ import {Permission} from "../../../../../domain/entity/permission.model";
 })
 export class TreePermissionsViewComponent implements OnInit {
 
-  expanded: boolean = false;
-
   permissionRepository: PermissionRepository;
 
-  @Input()
-  upperPermission: Permission = new Permission();
+  expanded: boolean = false;
+
+  @Input() group: Group = new Group();
+
+  @Input() permissionsOfGroup: Permission[];
+
+  @Input() upperPermission: Permission = new Permission();
 
   constructor(permissionRepository: PermissionRepository) {
     this.permissionRepository = permissionRepository;
@@ -26,7 +31,17 @@ export class TreePermissionsViewComponent implements OnInit {
       this.permissionRepository.findById(1)
         .subscribe(result => {
           this.upperPermission = result;
+          this.verifyIfThePermissionIsCheckedInGroup(this.upperPermission, this.permissionsOfGroup)
         })
+  }
+
+  verifyIfThePermissionIsCheckedInGroup(permission: Permission, permissionsOfGroup: Permission[]) {
+    permissionsOfGroup.forEach(permissionOfGroup => {
+      if (permission.id === permissionOfGroup.id)
+        this.setChecked(permission, true);
+    })
+    if (permission.upperPermission)
+      this.verifyIfThePermissionIsCheckedInGroup(permission.upperPermission, permissionsOfGroup);
   }
 
   areTheLowersPermissionsChecked(permission: Permission) {

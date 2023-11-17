@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.repositories;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
+import com.nimbusds.jose.util.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,9 +18,12 @@ import org.springframework.stereotype.Repository;
 public interface PermissionRepository extends JpaRepository<Permission, Long> {
 
     /**
-     * @param filter   String
-     * @param branch   Boolean
-     * @param pageable Pageable
+     * Fixme must create unit tests
+     *
+     * @param filter            String
+     * @param upperPermissionId Long
+     * @param branch            Boolean
+     * @param pageable          Pageable
      * @return Page<Permission>
      */
     @Query("FROM Permission permission WHERE" +
@@ -37,4 +41,19 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
                                    @Param("upperPermissionId") final Long upperPermissionId,
                                    @Param("branch") final Boolean branch,
                                    final Pageable pageable);
+
+    /**
+     * Fixme must create unit tests
+     *
+     * @param upperPermissionId Long
+     * @param pageable          Pageable
+     * @return Page<Permission>
+     */
+    Page<Permission> findByUpperPermissionId(final Long upperPermissionId, final Pageable pageable);
+
+    /**
+     * @param authority String
+     * @return Permission
+     */
+    Permission findByAuthority(final String authority);
 }
