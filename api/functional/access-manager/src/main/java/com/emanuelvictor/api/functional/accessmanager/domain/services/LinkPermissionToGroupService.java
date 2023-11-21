@@ -6,7 +6,6 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
-import jakarta.transaction.Transactional;
 
 public class LinkPermissionToGroupService {
 
@@ -25,10 +24,16 @@ public class LinkPermissionToGroupService {
     public void linkPermissionToGroup(final long groupId, final long permissionId) {
         final var group = groupRepository.findById(groupId).orElseThrow();
         final var permission = permissionRepository.findById(permissionId).orElseThrow();
+        linkPermissionToGroup(group, permission);
+    }
 
-        unlinkLowerPermissionsByUpperPermission(group, permission);
-
-        link(group, permission);
+    public void linkPermissionToGroup(final Group group, final Permission permission) {
+        if (areAllTheSiblingsLinked(group, permission))
+            linkPermissionToGroup(group, permission.getUpperPermission());
+        else {
+            unlinkLowerPermissionsByUpperPermission(group, permission);
+            link(group, permission);
+        }
     }
 
     void unlinkLowerPermissionsByUpperPermission(final Group group, final Permission permission) {
@@ -38,7 +43,9 @@ public class LinkPermissionToGroupService {
         groupPermissionRepository.deleteByGroupIdAndPermissionId(group.getId(), permission.getId());
     }
 
-    boolean verifyIfAllTheBrothersAreLinked(final Group group, final Permission permission) {
+    boolean areAllTheSiblingsLinked(final Group group, final Permission permission) {
+        if(permission.getUpperPermission() == null)
+            return false;
         final var upperPermissionId = permission.getUpperPermission().getId();
         final var countNextPermissions = permissionRepository
                 .findByUpperPermissionId(upperPermissionId, null).getSize();
@@ -47,9 +54,9 @@ public class LinkPermissionToGroupService {
         return countNextLinkedPermissions == (countNextPermissions - 1);
     }
 
-    GroupPermission link(final Group group, final Permission permission) {
+    void link(final Group group, final Permission permission) {
         final GroupPermission groupPermission = GroupPermission.builder().permission(permission).group(group).build();
-        return groupPermissionRepository.save(groupPermission);
+        groupPermissionRepository.save(groupPermission);
     }
 
 }
