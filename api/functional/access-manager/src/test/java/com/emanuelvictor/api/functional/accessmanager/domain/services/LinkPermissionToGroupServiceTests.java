@@ -50,7 +50,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustUnlinkAllChildreenWhenTheGrandFatherBeLinked() {
-        linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
+        linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
 
         linkPermissionToGroupService.linkPermissionToGroup(group.getId(), rootPermission.getId());
 
@@ -63,7 +63,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustLinkToFatherWhenAllTheSiblingsAreLinked() {
-        var unmarkedPermission = linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
+        var unmarkedPermission = linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
 
         linkPermissionToGroupService.linkPermissionToGroup(group, unmarkedPermission);
 
@@ -77,8 +77,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustLinkToGrandfatherWhenAllTheSiblingsOfGrandchildreenAreLinked() {
-        var fatherUnmarkedPermission = linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
-        linkGrandChildreenPermissionsToGroup();
+        var fatherUnmarkedPermission = linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
         final var grandchildPermissionUnmarked = new PermissionBuilder()
                 .upperPermission(fatherUnmarkedPermission)
                 .build();
@@ -96,7 +95,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustUnlinkAllLowerPermissionFromGroupId() {
-        linkGrandChildreenPermissionsToGroup();
+        linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
         final var groupPermissionCreatedBeforeUnlinking = groupPermissionRepository.findByGroupId(group.getId(), null);
 
         // Unlink father permissions
@@ -105,14 +104,14 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
             linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, permissionToUnlink);
         }
 
-        Assertions.assertThat(groupPermissionCreatedBeforeUnlinking.getContent().size()).isEqualTo(25);
+        Assertions.assertThat(groupPermissionCreatedBeforeUnlinking.getContent().size()).isEqualTo(30);
         final var groupPermissionByIdAfterRemovingLowerPermissions = groupPermissionRepository.findByGroupId(group.getId(), null);
         Assertions.assertThat(groupPermissionByIdAfterRemovingLowerPermissions.getContent()).isEmpty();
     }
 
     @Test
     void mustVerifyIfAllTheSiblingsOfRootPermissionAreLinkedAndReturnFalse() {
-        linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
+        linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
 
         Assertions.assertThat(linkPermissionToGroupService.areAllTheSiblingsLinked(group, rootPermission))
                 .isFalse();
@@ -120,7 +119,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustVerifyIfAllTheSiblingsAreLinkedAndReturnTrue() {
-        final var permissionToMakeLink = linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
+        final var permissionToMakeLink = linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
 
         Assertions.assertThat(linkPermissionToGroupService.areAllTheSiblingsLinked(group, permissionToMakeLink))
                 .isTrue();
@@ -128,7 +127,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     @Test
     void mustVerifyIfAllTheSiblingsAreLinkedAndReturnFalse() {
-        final var permissionToMakeLink = linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked();
+        final var permissionToMakeLink = linkFatherPermissionsToGroupAndReturnLastOneUnmarked();
         permissionRepository.save(permissionToMakeLink);
         final var sevenChildPermission = new PermissionBuilder()
                 .upperPermission(rootPermission)
@@ -139,21 +138,18 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
                 .isFalse();
     }
 
-    private void linkGrandChildreenPermissionsToGroup() {
+    private Permission linkFatherPermissionsToGroupAndReturnLastOneUnmarked() {
+        for (int i = 0; i < 5; i++) {
+            final var permissionToLink = permissionRepository.findByAuthority("1." + i);
+            final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
+            groupPermissionRepository.save(groupPermission);
+        }
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 final var permissionToLink = permissionRepository.findByAuthority("1." + i + "." + j);
                 final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
                 groupPermissionRepository.save(groupPermission);
             }
-        }
-    }
-
-    private Permission linkFatherPermissionsToGroupAndReturnLastOnePermissionUnmarked() {
-        for (int i = 0; i < 5; i++) {
-            final var permissionToLink = permissionRepository.findByAuthority("1." + i);
-            final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
-            groupPermissionRepository.save(groupPermission);
         }
 
         // Save unmaked permission
