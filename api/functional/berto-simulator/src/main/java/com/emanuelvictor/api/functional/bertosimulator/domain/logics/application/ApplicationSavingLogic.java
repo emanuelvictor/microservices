@@ -1,8 +1,8 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.logics.application;
+package com.emanuelvictor.api.functional.bertosimulator.domain.logics.application;
 
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
-import com.emanuelvictor.api.functional.accessmanager.domain.logics.BusinessLogic;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Application;
+import com.emanuelvictor.api.functional.bertosimulator.domain.logics.BusinessLogic;
 
 /**
  * @author Emanuel Victor

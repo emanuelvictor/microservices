@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom;
+package com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth.custom;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

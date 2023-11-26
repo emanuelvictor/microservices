@@ -1,6 +1,6 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.entities;
+package com.emanuelvictor.api.functional.bertosimulator.domain.entities;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic.PersistentEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;

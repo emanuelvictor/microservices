@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.infrastructure.jpa.function;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.jpa.function;
 
 import org.hibernate.dialect.function.CastStrEmulation;
 import org.hibernate.query.ReturnableType;

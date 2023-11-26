@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.services;
+package com.emanuelvictor.api.functional.bertosimulator.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign.ITokenFeignRepository;
+import com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth.custom.JwtTokenStore;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.feign.ITokenFeignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.token.TokenStore;

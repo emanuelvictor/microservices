@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager;
+package com.emanuelvictor.api.functional.bertosimulator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +20,15 @@ import java.util.List;
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
-public class AccessManagerApplication extends SpringBootServletInitializer {
+public class BertoSimulatorApplication extends SpringBootServletInitializer {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(AccessManagerApplication.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(BertoSimulatorApplication.class);
 
     /**
      * @param args String[]
      */
     public static void main(final String[] args) {
-        SpringApplication.run(AccessManagerApplication.class, args);
+        SpringApplication.run(BertoSimulatorApplication.class, args);
     }
 
     /**
@@ -37,7 +37,7 @@ public class AccessManagerApplication extends SpringBootServletInitializer {
      */
     @Override
     protected SpringApplicationBuilder configure(final SpringApplicationBuilder application) {
-        return application.sources(AccessManagerApplication.class);
+        return application.sources(BertoSimulatorApplication.class);
     }
 
     /**

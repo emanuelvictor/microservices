@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.infrastructure.aid;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.aid;
 
 import jakarta.validation.*;
 import java.util.Set;

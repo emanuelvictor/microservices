@@ -1,4 +1,4 @@
-package com.frogking.chromedriver;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.chrome;
 
 import java.util.ArrayList;
 import java.util.Arrays;

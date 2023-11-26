@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.i18n;
+package com.emanuelvictor.api.functional.bertosimulator.application.i18n;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

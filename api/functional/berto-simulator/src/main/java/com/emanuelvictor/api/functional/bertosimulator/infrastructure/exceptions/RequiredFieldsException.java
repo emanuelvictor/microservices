@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.bertosimulator.application.exceptions;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.exceptions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

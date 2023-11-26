@@ -1,9 +1,8 @@
-package com.frogking.chromedriver;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.chrome;
 
 
 import com.alibaba.fastjson.JSONObject;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.*;

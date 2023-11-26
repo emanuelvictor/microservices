@@ -1,12 +1,11 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Group;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.GroupPermission;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupPermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

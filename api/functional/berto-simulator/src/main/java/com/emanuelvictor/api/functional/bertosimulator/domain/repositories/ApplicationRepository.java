@@ -1,7 +1,6 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.repositories;
+package com.emanuelvictor.api.functional.bertosimulator.domain.repositories;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Application;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

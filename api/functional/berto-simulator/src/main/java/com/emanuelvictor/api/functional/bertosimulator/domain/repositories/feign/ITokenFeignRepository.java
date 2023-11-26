@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign;
+package com.emanuelvictor.api.functional.bertosimulator.domain.repositories.feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

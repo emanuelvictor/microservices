@@ -1,14 +1,12 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource.dtos;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 

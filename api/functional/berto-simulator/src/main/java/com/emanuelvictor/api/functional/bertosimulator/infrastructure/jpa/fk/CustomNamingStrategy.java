@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.infrastructure.jpa.fk;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.jpa.fk;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.ImplicitForeignKeyNameSource;

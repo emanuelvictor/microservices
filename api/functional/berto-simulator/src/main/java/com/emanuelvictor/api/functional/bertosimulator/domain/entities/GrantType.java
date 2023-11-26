@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.entities;
+package com.emanuelvictor.api.functional.bertosimulator.domain.entities;
 
 /**
  * @author Emanuel Victor

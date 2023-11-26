@@ -1,11 +1,11 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.services;
+package com.emanuelvictor.api.functional.bertosimulator.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.context.ContextHolder;
-import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSourceHolder;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.UserRepository;
-import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation;
+import com.emanuelvictor.api.functional.bertosimulator.application.context.ContextHolder;
+import com.emanuelvictor.api.functional.bertosimulator.application.i18n.MessageSourceHolder;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.User;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupPermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.UserRepository;
+import com.emanuelvictor.api.functional.bertosimulator.infrastructure.aid.StandaloneBeanValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

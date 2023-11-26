@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom;
+package com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth.custom;
 
 /*
  * Copyright 2013-2014 the original author or authors.

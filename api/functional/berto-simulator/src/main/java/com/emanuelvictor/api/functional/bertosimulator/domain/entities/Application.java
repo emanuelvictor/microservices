@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.entities;
+package com.emanuelvictor.api.functional.bertosimulator.domain.entities;
 
-import com.emanuelvictor.api.functional.accessmanager.application.converters.StringSetConverter;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
+import com.emanuelvictor.api.functional.bertosimulator.application.converters.StringSetConverter;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic.PersistentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

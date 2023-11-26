@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.feign;
+package com.emanuelvictor.api.functional.bertosimulator.application.feign;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

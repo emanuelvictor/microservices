@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.entities.generic;
+package com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdResolver;

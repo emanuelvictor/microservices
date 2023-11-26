@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.exceptions;
+package com.emanuelvictor.api.functional.bertosimulator.domain.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

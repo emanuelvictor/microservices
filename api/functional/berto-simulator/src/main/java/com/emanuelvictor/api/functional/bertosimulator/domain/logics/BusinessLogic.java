@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.logics;
+package com.emanuelvictor.api.functional.bertosimulator.domain.logics;
 
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic.PersistentEntity;
 
 /**
  * @author Emanuel Victor

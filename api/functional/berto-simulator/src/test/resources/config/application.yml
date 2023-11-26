@@ -1,20 +1,20 @@
 spring:
-  application.name: access-manager
+  application.name: berto-simulator
 
   datasource:
-    username: accessmanager
-    password: accessmanager
+    username: bertosimulator
+    password: bertosimulator
     hikari.pool-name: ${spring.application.name}
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
     hikari.maximum-pool-size: 10
-    url: jdbc:postgresql://localhost:5433/accessmanager
+    url: jdbc:postgresql://localhost:5433/bertosimulator
 
   jpa:
     hibernate:
       ddl-auto: validate
       naming:
-        implicit-strategy: com.emanuelvictor.api.functional.accessmanager.infrastructure.jpa.fk.CustomNamingStrategy
+        implicit-strategy: com.emanuelvictor.api.functional.bertosimulator.infrastructure.jpa.fk.CustomNamingStrategy
     show-sql: true
     open-in-view: false
     properties:
@@ -27,7 +27,7 @@ spring:
         event:
           merge:
             entity_copy_observer: allow
-        metadata_builder_contributor: com.emanuelvictor.api.functional.accessmanager.infrastructure.jpa.function.SqlFunctionsMetadataBuilderContributor
+        metadata_builder_contributor: com.emanuelvictor.api.functional.bertosimulator.infrastructure.jpa.function.SqlFunctionsMetadataBuilderContributor
       jakarta:
         persistence:
           sharedCache:

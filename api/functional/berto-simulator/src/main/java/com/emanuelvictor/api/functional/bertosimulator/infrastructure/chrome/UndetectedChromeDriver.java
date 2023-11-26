@@ -1,12 +1,16 @@
-package com.frogking.chromedriver;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.chrome;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UndetectedChromeDriver extends ChromeDriver{
 

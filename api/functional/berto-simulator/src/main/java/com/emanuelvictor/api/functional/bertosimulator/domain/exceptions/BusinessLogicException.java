@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.exceptions;
+package com.emanuelvictor.api.functional.bertosimulator.domain.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

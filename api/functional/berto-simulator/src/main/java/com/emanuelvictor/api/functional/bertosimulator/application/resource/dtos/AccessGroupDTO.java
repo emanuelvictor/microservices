@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource.dtos;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

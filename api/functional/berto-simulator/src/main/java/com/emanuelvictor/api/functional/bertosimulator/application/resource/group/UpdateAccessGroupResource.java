@@ -1,16 +1,12 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource.group;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource.group;
 
-import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.AccessGroupDTO;
-import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.AccessGroupPermissionDTO;
-import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.converters.AccessGroupDTOConverter;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
+import com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos.AccessGroupDTO;
+import com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos.converters.AccessGroupDTOConverter;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Group;
+import com.emanuelvictor.api.functional.bertosimulator.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collection;
 
 @RestController
 @RequiredArgsConstructor

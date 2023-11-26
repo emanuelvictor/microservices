@@ -1,6 +1,6 @@
-package com.emanuelvictor.api.functional.accessmanager.application.context;
+package com.emanuelvictor.api.functional.bertosimulator.application.context;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.User;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

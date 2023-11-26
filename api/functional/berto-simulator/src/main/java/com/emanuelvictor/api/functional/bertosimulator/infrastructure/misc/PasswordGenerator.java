@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.infrastructure.misc;
+package com.emanuelvictor.api.functional.bertosimulator.infrastructure.misc;
 
 import java.util.Collections;
 import java.util.List;

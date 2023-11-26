@@ -1,29 +1,25 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.services;
+package com.emanuelvictor.api.functional.bertosimulator.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.resource.ApplicationResource;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
-import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationSavingLogic;
-import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationUpdatingLogic;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.ApplicationRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.infrastructure.misc.PasswordGenerator;
+import com.emanuelvictor.api.functional.bertosimulator.application.resource.ApplicationResource;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Application;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Permission;
+import com.emanuelvictor.api.functional.bertosimulator.domain.logics.application.ApplicationSavingLogic;
+import com.emanuelvictor.api.functional.bertosimulator.domain.logics.application.ApplicationUpdatingLogic;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.ApplicationRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupPermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.PermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.infrastructure.misc.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 

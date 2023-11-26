@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.converters;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos.converters;
 
-import com.emanuelvictor.api.functional.accessmanager.application.resource.dtos.AccessGroupDTO;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
+import com.emanuelvictor.api.functional.bertosimulator.application.resource.dtos.AccessGroupDTO;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Group;
 
 import java.util.HashMap;
 import java.util.Map;

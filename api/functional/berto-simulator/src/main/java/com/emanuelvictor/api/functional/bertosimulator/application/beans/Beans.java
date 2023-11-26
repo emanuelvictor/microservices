@@ -1,9 +1,9 @@
-package com.emanuelvictor.api.functional.accessmanager.application.beans;
+package com.emanuelvictor.api.functional.bertosimulator.application.beans;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.services.LinkPermissionToGroupService;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupPermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.PermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.services.LinkPermissionToGroupService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

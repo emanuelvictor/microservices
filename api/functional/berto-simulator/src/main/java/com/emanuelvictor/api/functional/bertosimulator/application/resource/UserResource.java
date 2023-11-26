@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource;
+package com.emanuelvictor.api.functional.bertosimulator.application.resource;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
-import com.emanuelvictor.api.functional.accessmanager.domain.services.UserService;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.User;
+import com.emanuelvictor.api.functional.bertosimulator.domain.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

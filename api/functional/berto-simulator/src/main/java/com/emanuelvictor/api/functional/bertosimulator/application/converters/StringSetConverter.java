@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.converters;
+package com.emanuelvictor.api.functional.bertosimulator.application.converters;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

@@ -1,11 +1,11 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.services;
+package com.emanuelvictor.api.functional.bertosimulator.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Group;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.GroupPermission;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.Permission;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupPermissionRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.GroupRepository;
+import com.emanuelvictor.api.functional.bertosimulator.domain.repositories.PermissionRepository;
 
 public class LinkPermissionToGroupService {
 

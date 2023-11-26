@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.entities;
+package com.emanuelvictor.api.functional.bertosimulator.domain.entities;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.EntityIdResolver;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic.EntityIdResolver;
+import com.emanuelvictor.api.functional.bertosimulator.domain.entities.generic.PersistentEntity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.spring.oauth;
+package com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtAccessTokenConverter;
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
+import com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth.custom.JwtAccessTokenConverter;
+import com.emanuelvictor.api.functional.bertosimulator.application.spring.oauth.custom.JwtTokenStore;
 
 /**
  * @author Emanuel Victor

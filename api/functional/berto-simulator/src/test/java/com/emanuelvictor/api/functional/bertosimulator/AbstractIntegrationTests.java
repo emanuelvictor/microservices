@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager;
+package com.emanuelvictor.api.functional.bertosimulator;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
