@@ -3,13 +3,17 @@ package com.emanuelvictor.api.functional.bertosimulator.infrastructure.adapters.
 import com.emanuelvictor.api.functional.bertosimulator.infrastructure.exceptions.RequiredFieldsException;
 
 public class BrowserOptions {
+
+    static final String INVALID_SESSION_ID_MESSAGE = "sessionId is required";
+    static final String INVALID_URL_OF_THE_BROWSER_INSTANCE = "urlOfTheBrowserInstance is required";
+
     private final String sessionId;
     private final String urlOfTheBrowserInstance;
 
     private BrowserOptions(String sessionId, String urlOfTheBrowserInstance) {
         new RequiredFieldsException()
-                .whenNullOrBlank(sessionId, "sessionId is required")
-                .whenNullOrBlank(urlOfTheBrowserInstance, "urlOfTheBrowserInstance is required")
+                .whenNullOrBlank(sessionId, INVALID_SESSION_ID_MESSAGE)
+                .whenNullOrBlank(urlOfTheBrowserInstance, INVALID_URL_OF_THE_BROWSER_INSTANCE)
                 .thenThrows();
         this.sessionId = sessionId;
         this.urlOfTheBrowserInstance = urlOfTheBrowserInstance;
