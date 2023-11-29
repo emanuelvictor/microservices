@@ -1,10 +1,10 @@
 version: '3'
 services:
-  bertosimulatordb:
+  bertosimulatorsdb:
     image: postgres:13.2-alpine
     environment:
-      POSTGRES_USER: bertosimulator
-      POSTGRES_PASSWORD: bertosimulator
-      POSTGRES_DB: bertosimulator
+      POSTGRES_USER: bertosimulators
+      POSTGRES_PASSWORD: bertosimulators
+      POSTGRES_DB: bertosimulators
     ports:
       - "5432:5432"

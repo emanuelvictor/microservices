@@ -12,9 +12,9 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </parent>
 
     <groupId>com.emanuelvictor.api.functional</groupId>
-    <artifactId>bertosimulator</artifactId>
+    <artifactId>bertosimulators</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>berto-simulator</name>
+    <name>berto-simulators</name>
 
     <properties>
 

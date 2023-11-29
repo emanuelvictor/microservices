@@ -30,12 +30,12 @@ eureka:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
   instance:
     hostname: localhost
-    appname: bertosimulator
+    appname: bertosimulators
 
 oauth:
   endpoints:
     tokens: http://localhost:8080/auth-engine/tokens
   token: http://localhost:8080/auth-engine/oauth/token
-  clientId: bertosimulator
+  clientId: bertosimulators
   clientSecret: browser
 
