@@ -35,6 +35,7 @@ public class BVFlow {
     }
 
     private void waitUntilLoginFieldIsShowing() {
+        browserInstance.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
         System.out.println("waitUntilLoginFieldIsShowing");
         final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(60));
         wait.until(d -> {

@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.List;
 
 
@@ -23,6 +24,7 @@ public class TryLogin extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("tryLogin");
+        browserInstance.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
         final List<WebElement> username = browserInstance.getDriver().findElements(By.id("login"));
         username.get(0).sendKeys("10650570910");
         final List<WebElement> password = browserInstance.getDriver().findElements(By.id("password"));

@@ -65,6 +65,7 @@ public class PANFlow {
 
     private void tryLogin() {
         System.out.println("tryLogin");
+        browserInstance.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
         final List<WebElement> username = browserInstance.getDriver().findElements(By.id("login"));
         username.get(0).sendKeys("10650570910");
         final List<WebElement> password = browserInstance.getDriver().findElements(By.id("password"));
