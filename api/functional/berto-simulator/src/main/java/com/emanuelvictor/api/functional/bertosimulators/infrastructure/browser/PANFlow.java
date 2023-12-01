@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.emanuelvictor.api.functional.bertosimulators.infrastructure.browser.BrowserInstance.verifyElements;
 
@@ -193,9 +191,7 @@ public class PANFlow {
         elements.forEach(webElement -> {
             if (webElement.getAttribute("label") != null &&
                     webElement.getAttribute("label").equals("Recalcular")) {
-                final Actions actions = new Actions(browserInstance.getDriver());
-                actions.moveToElement(webElement).click().perform();
-                System.out.println("VAIII");
+                webElement.click();
             }
         });
     }

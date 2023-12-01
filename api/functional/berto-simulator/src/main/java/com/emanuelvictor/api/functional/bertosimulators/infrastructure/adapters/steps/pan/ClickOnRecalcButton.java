@@ -20,8 +20,13 @@ public class ClickOnRecalcButton extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("clickOnRecalcButton");
-        final List<WebElement> elements = browserInstance.getElementsByClassName("pan-mahoe-button--primary");
-        if (verifyElements(elements)) elements.get(0).click();
+        final List<WebElement> elements = browserInstance.getElementsByTagName("button");
+        elements.forEach(webElement -> {
+            if (webElement.getAttribute("label") != null &&
+                    webElement.getAttribute("label").equals("Recalcular")) {
+                webElement.click();
+            }
+        });
         waitUntilToButtonProceedIsShowing.execute(simulation);
     }
 

@@ -75,7 +75,7 @@ public class BrowserInstance {
         final String driverHome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 
         final ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--window-size=1920,1080");
+        chromeOptions.addArguments("--window-size=1920,2080");
 //        chromeOptions.addArguments("--disable-blink-features");
 //        chromeOptions.addArguments("--disable-blink-features=AutomationControlled");
 
@@ -172,14 +172,6 @@ public class BrowserInstance {
         final Wait<WebDriver> wait = new WebDriverWait(driver, timeout, sleep);
         wait.until(d -> Arrays.stream(elementsIds)
                 .map(elementId -> verifyElements(getElementById(elementId)))
-                .allMatch(isShowing -> isShowing.equals(true))
-        );
-    }
-
-    public void waitForElementsByClassName(Duration timeout, Duration sleep, String... classNames) {
-        final Wait<WebDriver> wait = new WebDriverWait(driver, timeout, sleep);
-        wait.until(d -> Arrays.stream(classNames)
-                .map(className -> verifyElements(getElementsByClassName(className)))
                 .allMatch(isShowing -> isShowing.equals(true))
         );
     }

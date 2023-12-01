@@ -27,14 +27,17 @@ public class WaitUntilToButtonRecalcIsShowing extends AbstractStep implements Pa
 
     @Override
     public void execute(final Simulation simulation) {
-        logger.info("clickOnRecalcButton");
-        final List<WebElement> elements = browserInstance.getElementsByTagName("button");
-        elements.forEach(webElement -> {
-            if (webElement.getAttribute("label") != null &&
-                    webElement.getAttribute("label").equals("Recalcular")) {
-                final Actions actions = new Actions(browserInstance.getDriver());
-                actions.moveToElement(webElement).click().perform();
-            }
+        logger.info("waitUntilToButtonRecalcIsShowing");
+        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
+        wait.until(d -> {
+            final List<WebElement> elements = browserInstance.getElementsByTagName("button");
+            return elements.stream().map(webElement -> {
+                        return webElement.getAttribute("label") != null &&
+                                webElement.getAttribute("label").equals("Recalcular") &&
+                                (webElement.getAttribute("disabled") == null ||
+                                        Objects.equals(webElement.getAttribute("disabled"), "false"));
+                    })
+                    .anyMatch(aBoolean -> aBoolean.equals(true));
         });
         clickOnRecalcButton.execute(simulation);
     }
