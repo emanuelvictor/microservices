@@ -22,8 +22,7 @@ public class FillPlateNumber extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("fillPlateNumber");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("plate"));
-        if (elements != null && elements.size() > 0) elements.get(0).sendKeys(simulation.getPlateNumberFromVehicle());
+        browserInstance.getElementById("plate").sendKeys(simulation.getPlateNumberFromVehicle());
         waitUntilCotationFieldIsShowing.execute(simulation);
     }
 

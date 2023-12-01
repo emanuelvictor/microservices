@@ -5,13 +5,18 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.emanuelvictor.api.functional.bertosimulators.infrastructure.browser.BrowserInstance.verifyElements;
 
 public class PANFlow {
 
@@ -19,7 +24,7 @@ public class PANFlow {
 
     @BeforeEach
     public void setUp() {
-//        final BrowserOptions browserOptions = BrowserOptions.create("c158dde2915f2eeb6bbf38b273020fad", "http://localhost:34883");
+//        final BrowserOptions browserOptions = BrowserOptions.create("19c6706aa65645a7a07250da4a437562", "http://localhost:39188");
 //        browserInstance = BrowserInstance.openCreated(browserOptions);
         browserInstance = BrowserInstance.createNew("https://veiculos.bancopan.com.br/captura/inicio");
     }
@@ -60,74 +65,59 @@ public class PANFlow {
 
     private void goToBegin() {
         System.out.println("goToBegin");
-        browserInstance.getDriver().get("https://veiculos.bancopan.com.br/captura/inicio");
+        browserInstance.goTo("https://veiculos.bancopan.com.br/captura/inicio");
     }
 
     private void tryLogin() {
         System.out.println("tryLogin");
-        browserInstance.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
-        final List<WebElement> username = browserInstance.getDriver().findElements(By.id("login"));
-        username.get(0).sendKeys("10650570910");
-        final List<WebElement> password = browserInstance.getDriver().findElements(By.id("password"));
-        password.get(0).sendKeys("#Berto129");
-        browserInstance.getDriver().findElements(By.className("pan-mahoe-button--primary")).get(0).click();
+        browserInstance.waitFor(4);
+        final WebElement usernameInput = browserInstance.getElementById("login");
+        usernameInput.sendKeys("10650570910");
+        final WebElement passwordInput = browserInstance.getElementById("password");
+        passwordInput.sendKeys("#Berto129");
+        browserInstance.getElementsByClassName("pan-mahoe-button--primary").get(0).click();
     }
 
     private void waitUntilDocumentFieldIsShowing() {
         System.out.println("waitUntilDocumentFieldIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(60));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cpf"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds("cpf");
     }
 
     private void fillDocument(final String document) {
         System.out.println("fillDocument");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cpf"));
-        if (verifyElements(elements)) elements.get(0).sendKeys(document);
+        browserInstance.getElementById("cpf").sendKeys(document);
     }
 
     private void choiceCarAsTypeOfVehicle() {
         System.out.println("choiceCarAsTypeOfVehicle");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("pan-mahoe-card"));
+        final List<WebElement> elements = browserInstance.getElementsByClassName("pan-mahoe-card");
         if (verifyElements(elements)) elements.get(0).click();
     }
 
     private void continueToFillSimulationData() {
         System.out.println("continueToFillSimulationData");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("mahoe-button"));
+        final List<WebElement> elements = browserInstance.getElementsByClassName("mahoe-button");
         if (verifyElements(elements)) elements.get(0).click();
     }
 
     private void waitUntilCellNumberIsShowing() {
         System.out.println("waitUntilCellNumberIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(60));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cellnumber"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds("cellnumber");
     }
 
     private void fillCellNumber(final String cellNumber) {
         System.out.println("fillCellNumber");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cellnumber"));
-        if (verifyElements(elements)) elements.get(0).sendKeys(cellNumber);
+        browserInstance.getElementById("cellnumber").sendKeys(cellNumber);
     }
 
     private void fillPlateNumber(final String plateNumber) {
         System.out.println("fillPlateNumber");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("plate"));
-        if (elements != null && elements.size() > 0) elements.get(0).sendKeys(plateNumber);
+        browserInstance.getElementById("plate").sendKeys(plateNumber);
     }
 
     private void waitUntilCotationFieldIsShowing() {
         System.out.println("waitUntilCotationFieldIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("value"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds(Duration.ofSeconds(1000), Duration.ofSeconds(2), "value");
     }
 
     private void fillCotation(String cotation) {
@@ -142,44 +132,43 @@ public class PANFlow {
 
     private void fillRequestedEntry(String requestedEntry) {
         System.out.println("fillRequestedEntry");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("requestedEntry"));
-        if (verifyElements(elements)) elements.get(0).sendKeys(requestedEntry);
+        browserInstance.getElementById("requestedEntry").sendKeys(requestedEntry);
     }
 
     private void waitUntilConditionPropostButtonIsShowing() {
         System.out.println("waitUntilConditionPropostButtonIsShowing");
         final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
         wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("btnNexta"));
-            return verifyElements(elements) && (elements.get(0).getAttribute("disabled") == null
-                    || Objects.equals(elements.get(0).getAttribute("disabled"), "false"));
+            final WebElement element = browserInstance.getElementById("btnNexta");
+            return verifyElements(element) && (element.getAttribute("disabled") == null
+                    || Objects.equals(element.getAttribute("disabled"), "false"));
         });
     }
 
     private void continueToConditionPropost() {
         System.out.println("continueToConditionPropost");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("btnNexta"));
-        if (verifyElements(elements)) elements.get(0).click();
+        browserInstance.getElementById("btnNexta").click();
     }
 
     private void waitUntilFinancialDataIsShowing() {
         System.out.println("waitUntilFinancialDataIsShowing");
+//        browserInstance.waitForElementsIds(Duration.ofSeconds(1000), Duration.ofSeconds(2), "pan-mahoe-select-9");
         final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
         wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("pan-mahoe-select-9"));
+            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("pan-mahoe-select-9")); // TODO B.O aqui
             return verifyElements(elements);
         });
     }
 
     private void selectPAN5() {
         System.out.println("selectPAN5");
-        List<WebElement> elements = browserInstance.getDriver().findElements(By.id("pan-mahoe-select-9"));
-        if (verifyElements(elements)) {
-            elements.get(0).click();
-            elements = browserInstance.getDriver().findElements(By.className("pan-mahoe-select-option--show-in-filter"));
-            if (verifyElements(elements)) {
-                elements.get(elements.size() - 1).click();
-            }
+        final WebElement element = browserInstance.getElementById("pan-mahoe-select-9");
+        if (verifyElements(element)) {
+            element.click();
+            final List<WebElement> options = browserInstance
+                    .getElementsByClassName("pan-mahoe-select-option--show-in-filter");
+            if (verifyElements(options))
+                options.get(options.size() - 1).click();
         }
     }
 
@@ -187,15 +176,28 @@ public class PANFlow {
         System.out.println("waitUntilToButtonRecalcIsShowing");
         final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
         wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("pan-mahoe-button--primary"));
-            return verifyElements(elements);
+            final List<WebElement> elements = browserInstance.getElementsByTagName("button");
+            return elements.stream().map(webElement -> {
+                        return webElement.getAttribute("label") != null &&
+                                webElement.getAttribute("label").equals("Recalcular") &&
+                                (webElement.getAttribute("disabled") == null ||
+                                        Objects.equals(webElement.getAttribute("disabled"), "false"));
+                    })
+                    .anyMatch(aBoolean -> aBoolean.equals(true));
         });
     }
 
     private void clickOnRecalcButton() {
         System.out.println("clickOnRecalcButton");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("pan-mahoe-button--primary"));
-        if (verifyElements(elements)) elements.get(0).click();
+        final List<WebElement> elements = browserInstance.getElementsByTagName("button");
+        elements.forEach(webElement -> {
+            if (webElement.getAttribute("label") != null &&
+                    webElement.getAttribute("label").equals("Recalcular")) {
+                final Actions actions = new Actions(browserInstance.getDriver());
+                actions.moveToElement(webElement).click().perform();
+                System.out.println("VAIII");
+            }
+        });
     }
 
     private void waitUntilToButtonProceedIsShowing() {
@@ -210,8 +212,13 @@ public class PANFlow {
 
     private void extractData() {
         System.out.println("extractData");
-        final String[] dataInString = browserInstance.getDriver().findElements(By.className("resume-v2")).get(0).getText().split("\n");
-        final List<String> dataInList = new java.util.ArrayList<>(Arrays.stream(dataInString).toList());
+        final String[] dataInString =
+                browserInstance
+                        .getElementsByClassName("resume-v2")
+                        .get(0)
+                        .getText()
+                        .split("\n");
+        final List<String> dataInList = new ArrayList<>(Arrays.stream(dataInString).toList());
         dataInList.remove(0); // Remove resume
         dataInList.remove(0); // Remove approved propost
         for (int i = 0; i < 8; i++) {
@@ -220,10 +227,5 @@ public class PANFlow {
             else
                 System.out.println(dataInList.get(i));
         }
-    }
-
-
-    private static boolean verifyElements(final List<WebElement> elements) {
-        return elements != null && elements.size() > 0;
     }
 }

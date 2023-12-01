@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +22,13 @@ public class ExtractData extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("extractData");
-        final String[] dataInString = browserInstance.getDriver().findElements(By.className("resume-v2")).get(0).getText().split("\n");
-        final List<String> dataInList = new java.util.ArrayList<>(Arrays.stream(dataInString).toList());
+        final String[] dataInString =
+                browserInstance
+                        .getElementsByClassName("resume-v2")
+                        .get(0)
+                        .getText()
+                        .split("\n");
+        final List<String> dataInList = new ArrayList<>(Arrays.stream(dataInString).toList());
         dataInList.remove(0); // Remove resume
         dataInList.remove(0); // Remove approved propost
         for (int i = 0; i < 8; i++) {

@@ -22,8 +22,7 @@ public class FillRequestedEntry extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("fillRequestedEntry");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("requestedEntry"));
-        if (verifyElements(elements)) elements.get(0).sendKeys(simulation.getRequestedEntry());
+        browserInstance.getElementById("requestedEntry").sendKeys(simulation.getRequestedEntry());
         waitUntilConditionPropostButtonIsShowing.execute(simulation);
     }
 

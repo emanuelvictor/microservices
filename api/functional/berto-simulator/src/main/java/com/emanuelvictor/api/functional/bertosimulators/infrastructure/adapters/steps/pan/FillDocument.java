@@ -22,9 +22,8 @@ public class FillDocument extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("fillDocument");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cpf"));
         final String document = simulation.getDocumentFromCustomer();
-        if (verifyElements(elements)) elements.get(0).sendKeys(document);
+        browserInstance.getElementById("cpf").sendKeys(document);
         choiceCarAsTypeOfVehicle.execute(simulation);
     }
 

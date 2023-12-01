@@ -36,7 +36,7 @@ public class BrowserInstanceTests {
     @Test
     void mustVerifyIfTheBrowserInstanceIsRunningAndMustReturnTrue() {
 
-        final boolean isRunning = browserInstance.isRunning();
+        final boolean isRunning = browserInstance.isUp();
 
         Assertions.assertThat(isRunning).isTrue();
     }
@@ -79,7 +79,7 @@ public class BrowserInstanceTests {
 
         browserInstance.closeAllTheTabs();
 
-        final boolean isRunning = browserInstance.isRunning();
+        final boolean isRunning = browserInstance.isUp();
         Assertions.assertThat(isRunning).isFalse();
     }
 

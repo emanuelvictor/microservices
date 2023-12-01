@@ -21,7 +21,7 @@ public class ChoiceCarAsTypeOfVehicle extends AbstractStep implements PanStep {
     @Override
     public void execute(Simulation simulation) {
         logger.info("choiceCarAsTypeOfVehicle");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("pan-mahoe-card"));
+        final List<WebElement> elements = browserInstance.getElementsByClassName("pan-mahoe-card");
         if (verifyElements(elements)) elements.get(0).click();
         continueToFillSimulationData.execute(simulation);
     }

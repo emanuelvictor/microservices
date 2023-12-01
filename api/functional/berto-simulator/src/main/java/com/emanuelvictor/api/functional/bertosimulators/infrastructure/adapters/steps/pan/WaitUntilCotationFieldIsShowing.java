@@ -26,11 +26,7 @@ public class WaitUntilCotationFieldIsShowing extends AbstractStep implements Pan
     @Override
     public void execute(final Simulation simulation) {
         logger.info("waitUntilCotationFieldIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(1000), Duration.ofSeconds(2));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("value"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds(Duration.ofSeconds(1000), Duration.ofSeconds(2), "value");
         fillCotation.execute(simulation);
     }
 

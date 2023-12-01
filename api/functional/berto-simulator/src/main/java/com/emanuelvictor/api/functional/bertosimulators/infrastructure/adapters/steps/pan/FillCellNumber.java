@@ -12,18 +12,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Order(6)
 @Component
 @RequiredArgsConstructor
 public class FillCellNumber extends AbstractStep implements PanStep {
 
     private final BrowserInstance browserInstance;
 
+    private final PanStep fillPlateNumber;
+
     @Override
     public void execute(final Simulation simulation) {
         logger.info("fillCellNumber");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cellnumber"));
-        if (verifyElements(elements)) elements.get(0).sendKeys(simulation.getCellNumberFromCustomer());
+        browserInstance.getElementById("cellnumber").sendKeys(simulation.getCellNumberFromCustomer());
+        fillPlateNumber.execute(simulation);
     }
 
 }

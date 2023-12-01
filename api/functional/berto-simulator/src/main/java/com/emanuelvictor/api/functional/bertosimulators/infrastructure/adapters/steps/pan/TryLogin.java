@@ -24,12 +24,12 @@ public class TryLogin extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("tryLogin");
-        browserInstance.getDriver().manage().timeouts().implicitlyWait(Duration.ofSeconds(4));
-        final List<WebElement> username = browserInstance.getDriver().findElements(By.id("login"));
-        username.get(0).sendKeys("10650570910");
-        final List<WebElement> password = browserInstance.getDriver().findElements(By.id("password"));
-        password.get(0).sendKeys("#Berto129");
-        browserInstance.getDriver().findElements(By.className("pan-mahoe-button--primary")).get(0).click();
+        browserInstance.waitFor(4);
+        final WebElement usernameInput = browserInstance.getElementById("login");
+        usernameInput.sendKeys("10650570910");
+        final WebElement passwordInput = browserInstance.getElementById("password");
+        passwordInput.sendKeys("#Berto129");
+        browserInstance.getElementsByClassName("pan-mahoe-button--primary").get(0).click();
         waitUntilDocumentFieldIsShowing.execute(simulation);
     }
 }

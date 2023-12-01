@@ -27,11 +27,7 @@ public class WaitUntilDocumentFieldIsShowing extends AbstractStep implements Pan
     @Override
     public void execute(final Simulation simulation) {
         logger.info("waitUntilDocumentFieldIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(60));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cpf"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds("cpf");
         fillDocument.execute(simulation);
     }
 }

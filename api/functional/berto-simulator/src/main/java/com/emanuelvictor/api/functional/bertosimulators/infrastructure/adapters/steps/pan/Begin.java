@@ -19,7 +19,7 @@ public class Begin extends AbstractStep implements PanStep {
     @Override
     public void execute(final Simulation simulation) {
         logger.info("goToBegin");
-        browserInstance.getDriver().get("https://veiculos.bancopan.com.br/captura/inicio");
+        browserInstance.goTo("https://veiculos.bancopan.com.br/captura/inicio");
         tryLogin.execute(simulation);
     }
 }

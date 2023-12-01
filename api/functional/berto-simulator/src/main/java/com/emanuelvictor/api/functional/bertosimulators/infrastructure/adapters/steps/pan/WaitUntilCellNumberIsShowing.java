@@ -26,11 +26,7 @@ public class WaitUntilCellNumberIsShowing extends AbstractStep implements PanSte
     @Override
     public void execute(final Simulation simulation) {
         logger.info("waitUntilCellNumberIsShowing");
-        final Wait<WebDriver> wait = new WebDriverWait(browserInstance.getDriver(), Duration.ofSeconds(60));
-        wait.until(d -> {
-            final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("cellnumber"));
-            return verifyElements(elements);
-        });
+        browserInstance.waitForElementsIds("cellnumber");
         fillCellNumber.execute(simulation);
     }
 

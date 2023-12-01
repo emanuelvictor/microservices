@@ -22,7 +22,7 @@ public class ContinueToFillSimulationData extends AbstractStep implements PanSte
     @Override
     public void execute(final Simulation simulation) {
         logger.info("continueToFillSimulationData");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.className("mahoe-button"));
+        final List<WebElement> elements = browserInstance.getElementsByClassName("mahoe-button");
         if (verifyElements(elements)) elements.get(0).click();
         waitUntilCellNumberIsShowing.execute(simulation);
     }

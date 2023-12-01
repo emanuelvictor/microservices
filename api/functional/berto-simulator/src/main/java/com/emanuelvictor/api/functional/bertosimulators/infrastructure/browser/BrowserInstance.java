@@ -2,18 +2,23 @@ package com.emanuelvictor.api.functional.bertosimulators.infrastructure.browser;
 
 import com.emanuelvictor.api.functional.bertosimulators.infrastructure.browser.chromeutils.ChromeDriverBuilder;
 import jakarta.persistence.Transient;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.*;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpCommandCodec;
 import org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec;
-import org.slf4j.LoggerFactory;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -115,7 +120,7 @@ public class BrowserInstance {
         driver.close();
     }
 
-    boolean isRunning() {
+    boolean isUp() {
         try {
             driver.getTitle();
             return true;
@@ -124,11 +129,74 @@ public class BrowserInstance {
         }
     }
 
+    /**
+     * return true if the browser instance is in utilizing
+     * @return Boolean
+     */
+    boolean isBusy() {
+        return false;
+    }
+
     public void openOnNewTab(final String url) {
         ((JavascriptExecutor) driver).executeScript("window.open()");
         final ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
         driver.switchTo().window(tabs.get(tabs.size() - 1));
         driver.get(url);
+    }
+
+    public void goTo(final String url) {
+        driver.get(url);
+    }
+
+    public void waitFor(final long seconds) {
+        waitFor(Duration.ofSeconds(seconds));
+    }
+
+    public void waitFor(final Duration duration) {
+        driver.manage().timeouts().implicitlyWait(duration);
+    }
+
+    public void waitForElementsIds(String... elementsIds) {
+        waitForElementsIds(Duration.ofSeconds(60), elementsIds);
+    }
+
+    public void waitForElementsIds(Duration timeout, String... elementsIds) {
+        final Wait<WebDriver> wait = new WebDriverWait(driver, timeout);
+        wait.until(d -> Arrays.stream(elementsIds)
+                .map(elementId -> verifyElements(getElementById(elementId)))
+                .allMatch(isShowing -> isShowing.equals(true))
+        );
+    }
+
+    public void waitForElementsIds(Duration timeout, Duration sleep, String... elementsIds) {
+        final Wait<WebDriver> wait = new WebDriverWait(driver, timeout, sleep);
+        wait.until(d -> Arrays.stream(elementsIds)
+                .map(elementId -> verifyElements(getElementById(elementId)))
+                .allMatch(isShowing -> isShowing.equals(true))
+        );
+    }
+
+    public void waitForElementsByClassName(Duration timeout, Duration sleep, String... classNames) {
+        final Wait<WebDriver> wait = new WebDriverWait(driver, timeout, sleep);
+        wait.until(d -> Arrays.stream(classNames)
+                .map(className -> verifyElements(getElementsByClassName(className)))
+                .allMatch(isShowing -> isShowing.equals(true))
+        );
+    }
+
+    public WebElement getElementById(final String id) {
+        final List<WebElement> elements = driver.findElements(By.id(id));
+        return !verifyElements(elements) ? null : elements.get(0);
+    }
+
+    public List<WebElement> getElementsByTagName(final String tagName) {
+        final List<WebElement> elements = driver.findElements(By.tagName(tagName));
+        return !verifyElements(elements) ? null : elements;
+    }
+
+    public List<WebElement> getElementsByClassName(final String className) {
+        final List<WebElement> elements = driver.findElements(By.className(className));
+        return !verifyElements(elements) ? null : elements;
     }
 
     private static RemoteWebDriver createDriverFromSession(final String sessionId, URL commandExecutor) {
@@ -165,5 +233,13 @@ public class BrowserInstance {
         };
 
         return new RemoteWebDriver(executor, new DesiredCapabilities());
+    }
+
+    static boolean verifyElements(final List<WebElement> elements) {
+        return elements != null && elements.size() > 0;
+    }
+
+    static boolean verifyElements(final WebElement... elements) {
+        return elements != null && elements.length > 0;
     }
 }

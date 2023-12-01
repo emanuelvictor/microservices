@@ -21,8 +21,7 @@ public class ContinueToConditionPropost extends AbstractStep implements PanStep 
     @Override
     public void execute(final Simulation simulation) {
         logger.info("continueToConditionPropost");
-        final List<WebElement> elements = browserInstance.getDriver().findElements(By.id("btnNexta"));
-        if (verifyElements(elements)) elements.get(0).click();
+        browserInstance.getElementById("btnNexta").click();
         waitUntilFinancialDataIsShowing.execute(simulation);
     }
 

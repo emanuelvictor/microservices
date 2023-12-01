@@ -12,4 +12,8 @@ public abstract class AbstractStep {
     protected boolean verifyElements(final List<WebElement> elements) {
         return elements != null && elements.size() > 0;
     }
+
+    protected boolean verifyElements(final WebElement... elements) {
+        return elements != null && elements.length > 0;
+    }
 }
