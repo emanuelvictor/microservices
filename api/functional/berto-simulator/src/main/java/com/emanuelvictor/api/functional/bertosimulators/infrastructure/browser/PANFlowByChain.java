@@ -16,7 +16,7 @@ import java.util.Objects;
 
 import static com.emanuelvictor.api.functional.bertosimulators.infrastructure.browser.BrowserInstance.verifyElements;
 
-public class PANFlow {
+public class PANFlowByChain {
 
     private BrowserInstance browserInstance;
 
