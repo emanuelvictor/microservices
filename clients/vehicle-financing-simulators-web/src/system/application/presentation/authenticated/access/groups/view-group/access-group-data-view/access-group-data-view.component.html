@@ -1,0 +1,6 @@
+<ng-content select="[accessGroupLabelName]"></ng-content>
+
+<vertical-space></vertical-space>
+
+<!--<view-permissions [permissions]='permissions' *ngIf='permissions?.length'></view-permissions>-->
+<tree-permissions-view *ngIf='permissionsOfGroup' [group]='group' [permissionsOfGroup]='permissionsOfGroup'></tree-permissions-view>
