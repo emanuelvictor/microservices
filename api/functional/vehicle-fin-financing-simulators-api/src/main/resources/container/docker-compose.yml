@@ -1,0 +1,10 @@
+version: '3'
+services:
+  vehiclefinancingsimulatorsapidb:
+    image: postgres:13.2-alpine
+    environment:
+      POSTGRES_USER: vehiclefinancingsimulatorsapi
+      POSTGRES_PASSWORD: vehiclefinancingsimulatorsapi
+      POSTGRES_DB: vehiclefinancingsimulatorsapi
+    ports:
+      - "5432:5432"
