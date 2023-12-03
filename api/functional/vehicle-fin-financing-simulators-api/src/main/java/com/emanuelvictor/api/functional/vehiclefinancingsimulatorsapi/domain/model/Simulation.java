@@ -1,4 +1,6 @@
-package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.entities;
+package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model;
+
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.Vehicle;
 
 public class Simulation {
 
@@ -27,7 +29,7 @@ public class Simulation {
     }
 
     public String getPlateNumberFromVehicle() {
-        return vehicle.getPlateNumber();
+        return vehicle.plateNumber();
     }
 
     public String getCotation() {

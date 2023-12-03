@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.entities;
+package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model;
 
 public class Customer {
 

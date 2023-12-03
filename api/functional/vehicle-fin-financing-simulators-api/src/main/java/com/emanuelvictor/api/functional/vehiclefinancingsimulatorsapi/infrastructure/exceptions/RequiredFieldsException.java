@@ -25,6 +25,13 @@ public class RequiredFieldsException extends IllegalArgumentException {
         return this;
     }
 
+    public RequiredFieldsException whenNull(final Object field, final String message) {
+        if (field == null) {
+            this.errors.add(message);
+        }
+        return this;
+    }
+
     public RequiredFieldsException whenNullOrEqualsToZero(final Long field, final String message) {
         if (field == null || field == 0) {
             this.errors.add(message);

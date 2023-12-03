@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.application.beans;
 
-import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.simulators.PanSimulator;
-import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.simulators.Simulator;
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.services.PanSimulator;
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.services.Simulator;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.steps.pan.PanStep;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.infrastructure.browser.BrowserInstance;
 import org.springframework.context.annotation.Bean;

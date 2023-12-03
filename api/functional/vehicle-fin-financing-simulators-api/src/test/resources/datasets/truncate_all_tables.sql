@@ -1,1 +1,1 @@
-select 1;
+TRUNCATE TABLE public.brand CASCADE;

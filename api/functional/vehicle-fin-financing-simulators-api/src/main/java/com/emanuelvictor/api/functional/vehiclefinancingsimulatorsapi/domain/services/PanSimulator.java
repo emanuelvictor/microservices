@@ -1,6 +1,6 @@
-package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.simulators;
+package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.services;
 
-import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.entities.Simulation;
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.Simulation;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.steps.pan.PanStep;
 
 public class PanSimulator implements Simulator {

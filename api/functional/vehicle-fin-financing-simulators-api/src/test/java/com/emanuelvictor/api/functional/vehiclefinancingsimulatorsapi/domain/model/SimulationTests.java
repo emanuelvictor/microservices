@@ -1,5 +1,7 @@
-package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.entities;
+package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model;
 
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.VehicleBuilder;
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.Vehicle;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,8 +12,8 @@ public class SimulationTests {
         final String document = "07124762944";
         final String contact = "45998261540";
         final Customer customer = new Customer(document, contact);
-        final String plateNumber = "EFR2003";
-        final Vehicle vehicle = new Vehicle(plateNumber);
+        final String plateNumber = "JVO6879";
+        final Vehicle vehicle = new VehicleBuilder().plateNumber(plateNumber).build();
         final String cotation = "20000";
         final String requestedEntry = "5000";
 

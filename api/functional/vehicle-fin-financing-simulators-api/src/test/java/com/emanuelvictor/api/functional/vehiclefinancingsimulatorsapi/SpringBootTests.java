@@ -14,9 +14,9 @@ import java.util.Collections;
 @AutoConfigureMockMvc
 @Sql("/datasets/truncate_all_tables.sql")
 @EnableDiscoveryClient(autoRegister = false)
-public abstract class AbstractIntegrationTests {
+public abstract class SpringBootTests {
 
-    public AbstractIntegrationTests() {
+    public SpringBootTests() {
         final GenericContainer<?> postgres = new GenericContainer<>(DockerImageName.parse("postgres:13.2-alpine"))
                 .withEnv("POSTGRES_USER", "vehiclefinancingsimulatorsapi")
                 .withEnv("POSTGRES_PASSWORD", "vehiclefinancingsimulatorsapi")
