@@ -22,7 +22,7 @@ public class SQLFilterFunction extends CastStrEmulation implements FunctionRende
     public SQLFilterFunction(TypeConfiguration typeConfiguration) {
         super(
                 "filter",
-                StandardArgumentsValidators.between( 1, 3 ),
+                StandardArgumentsValidators.between( 1, 20 ),
                 StandardFunctionReturnTypeResolvers.invariant(
                         typeConfiguration.getBasicTypeRegistry().resolve( StandardBasicTypes.BOOLEAN )
                 )

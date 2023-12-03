@@ -6,6 +6,8 @@ import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.mod
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.repositories.VehicleRepository;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.infrastructure.adapters.repositories.jpa.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -64,6 +66,21 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     @Override
     public Optional<Vehicle> findVehicleByPlateNumber(String plateNumber) {
         return vehicleJPARepository.findById(plateNumber)
+                .map(vehicleJPA -> {
+                    final Brand brand = new Brand(vehicleJPA.getBrandName());
+                    final var model = new Model(vehicleJPA.getModelName(), brand);
+                    return new Vehicle(vehicleJPA.getPlateNumber(), model);
+                });
+    }
+
+    /**
+     * @param filters  {@link String}
+     * @param pageable {@link Pageable}
+     * @return {@link Page<Vehicle>}
+     */
+    @Override
+    public Page<Vehicle> getAPageOfVehiclesFromFilters(String filters, Pageable pageable) {
+        return vehicleJPARepository.getAPageOfVehiclesFromFilters(filters, pageable)
                 .map(vehicleJPA -> {
                     final Brand brand = new Brand(vehicleJPA.getBrandName());
                     final var model = new Model(vehicleJPA.getModelName(), brand);

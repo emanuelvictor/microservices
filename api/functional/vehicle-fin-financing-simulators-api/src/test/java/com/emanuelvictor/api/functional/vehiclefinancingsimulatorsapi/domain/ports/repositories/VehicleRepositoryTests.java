@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.po
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.SpringBootTests;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.BrandBuilder;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.ModelBuilder;
+import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.Vehicle;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle.VehicleBuilder;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.infrastructure.adapters.repositories.jpa.BrandJPARepository;
 import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.infrastructure.adapters.repositories.jpa.ModelJPARepository;
@@ -10,6 +11,10 @@ import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.infrastruc
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.util.UUID;
 
 public class VehicleRepositoryTests extends SpringBootTests {
 
@@ -114,5 +119,25 @@ public class VehicleRepositoryTests extends SpringBootTests {
         Assertions.assertThat(vehicleRetrived.plateNumber()).isEqualTo(vehicle.plateNumber());
         Assertions.assertThat(vehicleRetrived.getBrandName()).isEqualTo(vehicle.getBrandName());
         Assertions.assertThat(vehicleRetrived.getModelName()).isEqualTo(vehicle.getModelName());
+    }
+
+    @Test
+    void mustGetAPageOfVehicleFilteredByBrandName() {
+        final var brand = "brand";
+        final var brandName = brand + "Name";
+        final var countOfResultsExpected = 3;
+        for (int i = 0; i < 15; i++) {
+            final var vehicle = new VehicleBuilder()
+                    .brandName((i < countOfResultsExpected) ? brandName : UUID.randomUUID().toString())
+                    .build();
+            vehicleRepository.save(vehicle);
+        }
+
+        final var pageOfVehiclesFilteredByBrandName = vehicleRepository
+                .getAPageOfVehiclesFromFilters(brand, PageRequest.of(0, 5));
+
+        Assertions.assertThat(pageOfVehiclesFilteredByBrandName.getContent().size()).isEqualTo(countOfResultsExpected);
+        Assertions.assertThat(pageOfVehiclesFilteredByBrandName.getContent()).extracting(Vehicle::getBrandName)
+                .contains(brandName);
     }
 }

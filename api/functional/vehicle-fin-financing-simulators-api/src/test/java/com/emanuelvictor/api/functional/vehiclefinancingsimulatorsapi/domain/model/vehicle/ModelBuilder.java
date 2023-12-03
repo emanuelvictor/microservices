@@ -1,12 +1,14 @@
 package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle;
 
+import java.util.UUID;
+
 public class ModelBuilder {
 
     private String name;
     private Brand brand;
 
     public ModelBuilder() {
-        this.name = "GOL";
+        this.name = UUID.randomUUID().toString();
         this.brand = new BrandBuilder().build();
     }
 

@@ -1,12 +1,14 @@
 package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle;
 
+import java.util.UUID;
+
 public class VehicleBuilder {
 
     private String plateNumber;
     private Model model;
 
     public VehicleBuilder() {
-        this.plateNumber = "JVO6879";
+        this.plateNumber = UUID.randomUUID().toString();
         this.model = new ModelBuilder().build();
     }
 
@@ -20,7 +22,19 @@ public class VehicleBuilder {
         return this;
     }
 
-    public Vehicle build(){
+    public VehicleBuilder modelName(final String modelName) {
+        this.model = new ModelBuilder().name(modelName).build();
+        return this;
+    }
+
+    public VehicleBuilder brandName(final String brandName) {
+        this.model = new ModelBuilder()
+                .brand(new BrandBuilder().name(brandName).build())
+                .build();
+        return this;
+    }
+
+    public Vehicle build() {
         return new Vehicle(plateNumber, model);
     }
 }

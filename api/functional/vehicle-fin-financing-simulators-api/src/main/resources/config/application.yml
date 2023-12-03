@@ -50,9 +50,9 @@ spring:
     suffix: .html
 
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migrations
-    sql-migration-prefix:
+    sql-migration-prefix: v
     baseline-on-migrate: true
     baseline-version: 0
     fail-on-missing-locations: true
