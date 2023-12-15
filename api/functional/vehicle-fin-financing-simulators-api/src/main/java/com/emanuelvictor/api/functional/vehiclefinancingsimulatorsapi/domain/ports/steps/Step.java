@@ -1,9 +1,0 @@
-package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.ports.steps;
-
-import com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.Simulation;
-
-public interface Step {
-
-    void execute(Simulation simulation);
-
-}
