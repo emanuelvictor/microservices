@@ -4,16 +4,16 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.Size;
 import org.hibernate.envers.Audited;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Audited(withModifiedFlag = true)
-//@Table(name = "model", uniqueConstraints = { TODO not required
-//        @UniqueConstraint(columnNames = {"name", "brand_name"})
-//})
 public class VehicleJPA {
 
     @Id
+    @Size(max = 6)
     private String plateNumber;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)

@@ -29,6 +29,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.github.netvl.ecoji</groupId>
+            <artifactId>ecoji</artifactId>
+            <version>1.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>

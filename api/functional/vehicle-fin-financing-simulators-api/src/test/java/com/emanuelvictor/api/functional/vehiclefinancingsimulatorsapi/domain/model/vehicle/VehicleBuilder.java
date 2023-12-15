@@ -1,5 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefinancingsimulatorsapi.domain.model.vehicle;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class VehicleBuilder {
@@ -8,7 +9,7 @@ public class VehicleBuilder {
     private Model model;
 
     public VehicleBuilder() {
-        this.plateNumber = UUID.randomUUID().toString();
+        this.plateNumber = generatePlateNumber();
         this.model = new ModelBuilder().build();
     }
 
@@ -36,5 +37,14 @@ public class VehicleBuilder {
 
     public Vehicle build() {
         return new Vehicle(plateNumber, model);
+    }
+
+
+    public static String generatePlateNumber(final String halfPlateNumber) {
+        return halfPlateNumber + new Random().nextInt(999);
+    }
+
+    public static String generatePlateNumber() {
+        return Integer.toString(new Random().nextInt(999999));
     }
 }
