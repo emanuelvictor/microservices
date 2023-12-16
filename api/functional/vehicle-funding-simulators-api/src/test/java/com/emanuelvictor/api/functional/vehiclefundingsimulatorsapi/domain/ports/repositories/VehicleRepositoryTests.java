@@ -1,12 +1,8 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories;
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.SpringBootTests;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.BrandBuilder;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.ModelBuilder;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Vehicle;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.VehicleBuilder;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.repositories.jpa.BrandJPARepository;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.repositories.jpa.ModelJPARepository;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.repositories.jpa.VehicleJPARepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
@@ -19,8 +15,6 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-import static com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.VehicleBuilder.generatePlateNumber;
-
 
 public class VehicleRepositoryTests extends SpringBootTests {
 
@@ -28,97 +22,22 @@ public class VehicleRepositoryTests extends SpringBootTests {
     private VehicleRepository vehicleRepository;
 
     @Autowired
-    private BrandJPARepository brandJPARepository;
-
-    @Autowired
-    private ModelJPARepository modelJPARepository;
-
-    @Autowired
     private VehicleJPARepository vehicleJPARepository;
-
-    @Test
-    void mustInsertABrand() {
-        final var brand = new BrandBuilder().build();
-
-        vehicleRepository.save(brand);
-
-        final var brandJPA = brandJPARepository.findById(brand.name());
-        Assertions.assertThat(brandJPA.isPresent()).isTrue();
-    }
-
-    @Test
-    void mustInsertAModel() {
-        final var model = new ModelBuilder().build();
-
-        vehicleRepository.save(model);
-
-        final var modelJPA = modelJPARepository.findById(model.name());
-        Assertions.assertThat(modelJPA.isPresent()).isTrue();
-    }
-
-    @Test
-    void mustInsertABrandWhenInsertAModel() {
-        final var model = new ModelBuilder().build();
-
-        vehicleRepository.save(model);
-
-        final var modelJPA = modelJPARepository.findById(model.name());
-        final var brandJPA = brandJPARepository.findById(model.getBrandName());
-        Assertions.assertThat(modelJPA.isPresent()).isTrue();
-        Assertions.assertThat(brandJPA.isPresent()).isTrue();
-    }
 
     @Test
     void mustInsertAVehicle() {
         final var vehicle = new VehicleBuilder().build();
 
-        vehicleRepository.save(vehicle);
+        vehicleRepository.insert(vehicle);
 
         final var vehicleJPA = vehicleJPARepository.findById(vehicle.plateNumber());
         Assertions.assertThat(vehicleJPA.isPresent()).isTrue();
-    }
-
-    @Test
-    void mustInsertABrandAndAModelWhenInsertAVehicle() {
-        final var vehicle = new VehicleBuilder().build();
-
-        vehicleRepository.save(vehicle);
-
-        final var vehicleJPA = vehicleJPARepository.findById(vehicle.plateNumber());
-        final var modelJPA = modelJPARepository.findById(vehicle.getModelName());
-        final var brandJPA = brandJPARepository.findById(vehicle.getBrandName());
-        Assertions.assertThat(vehicleJPA.isPresent()).isTrue();
-        Assertions.assertThat(modelJPA.isPresent()).isTrue();
-        Assertions.assertThat(brandJPA.isPresent()).isTrue();
-    }
-
-    @Test
-    void mustFindABrandByName() {
-        final var brand = new BrandBuilder().build();
-        vehicleRepository.save(brand);
-
-        final var brandRetrivedByName = vehicleRepository.findBrandByName(brand.name()).orElseThrow();
-
-        Assertions.assertThat(brandRetrivedByName.name()).isEqualTo(brand.name());
-    }
-
-    @Test
-    void mustFindAModelByNameAndBrandName() {
-        final var model = new ModelBuilder().build();
-        vehicleRepository.save(model);
-
-        final var modelRetrived = vehicleRepository
-                .findModelByNameAndBrandName(model.name(), model.getBrandName())
-                .orElseThrow();
-
-        Assertions.assertThat(modelRetrived.name()).isEqualTo(model.name());
-        Assertions.assertThat(modelRetrived.getBrandName()).isEqualTo(model.getBrandName());
     }
 
     @Test
     void mustFindAVehicleByPlateNumber() {
         final var vehicle = new VehicleBuilder().build();
-        vehicleRepository.save(vehicle);
+        vehicleRepository.insert(vehicle);
 
         final var vehicleRetrived = vehicleRepository.findVehicleByPlateNumber(vehicle.plateNumber()).orElseThrow();
 
@@ -136,7 +55,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
             final var vehicle = new VehicleBuilder()
                     .brandName((i < countOfResultsExpected) ? brandName : UUID.randomUUID().toString())
                     .build();
-            vehicleRepository.save(vehicle);
+            vehicleRepository.insert(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository
@@ -156,7 +75,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
             final var vehicle = new VehicleBuilder()
                     .modelName((i < countOfResultsExpected) ? modelName : UUID.randomUUID().toString())
                     .build();
-            vehicleRepository.save(vehicle);
+            vehicleRepository.insert(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository
@@ -173,9 +92,9 @@ public class VehicleRepositoryTests extends SpringBootTests {
         final var countOfResultsExpected = 3;
         for (int i = 0; i < 15; i++) {
             final var vehicle = new VehicleBuilder()
-                    .plateNumber((i < countOfResultsExpected) ? generatePlateNumber(halfPlateNumber) : generatePlateNumber())
+                    .plateNumber((i < countOfResultsExpected) ? VehicleBuilder.generatePlateNumber(halfPlateNumber) : VehicleBuilder.generatePlateNumber())
                     .build();
-            vehicleRepository.save(vehicle);
+            vehicleRepository.insert(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository

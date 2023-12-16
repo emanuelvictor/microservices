@@ -1,7 +1,8 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.services;
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.SpringBootTests;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.*;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.Customer;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.Simulation;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Brand;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Model;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Vehicle;
