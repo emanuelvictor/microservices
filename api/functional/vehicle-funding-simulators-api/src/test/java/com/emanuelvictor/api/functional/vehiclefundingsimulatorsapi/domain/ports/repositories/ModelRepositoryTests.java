@@ -19,7 +19,7 @@ public class ModelRepositoryTests extends SpringBootTests {
     void mustInsertAModel() {
         final var model = new ModelBuilder().build();
 
-        modelRepository.insert(model);
+        modelRepository.create(model);
 
         final var modelJPA = modelJPARepository.findById(model.name());
         Assertions.assertThat(modelJPA.isPresent()).isTrue();
@@ -28,7 +28,7 @@ public class ModelRepositoryTests extends SpringBootTests {
     @Test
     void mustFindAModelByNameAndBrandName() {
         final var model = new ModelBuilder().build();
-        modelRepository.insert(model);
+        modelRepository.create(model);
 
         final var modelRetrived = modelRepository
                 .findModelByNameAndBrandName(model.name(), model.getBrandName())

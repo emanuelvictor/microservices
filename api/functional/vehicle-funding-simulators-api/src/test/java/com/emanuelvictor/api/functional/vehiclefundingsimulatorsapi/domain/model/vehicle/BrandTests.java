@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions.RequiredFieldsException;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions.BusinessException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,13 +27,13 @@ public class BrandTests {
     @MethodSource("getInvalidData")
     void cannotCreateAInstanceOfBrandWithInvalidData(final String brandName, final String message) {
 
-        final Exception exception = assertThrows(RequiredFieldsException.class, () ->
+        final Exception exception = assertThrows(BusinessException.class, () ->
                 new BrandBuilder()
                         .name(brandName)
                         .build()
         );
 
-        Assertions.assertThat(exception).isInstanceOf(RequiredFieldsException.class).hasMessageContaining(message);
+        Assertions.assertThat(exception).isInstanceOf(BusinessException.class).hasMessageContaining(message);
     }
 
     private static Stream<Arguments> getInvalidData() {

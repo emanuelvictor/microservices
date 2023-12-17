@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid;
 
-public interface InsertRepository<T> {
+public interface CreateRepository<T> {
 
-    T insert(T t);
+    T create(T t);
 }

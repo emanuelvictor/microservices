@@ -19,7 +19,7 @@ public class BrandRepositoryTests extends SpringBootTests {
     void mustInsertABrand() {
         final var brand = new BrandBuilder().build();
 
-        brandRepository.insert(brand);
+        brandRepository.create(brand);
 
         final var brandJPA = brandJPARepository.findById(brand.name());
         Assertions.assertThat(brandJPA.isPresent()).isTrue();
@@ -28,7 +28,7 @@ public class BrandRepositoryTests extends SpringBootTests {
     @Test
     void mustFindABrandByName() {
         final var brand = new BrandBuilder().build();
-        brandRepository.insert(brand);
+        brandRepository.create(brand);
 
         final var brandRetrivedByName = brandRepository.findBrandByName(brand.name()).orElseThrow();
 

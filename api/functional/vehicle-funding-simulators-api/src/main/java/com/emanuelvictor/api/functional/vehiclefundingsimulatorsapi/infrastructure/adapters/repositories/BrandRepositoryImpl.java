@@ -22,7 +22,7 @@ public class BrandRepositoryImpl extends BrandRepository {
     }
 
     @Override
-    public Brand insert(Brand brand) {
+    public Brand create(Brand brand) {
         final BrandJPA brandJPA = new BrandJPA(brand.name());
         brandJPARepository.save(brandJPA);
         return brand;

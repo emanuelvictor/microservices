@@ -1,13 +1,13 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions.RequiredFieldsException;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions.BusinessException;
 
 public record Brand(String name) {
 
     static final String INVALID_BRAND_NAME_MESSAGE = "Invalid brand name!";
 
     public Brand {
-        new RequiredFieldsException()
+        new BusinessException()
                 .whenNullOrBlank(name, INVALID_BRAND_NAME_MESSAGE)
                 .thenThrows();
     }

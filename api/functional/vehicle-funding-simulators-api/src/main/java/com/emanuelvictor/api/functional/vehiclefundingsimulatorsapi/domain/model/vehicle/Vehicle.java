@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions.RequiredFieldsException;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions.BusinessException;
 
 public record Vehicle(String plateNumber, Model model) {
 
@@ -8,7 +8,7 @@ public record Vehicle(String plateNumber, Model model) {
     static final String INVALID_MODEL_MESSAGE = "Invalid model!";
 
     public Vehicle {
-        new RequiredFieldsException()
+        new BusinessException()
                 .whenNullOrBlank(plateNumber, INVALID_PLATE_NUMBER_MESSAGE)
                 .whenNull(model, INVALID_MODEL_MESSAGE)
                 .thenThrows();

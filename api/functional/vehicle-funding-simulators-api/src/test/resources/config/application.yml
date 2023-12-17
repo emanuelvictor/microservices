@@ -52,3 +52,4 @@ logging:
     org.springframework.web: INFO
     org.springframework.security: INFO
     org.springframework.context.support: INFO
+    _org.springframework.web.servlet.HandlerMapping.Mappings: DEBUG #    https://stackoverflow.com/questions/3686196/how-to-show-all-available-routes-in-spring/71836490#71836490

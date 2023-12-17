@@ -28,7 +28,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
     void mustInsertAVehicle() {
         final var vehicle = new VehicleBuilder().build();
 
-        vehicleRepository.insert(vehicle);
+        vehicleRepository.create(vehicle);
 
         final var vehicleJPA = vehicleJPARepository.findById(vehicle.plateNumber());
         Assertions.assertThat(vehicleJPA.isPresent()).isTrue();
@@ -37,7 +37,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
     @Test
     void mustFindAVehicleByPlateNumber() {
         final var vehicle = new VehicleBuilder().build();
-        vehicleRepository.insert(vehicle);
+        vehicleRepository.create(vehicle);
 
         final var vehicleRetrived = vehicleRepository.findVehicleByPlateNumber(vehicle.plateNumber()).orElseThrow();
 
@@ -55,7 +55,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
             final var vehicle = new VehicleBuilder()
                     .brandName((i < countOfResultsExpected) ? brandName : UUID.randomUUID().toString())
                     .build();
-            vehicleRepository.insert(vehicle);
+            vehicleRepository.create(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository
@@ -75,7 +75,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
             final var vehicle = new VehicleBuilder()
                     .modelName((i < countOfResultsExpected) ? modelName : UUID.randomUUID().toString())
                     .build();
-            vehicleRepository.insert(vehicle);
+            vehicleRepository.create(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository
@@ -94,7 +94,7 @@ public class VehicleRepositoryTests extends SpringBootTests {
             final var vehicle = new VehicleBuilder()
                     .plateNumber((i < countOfResultsExpected) ? VehicleBuilder.generatePlateNumber(halfPlateNumber) : VehicleBuilder.generatePlateNumber())
                     .build();
-            vehicleRepository.insert(vehicle);
+            vehicleRepository.create(vehicle);
         }
 
         final var pageOfVehiclesFilteredByBrandName = vehicleRepository

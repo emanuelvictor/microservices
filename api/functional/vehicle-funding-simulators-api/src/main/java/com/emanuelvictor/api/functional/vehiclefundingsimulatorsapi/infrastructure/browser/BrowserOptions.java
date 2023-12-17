@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.browser;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions.RequiredFieldsException;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions.BusinessException;
 
 public class BrowserOptions {
 
@@ -11,7 +11,7 @@ public class BrowserOptions {
     private final String urlOfTheBrowserInstance;
 
     private BrowserOptions(String sessionId, String urlOfTheBrowserInstance) {
-        new RequiredFieldsException()
+        new BusinessException()
                 .whenNullOrBlank(sessionId, INVALID_SESSION_ID_MESSAGE)
                 .whenNullOrBlank(urlOfTheBrowserInstance, INVALID_URL_OF_THE_BROWSER_INSTANCE)
                 .thenThrows();

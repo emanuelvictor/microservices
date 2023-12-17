@@ -19,7 +19,7 @@ public class VehicleRepositoryImpl extends VehicleRepository {
     private VehicleJPARepository vehicleJPARepository;
 
     @Override
-    public Vehicle insert(Vehicle vehicle) {
+    public Vehicle create(Vehicle vehicle) {
         final BrandJPA brandJPA = new BrandJPA(vehicle.getBrandName());
         final ModelJPA modelJPA = new ModelJPA(vehicle.getModelName(), brandJPA);
         final VehicleJPA vehicleJPA = new VehicleJPA(vehicle.plateNumber(), modelJPA);

@@ -1,45 +1,45 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RequiredFieldsException extends IllegalArgumentException {
+public class BusinessException extends IllegalArgumentException {
 
     static final long serialVersionUID = -7034897190745766121L;
     private List<String> errors = new ArrayList<>();
 
-    public RequiredFieldsException() {
+    public BusinessException() {
         super();
     }
 
-    private RequiredFieldsException(final String message, final List<String> errors) {
+    private BusinessException(final String message, final List<String> errors) {
         super(message);
         this.errors = errors;
     }
 
-    public RequiredFieldsException whenNullOrBlank(final String field, final String message) {
+    public BusinessException whenNullOrBlank(final String field, final String message) {
         if (field == null || field.trim().isEmpty()) {
             this.errors.add(message);
         }
         return this;
     }
 
-    public RequiredFieldsException whenNull(final Object field, final String message) {
+    public BusinessException whenNull(final Object field, final String message) {
         if (field == null) {
             this.errors.add(message);
         }
         return this;
     }
 
-    public RequiredFieldsException whenNullOrEqualsToZero(final Long field, final String message) {
+    public BusinessException whenNullOrEqualsToZero(final Long field, final String message) {
         if (field == null || field == 0) {
             this.errors.add(message);
         }
         return this;
     }
 
-    public RequiredFieldsException whenNullOrEqualsToZero(final BigDecimal field, final String message) {
+    public BusinessException whenNullOrEqualsToZero(final BigDecimal field, final String message) {
         if (field == null || field.equals(BigDecimal.ZERO)) {
             this.errors.add(message);
         }
@@ -49,7 +49,7 @@ public class RequiredFieldsException extends IllegalArgumentException {
     public void thenThrows() {
         if (!this.errors.isEmpty()) {
             String message = this.buildMessage();
-            throw new RequiredFieldsException(message, this.errors);
+            throw new BusinessException(message, this.errors);
         }
     }
 

@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.browser;
 
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.exceptions.RequiredFieldsException;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.exceptions.BusinessException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,10 +31,10 @@ public class BrowserOptionsTests {
                                                      final String urlOfTheBrowserInstance,
                                                      final String errorMessage) {
 
-        final Exception exception = assertThrows(RequiredFieldsException.class,
+        final Exception exception = assertThrows(BusinessException.class,
                 () -> BrowserOptions.create(sessionId, urlOfTheBrowserInstance));
 
-        Assertions.assertThat(exception).isInstanceOf(RequiredFieldsException.class).hasMessageContaining(errorMessage);
+        Assertions.assertThat(exception).isInstanceOf(BusinessException.class).hasMessageContaining(errorMessage);
     }
 
     private static Stream<Arguments> getInvalidParams() {

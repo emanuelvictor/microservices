@@ -27,7 +27,7 @@ public class ModelRepositoryImpl extends ModelRepository {
     }
 
     @Override
-    public Model insert(Model model) {
+    public Model create(Model model) {
         final BrandJPA brandJPA = new BrandJPA(model.getBrandName());
         final ModelJPA modelJPA = new ModelJPA(model.name(), brandJPA);
         modelJPARepository.save(modelJPA);
