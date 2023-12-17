@@ -14,7 +14,7 @@ spring:
     hibernate:
       ddl-auto: update
       naming:
-        implicit-strategy: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.jpa.fk.CustomNamingStrategy
+        implicit-strategy: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.fk.CustomNamingStrategy
     show-sql: true
     open-in-view: false
     properties:
@@ -32,7 +32,7 @@ spring:
         event:
           merge:
             entity_copy_observer: allow
-        metadata_builder_contributor: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.jpa.function.SqlFunctionsMetadataBuilderContributor
+        metadata_builder_contributor: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.function.SqlFunctionsMetadataBuilderContributor
 
   flyway:
     enabled: true

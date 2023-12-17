@@ -2,12 +2,13 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.port
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Model;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.CreateRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.DeleteRepository;
 
 import java.util.Optional;
 
-public abstract class ModelRepository implements CreateRepository<Model> {
+public interface ModelRepository extends CreateRepository<Model> {
 
-    public abstract Optional<Model> findModelByNameAndBrandName(String name, String brandName);
+    Optional<Model> findModelByNameAndBrandName(String name, String brandName);
 
 
 }

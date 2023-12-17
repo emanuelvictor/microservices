@@ -5,8 +5,8 @@ import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports
 
 import java.util.Optional;
 
-public abstract class BrandRepository implements CreateRepository<Brand> {
+public interface BrandRepository extends CreateRepository<Brand> {
 
-    public abstract Optional<Brand> findBrandByName(String name);
+    Optional<Brand> findBrandByName(String name);
 
 }

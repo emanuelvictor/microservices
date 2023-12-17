@@ -2,24 +2,26 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.port
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Vehicle;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.CreateRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.DeleteRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.UpdateRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-public abstract class VehicleRepository implements CreateRepository<Vehicle> {
+public interface VehicleRepository extends CreateRepository<Vehicle>, DeleteRepository<Vehicle>, UpdateRepository<Vehicle> {
 
     /**
      * @param plateNumber {@link String}
      * @return {@link Optional<Vehicle>}
      */
-    public abstract Optional<Vehicle> findVehicleByPlateNumber(String plateNumber);
+    Optional<Vehicle> findVehicleByPlateNumber(String plateNumber);
 
     /**
      * @param filters  {@link String}
      * @param pageable {@link Pageable}
      * @return {@link Page<Vehicle>}
      */
-    public abstract Page<Vehicle> getAPageOfVehiclesFromFilters(String filters, Pageable pageable);
+    Page<Vehicle> getAPageOfVehiclesFromFilters(String filters, Pageable pageable);
 
 }
