@@ -4,9 +4,9 @@ import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorize("hasAnyAuthority('root.vehicle-funding-simulators.brands.post','root.vehicle-funding-simulators.brands','root.vehicle-funding-simulators','root')")
-public interface BrandCommands extends Commands<BrandInput, BrandOutput> {
+public interface BrandCommands extends Commands<BrandCommandInput, BrandCommandOutput> {
 
     @Override
     @PreAuthorize("hasAnyAuthority('root.vehicle-funding-simulators.brands.delete','root.vehicle-funding-simulators.brands','root.vehicle-funding-simulators','root')")
-    void delete(BrandInput input);
+    void delete(BrandCommandInput input);
 }

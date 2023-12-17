@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.config.web;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.config.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

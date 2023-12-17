@@ -13,14 +13,14 @@ public class BrandCommandsTests extends SpringBootTests {
     private BrandJPARepository brandJPARepository;
 
     @Autowired
-    private Commands<BrandInput, BrandOutput> command;
+    private Commands<BrandCommandInput, BrandCommandOutput> command;
 
     @Test
     void mustInsertANewBrand() {
         final String name = "Name";
-        final BrandInput insertBrandInput = new BrandInput(name);
+        final BrandCommandInput insertBrandInput = new BrandCommandInput(name);
 
-        final BrandOutput insertBrandOutput = command.create(insertBrandInput);
+        final BrandCommandOutput insertBrandOutput = command.create(insertBrandInput);
 
         Assertions.assertThat(insertBrandOutput.name()).isEqualTo(name);
         Assertions.assertThat(brandJPARepository.findById(name).orElseThrow().getName()).isEqualTo(name);

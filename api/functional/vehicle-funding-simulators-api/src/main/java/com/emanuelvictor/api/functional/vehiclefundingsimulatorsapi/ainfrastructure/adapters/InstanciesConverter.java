@@ -1,11 +1,11 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.commands.aid;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters;
 
 import java.lang.reflect.*;
 import java.util.*;
 
-final class InstanciesConverter {
+public final class InstanciesConverter {
 
-    static <Out, In> Out tryConvertInstances(Class<Out> classOfOutputObject, In objectToConvert) {
+    public static <Out, In> Out tryConvertInstances(Class<Out> classOfOutputObject, In objectToConvert) {
 
         try {
 
@@ -38,11 +38,11 @@ final class InstanciesConverter {
         }
     }
 
-    static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final String... inputNames) {
+    public static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final String... inputNames) {
         return getConstructorFromThisInputs(classOfDomainObject, Arrays.asList(inputNames));
     }
 
-    static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final List<String> inputNames) {
+    public static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final List<String> inputNames) {
         return Arrays.stream(classOfDomainObject.getDeclaredConstructors())
                 .filter(constructor ->
                         Arrays.stream(constructor.getParameters())

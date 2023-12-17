@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.beans;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.beans;
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.services.PanSimulator;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.services.Simulator;
