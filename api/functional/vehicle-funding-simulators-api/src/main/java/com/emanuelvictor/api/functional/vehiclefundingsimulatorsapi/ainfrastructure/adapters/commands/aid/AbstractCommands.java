@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.commands.aid;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverter;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverterWithGson;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.Commands;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.DeleteRepository;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.CreateRepository;
@@ -39,12 +39,12 @@ public abstract class AbstractCommands<DomainObject, InputObject, OutputObject> 
     }
 
     protected DomainObject convertInputObjectToDomainObject(InputObject inputObject) {
-        return InstanciesConverter.tryConvertInstances(getDomainObjectClass(), inputObject);
+        return InstanciesConverterWithGson.tryConvertInstances(getDomainObjectClass(), inputObject);
     }
 
 
     protected OutputObject convertDomainObjectoToOutputObject(DomainObject domainObject) {
-        return InstanciesConverter.tryConvertInstances(getOutputObjectClass(), domainObject);
+        return InstanciesConverterWithGson.tryConvertInstances(getOutputObjectClass(), domainObject);
     }
 
     private Class<DomainObject> getDomainObjectClass() {

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.hibernate.envers.Audited;
 
 @Entity
+@Table(name = "model")
 @Audited(withModifiedFlag = true)
 //@Table(name = "model", uniqueConstraints = { TODO required
 //        @UniqueConstraint(columnNames = {"name", "brand_name"})

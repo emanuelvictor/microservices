@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("models")
+@RequestMapping("brands/{code}/models")
 public interface ModelRest extends Rest<ModelRestInput, ModelRestOutput> {
 
 }

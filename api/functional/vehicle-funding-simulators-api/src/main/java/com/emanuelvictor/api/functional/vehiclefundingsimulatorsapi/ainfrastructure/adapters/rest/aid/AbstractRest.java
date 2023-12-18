@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.rest.aid;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverter;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverterWithGson;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.bpresentation.ports.rest.aid.Rest;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.Commands;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +36,11 @@ public abstract class AbstractRest<CommandInputObject, CommandOutputObject, Inpu
     }
 
     protected CommandInputObject convertInputObjectToCommandInputObject(InputObject inputObject) {
-        return InstanciesConverter.tryConvertInstances(getCommandInputObjectClass(), inputObject);
+        return InstanciesConverterWithGson.tryConvertInstances(getCommandInputObjectClass(), inputObject);
     }
 
     protected OutputObject convertCommandOutputObjectToOutputObject(CommandOutputObject outputObject) {
-        return InstanciesConverter.tryConvertInstances(getOutputObjectClass(), outputObject);
+        return InstanciesConverterWithGson.tryConvertInstances(getOutputObjectClass(), outputObject);
     }
 
     private Class<CommandInputObject> getCommandInputObjectClass() {

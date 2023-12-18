@@ -1,13 +1,11 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories.jpa;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.envers.Audited;
 
 @Entity
+@Table(name = "vehicle")
 @Audited(withModifiedFlag = true)
 public class VehicleJPA {
 

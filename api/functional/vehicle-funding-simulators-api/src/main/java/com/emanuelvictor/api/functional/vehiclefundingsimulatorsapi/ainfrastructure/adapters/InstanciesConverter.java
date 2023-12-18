@@ -3,9 +3,13 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastruc
 import java.lang.reflect.*;
 import java.util.*;
 
-public final class InstanciesConverter {
+/**
+ * {@link InstanciesConverter} cannot convert recursive objects. Use {@link InstanciesConverterWithGson}
+ */
+@Deprecated
+final class InstanciesConverter {
 
-    public static <Out, In> Out tryConvertInstances(Class<Out> classOfOutputObject, In objectToConvert) {
+    static <Out, In> Out tryConvertInstances(Class<Out> classOfOutputObject, In objectToConvert) {
 
         try {
 
@@ -38,11 +42,11 @@ public final class InstanciesConverter {
         }
     }
 
-    public static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final String... inputNames) {
+    static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final String... inputNames) {
         return getConstructorFromThisInputs(classOfDomainObject, Arrays.asList(inputNames));
     }
 
-    public static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final List<String> inputNames) {
+    static Optional<Constructor<?>> getConstructorFromThisInputs(Class<?> classOfDomainObject, final List<String> inputNames) {
         return Arrays.stream(classOfDomainObject.getDeclaredConstructors())
                 .filter(constructor ->
                         Arrays.stream(constructor.getParameters())
