@@ -1,0 +1,113 @@
+spring:
+  application.name: vehicle-funding-simulators-api
+
+  datasource:
+    username: vehiclefundingsimulatorsapi
+    password: vehiclefundingsimulatorsapi
+    hikari.pool-name: ${spring.application.name}
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari.maximum-pool-size: 10
+    url: jdbc:postgresql://localhost:5432/vehiclefundingsimulatorsapi
+
+  #JPA
+  jpa:
+    hibernate:
+      ddl-auto: validate
+      naming:
+        implicit-strategy: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.fk.CustomNamingStrategy
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+      hibernate.id.new_generator_mappings: true
+      hibernate.cache.use_second_level_cache: false
+      hibernate.default_schema: public
+      org.hibernate.envers.audit_table_suffix: _aud
+      org.hibernate.envers.revision_field_name: rev
+      org.hibernate.envers.revision_type_field_name: revtype
+      org.hibernate.envers.default_schema: public
+      org.hibernate.envers.store_data_at_delete: true
+      hibernate:
+        enable_lazy_load_no_trans: true
+        event:
+          merge:
+            entity_copy_observer: allow
+        metadata_builder_contributor: com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.function.SqlFunctionsMetadataBuilderContributor
+
+#  #STATIC RESOURCES
+#  resources.static-locations: classpath:/META-INF/resources/
+#  resources.chain:
+#    cache: false
+#    strategy.content.enabled: true
+#    strategy.content.paths: /**
+
+  #THYMELEAF
+  thymeleaf:
+    mode: HTML
+    cache: false
+    prefix: classpath:/META-INF/resources/
+    suffix: .html
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+    sql-migration-prefix: v
+    baseline-on-migrate: true
+    baseline-version: 0
+    fail-on-missing-locations: true
+#
+#  thymeleaf:
+#    enabled: true
+#    cache: false
+#    check-template: true
+#    check-template-location: true
+
+#  http:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
+#server:
+#  servlet:
+#    session:
+#      persistent: false
+
+management:
+  health:
+    ldap:
+      enabled: false
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: ['health', 'info', 'flyway' , 'logfile']
+  endpoint:
+    health:
+      enabled: true
+    info:
+      enabled: true
+    flyway:
+      enabled: true
+    logfile:
+      enabled: true
+      external-file: /var/log/${spring.application.name}/${spring.application.name}.log
+
+logging:
+  file:
+    name: /var/log/${spring.application.name}/${spring.application.name}.log
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.springframework: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.springframework.context.support: INFO
+    _org.springframework.web.servlet.HandlerMapping.Mappings: DEBUG #    https://stackoverflow.com/questions/3686196/how-to-show-all-available-routes-in-spring/71836490#71836490
+
+info:
+  name: vehicle-funding-simulators-api
+  description: 'Vehicle Funding Simulators API'
+  version: nana
+  environment: nana
