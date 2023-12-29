@@ -2,7 +2,9 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastruc
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverterWithGson;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.bpresentation.ports.rest.aid.Rest;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.Commands;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.DeleteCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.InsertCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.UpdateCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,27 +14,34 @@ import java.lang.reflect.ParameterizedType;
 
 public abstract class AbstractRest<CommandInputObject, CommandOutputObject, InputObject, OutputObject> implements Rest<InputObject, OutputObject> {
 
-    @Autowired
-    private Commands<CommandInputObject, CommandOutputObject> commands;
+    @Autowired(required = false)
+    private InsertCommand<CommandInputObject, CommandOutputObject> insertCommand;
 
+    @Autowired(required = false)
+    private UpdateCommand<CommandInputObject, CommandOutputObject> updateCommand;
+
+    @Autowired(required = false)
+    private DeleteCommand<CommandInputObject> deleteCommand;
+
+    // TODO if the command is not implemented, then throw a exception
     @PostMapping
     public OutputObject create(InputObject inputObject) {
         final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        final CommandOutputObject commandOutputObject = commands.create(commandInputObject);
+        final CommandOutputObject commandOutputObject = insertCommand.execute(commandInputObject);
         return convertCommandOutputObjectToOutputObject(commandOutputObject);
     }
 
     @PutMapping
     public OutputObject update(InputObject inputObject) {
         final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        final CommandOutputObject commandOutputObject = commands.update(commandInputObject);
+        final CommandOutputObject commandOutputObject = updateCommand.execute(commandInputObject);
         return convertCommandOutputObjectToOutputObject(commandOutputObject);
     }
 
     @DeleteMapping
     public void delete(InputObject inputObject) {
         final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        commands.delete(commandInputObject);
+        deleteCommand.execute(commandInputObject);
     }
 
     protected CommandInputObject convertInputObjectToCommandInputObject(InputObject inputObject) {
