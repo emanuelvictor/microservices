@@ -11,7 +11,7 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.emanuelvictor.api.functional.ainfrastructure</groupId>
+    <groupId>com.emanuelvictor.api.functional.infrastructure</groupId>
     <artifactId>vehicle-funding-simulators-api-infrastructure</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>vehicle-funding-simulators-api-infrastructure</name>
@@ -30,7 +30,7 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <dependencies>
         <dependency>
-            <groupId>com.emanuelvictor.api.functional.bpresentation</groupId>
+            <groupId>com.emanuelvictor.api.functional.presentation</groupId>
             <artifactId>vehicle-funding-simulators-api-presentation</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
