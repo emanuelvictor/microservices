@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.repositories;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.SpringBootTests;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories.jpa.VehicleJPARepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.SpringBootTests;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.repositories.jpa.VehicleJPARepository;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.Vehicle;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.builders.VehicleBuilder;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.VehicleRepository;

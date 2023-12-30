@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.function;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.jpa.function;
 
 import org.hibernate.dialect.function.CastStrEmulation;
 import org.hibernate.query.ReturnableType;

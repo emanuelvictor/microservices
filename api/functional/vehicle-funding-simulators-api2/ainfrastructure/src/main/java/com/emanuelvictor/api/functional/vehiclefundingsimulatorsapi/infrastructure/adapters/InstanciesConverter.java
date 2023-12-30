@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters;
 
 import java.lang.reflect.*;
 import java.util.Arrays;

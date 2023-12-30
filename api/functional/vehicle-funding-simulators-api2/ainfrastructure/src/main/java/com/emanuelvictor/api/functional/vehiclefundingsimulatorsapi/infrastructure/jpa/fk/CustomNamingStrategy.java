@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.fk;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.jpa.fk;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.ImplicitForeignKeyNameSource;

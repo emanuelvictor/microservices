@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters;
 
 import com.google.gson.Gson;
 import org.slf4j.Logger;

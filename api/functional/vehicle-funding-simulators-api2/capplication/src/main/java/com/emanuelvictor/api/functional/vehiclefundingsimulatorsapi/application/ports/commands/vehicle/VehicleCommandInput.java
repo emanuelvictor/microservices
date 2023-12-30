@@ -1,6 +1,6 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.vehicle;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.vehicle;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.model.ModelCommandInput;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.model.ModelCommandInput;
 
 public record VehicleCommandInput(String plateNumber, ModelCommandInput model) {
 }

@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.commands.aid;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.commands.aid;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverterWithGson;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.UpdateCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.InstanciesConverterWithGson;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.UpdateCommand;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.UpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 

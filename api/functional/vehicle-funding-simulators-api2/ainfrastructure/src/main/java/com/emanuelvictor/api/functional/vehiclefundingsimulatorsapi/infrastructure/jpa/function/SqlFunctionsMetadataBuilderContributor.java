@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.jpa.function;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.jpa.function;
 
 import org.hibernate.boot.MetadataBuilder;
 import org.hibernate.boot.spi.MetadataBuilderContributor;

@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid;
 
 @FunctionalInterface
 public interface DeleteCommand<InputObject> {

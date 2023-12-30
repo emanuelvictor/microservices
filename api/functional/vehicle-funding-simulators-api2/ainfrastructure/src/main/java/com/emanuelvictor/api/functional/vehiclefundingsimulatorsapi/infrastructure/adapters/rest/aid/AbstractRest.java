@@ -1,10 +1,10 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.rest.aid;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.rest.aid;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.InstanciesConverterWithGson;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.infrastructure.adapters.InstanciesConverterWithGson;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest.aid.Rest;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.DeleteCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.InsertCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.capplication.ports.commands.aid.UpdateCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.DeleteCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.InsertCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.UpdateCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
