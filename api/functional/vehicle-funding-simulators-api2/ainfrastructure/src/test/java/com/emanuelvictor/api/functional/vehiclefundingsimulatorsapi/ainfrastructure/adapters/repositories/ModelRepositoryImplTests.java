@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.SpringBootTests;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.ModelBuilder;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories.jpa.ModelJPARepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.model.vehicle.builders.ModelBuilder;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.ModelRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.SpringBootTests;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters.repositories.jpa.ModelJPARepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

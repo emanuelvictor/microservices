@@ -1,7 +1,9 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.ainfrastructure.adapters;
 
 import java.lang.reflect.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * {@link InstanciesConverter} cannot convert recursive objects. Use {@link InstanciesConverterWithGson}
