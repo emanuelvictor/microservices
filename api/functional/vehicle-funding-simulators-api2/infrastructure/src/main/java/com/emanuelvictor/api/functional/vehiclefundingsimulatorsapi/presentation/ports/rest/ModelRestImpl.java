@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.model.ModelCommandInput;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.model.ModelCommandOutput;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.model.ModelCommandInput;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.model.ModelCommandOutput;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest.aid.AbstractRest;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest.model.ModelRest;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest.model.ModelRestInput;

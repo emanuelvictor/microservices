@@ -7,6 +7,7 @@ import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.jpa.ModelJPA;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.jpa.VehicleJPA;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.jpa.VehicleJPARepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,12 +51,12 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     }
 
     @Override
-    public Vehicle delete(Vehicle vehicle) {
-        return null;
+    public void delete(Vehicle vehicle) {
+        throw new NotImplementedException("Not implemented yet");
     }
 
     @Override
     public Vehicle update(Vehicle vehicle) {
-        return null;
+        throw new NotImplementedException("Not implemented yet");
     }
 }

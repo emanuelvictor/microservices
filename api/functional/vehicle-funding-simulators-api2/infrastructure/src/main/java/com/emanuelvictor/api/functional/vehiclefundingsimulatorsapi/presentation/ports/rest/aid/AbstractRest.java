@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.presentation.ports.rest.aid;
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.aid.converters.InstanciesConverterWithGson;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.DeleteCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.InsertCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.commands.aid.UpdateCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.aid.DeleteCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.aid.InsertCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.aid.UpdateCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;

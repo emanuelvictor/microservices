@@ -2,5 +2,5 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.port
 
 public interface DeleteRepository<T> {
 
-    T delete(T t);
+    void delete(T t);
 }
