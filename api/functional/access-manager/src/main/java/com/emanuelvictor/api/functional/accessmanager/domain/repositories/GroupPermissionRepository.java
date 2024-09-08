@@ -45,4 +45,11 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
     @Transactional
     @Query("delete from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.id = :permissionId")
     void deleteByGroupIdAndPermissionId(Long groupId, Long permissionId);
+
+    /**
+     * @param groupId      {@link Long}
+     * @param permissionId {@link Long}
+     */
+    @Query("from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.id = :permissionId")
+    GroupPermission findByGroupIdAndPermissionId(Long groupId, Long permissionId);
 }
