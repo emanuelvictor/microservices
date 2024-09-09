@@ -23,7 +23,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @EqualsAndHashCode(callSuper = true)
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, // TODO ACOPLAMENTO
         property = "id",
         scope = Permission.class,
         resolver = EntityIdResolver.class)

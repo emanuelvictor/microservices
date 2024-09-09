@@ -1,33 +1,30 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.resource.ApplicationResource;
+import com.emanuelvictor.api.functional.accessmanager.application.resource.ApplicationResource; // TODO acoplamento
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationSavingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ApplicationUpdatingLogic;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.ApplicationRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.infrastructure.misc.PasswordGenerator;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.emanuelvictor.api.functional.accessmanager.infrastructure.misc.PasswordGenerator; // TODO acoplamento
+import lombok.RequiredArgsConstructor; // TODO acoplamento
+import org.slf4j.Logger; // TODO acoplamento
+import org.slf4j.LoggerFactory; // TODO acoplamento
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.ClientRegistrationException;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import org.springframework.security.crypto.password.PasswordEncoder; // TODO acoplamento
+import org.springframework.stereotype.Component; // TODO acoplamento
+import org.springframework.transaction.annotation.Transactional; // TODO acoplamento
+import org.springframework.util.Assert; // TODO acoplamento
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 /**
+ *  TODO maybe conver to Application Service
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 04/01/2020
@@ -37,7 +34,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ApplicationService {
 
-    public static final Logger LOG = LoggerFactory.getLogger(ApplicationResource.class);
+    public static final Logger LOG = LoggerFactory.getLogger(ApplicationService.class);
 
     private final PasswordEncoder passwordEncoder;
 
@@ -137,12 +134,12 @@ public class ApplicationService {
     }
 
     /**
-     * @param filtro   String
+     * @param filters   String
      * @param pageable Pageable
      * @return Page<Aplicaca
      */
-    public Page<Application> findByFiltro(final String filtro, final Pageable pageable) {
-        return applicationRepository.findByFiltro(filtro, pageable);
+    public Page<Application> listByFilters(final String filters, final Pageable pageable) {
+        return applicationRepository.listByFilters(filters, pageable);
     }
 
     /**

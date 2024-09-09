@@ -52,6 +52,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     Page<Permission> findByUpperPermissionId(final Long upperPermissionId, final Pageable pageable);
 
     /**
+     *  TODO make tests
      * @param authority String
      * @return Permission
      */

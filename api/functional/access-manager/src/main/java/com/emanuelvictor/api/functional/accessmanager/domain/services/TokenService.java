@@ -1,16 +1,17 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore; // TODO acoplamento
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign.ITokenFeignRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+import lombok.RequiredArgsConstructor; // TODO acoplamento
+import org.springframework.http.ResponseEntity; // TODO acoplamento
+import org.springframework.security.oauth2.provider.token.TokenStore; // TODO acoplamento
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 
 /**
+ * TODO parece ser um application service
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 04/01/2020

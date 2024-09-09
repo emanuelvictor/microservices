@@ -1,10 +1,10 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign;
 
-import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient; // TODO acoplamento
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping; // TODO acoplamento
+import org.springframework.web.bind.annotation.GetMapping; // TODO acoplamento
+import org.springframework.web.bind.annotation.PathVariable; // TODO acoplamento
 
 import java.util.Set;
 

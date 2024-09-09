@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 public interface GroupPermissionRepository extends JpaRepository<GroupPermission, Long> {
 
     /**
+     * TODO make tests
      * @param groupId  {@link Long}
      * @param pageable {@link Pageable}
      * @return {@link Page}
@@ -47,6 +48,7 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
     void deleteByGroupIdAndPermissionId(Long groupId, Long permissionId);
 
     /**
+     * TODO make tests
      * @param groupId      {@link Long}
      * @param permissionId {@link Long}
      */
