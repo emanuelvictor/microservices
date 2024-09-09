@@ -73,7 +73,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
         linkAllTheFatherPermissionsToGroup();
         final var unmarkedPermission = insertDetachedPermissionChildOfRootPermission();
         // Verify if the unmarkedPermission is actually unlinked to group.
-        assertThat(groupPermissionRepository.findByGroupIdAndPermissionId(group.getId(), rootPermission.getId())).isNotNull();
+        assertThat(groupPermissionRepository.findByGroupIdAndPermissionId(group.getId(), unmarkedPermission.getId())).isNull();
 
         linkPermissionToGroupService.linkPermissionToGroup(group, unmarkedPermission);
 
@@ -144,7 +144,6 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
     @Test
     void mustUnlinkTheUniqueGrandchildWhenWeUnlikedTheGrandfatherPermission() {
         final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0");
-        assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
         linkPermissionToGroupService.linkPermissionToGroup(group, childPermissionLinked);
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isNotEmpty();
 
@@ -154,7 +153,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
     }
 
     /**
-     * Deve desmarcar o único neto qunado deslicarmos o pai. // TODO working on
+     * Deve desmarcar o único neto qunado deslicarmos o pai.
      */
     @Test
     void mustUnlinkTheUniqueGrandchildWhenWeUnlikedTheFatherPermission() {
@@ -170,10 +169,34 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
     }
 
     /**
-     * Deve desmarcar o avô quando o único neto for desmarcado. // TODO working on
+     * Deve desmarcar o avô quando o único neto for desmarcado.
      */
     @Test
     void weNeedToKeepTheOtherFathersTreeWhenWeTheFatherPermission() {
+        final var authorityFromFatherPermissionLinked = "1.0";
+        final var authorityChildOfOtherFatherPermissionLinked = "1.4.2";
+        final var fatherPermissionLinked = permissionRepository.findByAuthority(authorityFromFatherPermissionLinked);
+        linkPermissionToGroupService.linkPermissionToGroup(group, fatherPermissionLinked);
+        final var childOfOtherFatherPermissionLinked = permissionRepository.findByAuthority(authorityChildOfOtherFatherPermissionLinked);
+        linkPermissionToGroupService.linkPermissionToGroup(group, childOfOtherFatherPermissionLinked);
+        // Verify if group is linked with father "1.0" and child "1.4.2"
+        assertThat(groupPermissionRepository.findByGroupId(group.getId(), null))
+                .extracting(GroupPermission::getPermission)
+                .extracting(Permission::getAuthority)
+                .containsExactly(authorityFromFatherPermissionLinked, authorityChildOfOtherFatherPermissionLinked);
+
+        linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, fatherPermissionLinked);
+
+        // Verify if group is linked with grandchild "1.4.2"
+        assertThat(groupPermissionRepository.findByGroupId(group.getId(), null))
+                .extracting(GroupPermission::getPermission)
+                .extracting(Permission::getAuthority)
+                .containsExactly(authorityChildOfOtherFatherPermissionLinked);
+        // Verify if group is unlinked with father "1.0"
+        assertThat(groupPermissionRepository.findByGroupId(group.getId(), null))
+                .extracting(GroupPermission::getPermission)
+                .extracting(Permission::getAuthority)
+                .doesNotContain(authorityFromFatherPermissionLinked);
     }
 
     @Test
