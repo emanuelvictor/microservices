@@ -52,7 +52,7 @@ public class ClientService implements ClientDetailsService {
 
         final Client client = clientFeignRepository.loadClientByClientId(clientId)
                 .orElseThrow(() -> new UsernameNotFoundException("ClientId " + clientId + " não localizado!"));
-        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByUserId(client.getGroup().getId()).getContent());
+        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByGroupId(client.getGroup().getId()).getContent());
         client.getGroup().setGroupPermissions(groupPermissions);
         return client;
 

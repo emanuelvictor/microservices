@@ -10,4 +10,8 @@ export class Permission extends Abstract {
   public upperPermission: any;
   public lowerPermissions: Permission[]
 
+  constructor(authority?: string) {
+    super();
+    this.authority = authority;
+  }
 }

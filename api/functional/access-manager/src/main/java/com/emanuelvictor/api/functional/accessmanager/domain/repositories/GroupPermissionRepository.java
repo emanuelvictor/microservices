@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
@@ -19,10 +21,12 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
 
     /**
      * TODO make tests
+     *
      * @param groupId  {@link Long}
      * @param pageable {@link Pageable}
      * @return {@link Page}
      */
+    @Query("from GroupPermission groupPermission where groupPermission.group.id = :groupId")
     Page<GroupPermission> findByGroupId(final long groupId, final Pageable pageable);
 
     /**
@@ -48,10 +52,30 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
     void deleteByGroupIdAndPermissionId(Long groupId, Long permissionId);
 
     /**
+     * FIxme MAKE TESTS
+     *
+     * @param groupId   {@link Long}
+     * @param authority {@link String}
+     */
+    @Modifying
+    @Transactional
+    @Query("delete from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.authority = :authority")
+    void deleteByGroupIdAndPermissionAuthority(Long groupId, String authority);
+
+    /**
      * TODO make tests
+     *
      * @param groupId      {@link Long}
      * @param permissionId {@link Long}
      */
     @Query("from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.id = :permissionId")
     GroupPermission findByGroupIdAndPermissionId(Long groupId, Long permissionId);
+
+    /**
+     * @param groupId   {@link Long}
+     * @param authority {@link String}
+     * @return {@link  Optional<GroupPermission>}
+     */
+    @Query("from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.authority = :authority")
+    Optional<GroupPermission> findByGroupIdAndPermissionAuthority(long groupId, String authority);
 }

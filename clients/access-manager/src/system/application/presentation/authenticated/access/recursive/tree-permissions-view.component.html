@@ -13,13 +13,14 @@
     <!--    </mat-checkbox>-->
     <mat-checkbox [checked]="upperPermission.checked"
                   [indeterminate]="upperPermission.indeterminate"
-                  (change)="setChecked(upperPermission, $event.checked)"
+                  (change)="setChecked(upperPermission, $event.checked, true)"
                   style="padding: 10px; padding-left: 0">
       {{upperPermission?.name}} - {{!!upperPermission?.checked}}
     </mat-checkbox>
   </div>
   <div layout='column' *ngIf="expanded">
     <tree-permissions-view style="margin-left: 15px"
+                           [group]="group"
                            [upperPermission]="lowerPermission"
                            *ngFor="let lowerPermission of upperPermission.lowerPermissions">
     </tree-permissions-view>

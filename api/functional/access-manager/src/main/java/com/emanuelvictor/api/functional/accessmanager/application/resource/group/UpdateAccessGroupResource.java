@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-
+// TODO remove this. Its can be kept on GroupResource maybe. For now
 @RestController
 @RequiredArgsConstructor
 public class UpdateAccessGroupResource {

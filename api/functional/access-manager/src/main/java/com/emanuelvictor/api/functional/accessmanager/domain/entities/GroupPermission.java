@@ -33,6 +33,14 @@ public class GroupPermission extends PersistentEntity {
         this.group = group;
     }
 
+    public String getAuthority() {
+        return permission.getAuthority();
+    }
+
+    public Long getGroupId() {
+        return group.getId();
+    }
+
     //    /**
 //     * Constructor to not make recursive queries.
 //     *

@@ -114,8 +114,8 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
         // Unlink father permissions
         for (int i = 0; i < 5; i++) {
-            final var permissionToUnlink = permissionRepository.findByAuthority("1." + i);
-            linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, permissionToUnlink);
+            final var permissionToUnlink = permissionRepository.findByAuthority("1." + i).orElseThrow();
+            linkPermissionToGroupService.unlinkLowerPermissionsFromPermission(group, permissionToUnlink);
         }
 
         assertThat(groupPermissionCreatedBeforeUnlinking.getContent().size()).isEqualTo(30);
@@ -128,12 +128,12 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
      */
     @Test
     void mustUnlinkTheGrandfatherWhenTheUniqueGrandchildHasBeenUnlinked() {
-        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0");
+        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0").orElseThrow();
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
         linkPermissionToGroupService.linkPermissionToGroup(group, childPermissionLinked);
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isNotEmpty();
 
-        linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, childPermissionLinked);
+        linkPermissionToGroupService.unlinkLowerPermissionsFromPermission(group, childPermissionLinked);
 
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
     }
@@ -143,27 +143,27 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
      */
     @Test
     void mustUnlinkTheUniqueGrandchildWhenWeUnlikedTheGrandfatherPermission() {
-        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0");
+        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0").orElseThrow();
         linkPermissionToGroupService.linkPermissionToGroup(group, childPermissionLinked);
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isNotEmpty();
 
-        linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, rootPermission);
+        linkPermissionToGroupService.unlinkLowerPermissionsFromPermission(group, rootPermission);
 
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
     }
 
     /**
-     * Deve desmarcar o único neto qunado deslicarmos o pai.
+     * Deve desmarcar o único neto qunado deslincarmos o pai.
      */
     @Test
     void mustUnlinkTheUniqueGrandchildWhenWeUnlikedTheFatherPermission() {
-        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0");
+        final var childPermissionLinked = permissionRepository.findByAuthority("1.0.0").orElseThrow();
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
         linkPermissionToGroupService.linkPermissionToGroup(group, childPermissionLinked);
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isNotEmpty();
-        final var fatherPermission = permissionRepository.findByAuthority("1.0");
+        final var fatherPermission = permissionRepository.findByAuthority("1.0").orElseThrow();
 
-        linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, fatherPermission);
+        linkPermissionToGroupService.unlinkLowerPermissionsFromPermission(group, fatherPermission);
 
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null)).isEmpty();
     }
@@ -175,9 +175,9 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
     void weNeedToKeepTheOtherFathersTreeWhenWeTheFatherPermission() {
         final var authorityFromFatherPermissionLinked = "1.0";
         final var authorityChildOfOtherFatherPermissionLinked = "1.4.2";
-        final var fatherPermissionLinked = permissionRepository.findByAuthority(authorityFromFatherPermissionLinked);
+        final var fatherPermissionLinked = permissionRepository.findByAuthority(authorityFromFatherPermissionLinked).orElseThrow();
         linkPermissionToGroupService.linkPermissionToGroup(group, fatherPermissionLinked);
-        final var childOfOtherFatherPermissionLinked = permissionRepository.findByAuthority(authorityChildOfOtherFatherPermissionLinked);
+        final var childOfOtherFatherPermissionLinked = permissionRepository.findByAuthority(authorityChildOfOtherFatherPermissionLinked).orElseThrow();
         linkPermissionToGroupService.linkPermissionToGroup(group, childOfOtherFatherPermissionLinked);
         // Verify if group is linked with father "1.0" and child "1.4.2"
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null))
@@ -185,7 +185,7 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
                 .extracting(Permission::getAuthority)
                 .containsExactly(authorityFromFatherPermissionLinked, authorityChildOfOtherFatherPermissionLinked);
 
-        linkPermissionToGroupService.unlinkLowerPermissionsByUpperPermission(group, fatherPermissionLinked);
+        linkPermissionToGroupService.unlinkLowerPermissionsFromPermission(group, fatherPermissionLinked);
 
         // Verify if group is linked with grandchild "1.4.2"
         assertThat(groupPermissionRepository.findByGroupId(group.getId(), null))
@@ -228,13 +228,13 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
 
     private void linkAllTheFatherPermissionsToGroup() { // TODO verificar
         for (int i = 0; i < 5; i++) { // linking from all first level
-            final var permissionToLink = permissionRepository.findByAuthority("1." + i);
+            final var permissionToLink = permissionRepository.findByAuthority("1." + i).orElseThrow();
             final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
             groupPermissionRepository.save(groupPermission);
         }
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) { // linking all from second level
-                final var permissionToLink = permissionRepository.findByAuthority("1." + i + "." + j);
+                final var permissionToLink = permissionRepository.findByAuthority("1." + i + "." + j).orElseThrow();
                 final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
                 groupPermissionRepository.save(groupPermission);
             }

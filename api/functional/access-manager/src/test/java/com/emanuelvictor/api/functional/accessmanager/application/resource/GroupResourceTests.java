@@ -32,7 +32,8 @@ public class GroupResourceTests extends AbstractIntegrationTests {
 //        final var jsonExpected = objectMapper.writeValueAsString(pageOfAccessGroupPermissions);
 
         final var result = mockMvc.perform(MockMvcRequestBuilders
-                .get("/v1/groups/" + id + "/access-group-permissions")
+                .get("/v1/access-group-permissions")
+                .param("groupId", String.valueOf(id))
                 .with(oauth2Login()
                         .authorities((GrantedAuthority) () -> "root")
                 )
@@ -53,7 +54,8 @@ public class GroupResourceTests extends AbstractIntegrationTests {
         final var id = 1L;
 
         final var result = mockMvc.perform(MockMvcRequestBuilders
-                .get("/v1/groups/" + id + "/access-group-permissions")
+                .get("/v1/access-group-permissions")
+                .param("groupId", String.valueOf(id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding(StandardCharsets.UTF_8)
         );

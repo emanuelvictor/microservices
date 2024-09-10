@@ -83,6 +83,7 @@ import {
   AccessGroupDataViewComponent
 } from "../application/presentation/authenticated/access/groups/view-group/access-group-data-view/access-group-data-view.component";
 import {TreePermissionsViewComponent} from "../application/presentation/authenticated/access/recursive/tree-permissions-view.component";
+import {AccessGroupPermissionRepository} from "./repository/accessGroupPermission.repository";
 
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
@@ -212,6 +213,7 @@ export function customTranslateLoader(http: HttpClient) {
     ApplicationRepository,
     GroupRepository,
     TokenRepository,
+    AccessGroupPermissionRepository,
 
     // Services
     Describer,

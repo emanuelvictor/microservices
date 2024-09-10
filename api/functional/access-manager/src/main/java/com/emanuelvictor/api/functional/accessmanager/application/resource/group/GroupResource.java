@@ -1,15 +1,18 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource;
+package com.emanuelvictor.api.functional.accessmanager.application.resource.group;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
@@ -21,15 +24,7 @@ import java.util.Optional;
 @RequestMapping({"v1/groups", "v1/access-groups"})
 public class GroupResource {
 
-    /**
-     *
-     */
     private final GroupService groupService;
-
-    /**
-     *
-     */
-    private final GroupPermissionRepository groupPermissionRepository;
 
     /**
      * @param defaultFilter String
@@ -72,16 +67,4 @@ public class GroupResource {
         groupService.delete(id);
         return true;
     }
-
-    /**
-     * @param id long
-     * @return Page<GroupPermission>
-     */
-    @GetMapping("{id}/access-group-permissions")
-    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
-    public Page<GroupPermission> findAccessGroupPermissionsByUserId(@PathVariable final long id,
-                                                                    final Pageable pageable) {
-        return groupPermissionRepository.findByGroupId(id, pageable);
-    }
-
 }

@@ -6,7 +6,17 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author Emanuel Victor
+ * @version 1.0.0
+ * @since 1.0.0, 09/09/2022
+ * <p>
+ * This service contains the algorithms to link a Permission with AccessGroup.
+ * The service with the remove (unlink) algorithms is {@link UnlinkPermissionToGroupService}
+ */
+//@Transactional TODO the transaction must be kept on Application Layer
 public class LinkPermissionToGroupService {
 
     private final GroupRepository groupRepository;
@@ -21,7 +31,13 @@ public class LinkPermissionToGroupService {
     }
 
     //    @Transactional
-    public void linkPermissionToGroup(final long groupId, final long permissionId) {
+    public void linkPermissionToGroup(final long groupId, final String authority) {
+        final var group = groupRepository.findById(groupId).orElseThrow();
+        final var permission = permissionRepository.findByAuthority(authority).orElseThrow();
+        linkPermissionToGroup(group, permission);
+    }
+
+    public void linkPermissionToGroup(final long groupId, final long permissionId) { // TODO remove this method
         final var group = groupRepository.findById(groupId).orElseThrow();
         final var permission = permissionRepository.findById(permissionId).orElseThrow();
         linkPermissionToGroup(group, permission);
@@ -31,20 +47,20 @@ public class LinkPermissionToGroupService {
         if (areAllTheSiblingsLinked(group, permission))
             linkPermissionToGroup(group, permission.getUpperPermission());
         else {
-            unlinkLowerPermissionsByUpperPermission(group, permission);
+            unlinkLowerPermissionsFromPermission(group, permission);
             link(group, permission);
         }
     }
 
-    void unlinkLowerPermissionsByUpperPermission(final Group group, final Permission permission) {
+    void unlinkLowerPermissionsFromPermission(final Group group, final Permission permission) {
         final var lowerPermissions = permissionRepository
                 .findByUpperPermissionId(permission.getId(), null).getContent();
-        lowerPermissions.forEach(lowerPermission -> unlinkLowerPermissionsByUpperPermission(group, lowerPermission));
+        lowerPermissions.forEach(lowerPermission -> unlinkLowerPermissionsFromPermission(group, lowerPermission));
         groupPermissionRepository.deleteByGroupIdAndPermissionId(group.getId(), permission.getId());
     }
 
     boolean areAllTheSiblingsLinked(final Group group, final Permission permission) {
-        if(permission.getUpperPermission() == null)
+        if (permission.getUpperPermission() == null)
             return false;
         final var upperPermissionId = permission.getUpperPermission().getId();
         final var countNextPermissions = permissionRepository
@@ -57,6 +73,12 @@ public class LinkPermissionToGroupService {
     void link(final Group group, final Permission permission) {
         final GroupPermission groupPermission = GroupPermission.builder().permission(permission).group(group).build();
         groupPermissionRepository.save(groupPermission);
+    }
+
+    void link(final long groupId, final String authority) {
+        final var group = groupRepository.findById(groupId).orElseThrow();
+        final var permission = permissionRepository.findByAuthority(authority).orElseThrow();
+        link(group, permission);
     }
 
 }

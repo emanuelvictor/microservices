@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 /**
  * @author Emanuel Victor
  * @version 1.0.0
@@ -39,7 +41,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     )
     Page<Permission> listByFilters(@Param("filter") final String filter,
                                    @Param("upperPermissionId") final Long upperPermissionId,
-                                   @Param("branch") final Boolean branch,
+                                   @Param("branch") final Boolean branch, // TODO não seria branch, seria TRUNK. tAMBÉM Nõ é necessário, pode ser feito um if no próprio upperPermission
                                    final Pageable pageable);
 
     /**
@@ -54,7 +56,7 @@ public interface PermissionRepository extends JpaRepository<Permission, Long> {
     /**
      *  TODO make tests
      * @param authority String
-     * @return Permission
+     * @return Optional<Permission>
      */
-    Permission findByAuthority(final String authority);
+    Optional<Permission> findByAuthority(final String authority);
 }

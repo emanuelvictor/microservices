@@ -10,7 +10,12 @@ export class GroupRepository extends BaseRepository<Group> {
     super(httpClient, 'access-manager/v1/groups');
   }
 
-  findAccessGroupPermissionsByUserId(id: number): any {
-    return this.httpClient.get<any>(this.collectionName + '/' + id + '/access-group-permissions')
-  }
+  // link(groupId: number, authority: string) {
+  //   const body = {'authority': authority};
+  //   return this.httpClient.put<any>(this.collectionName + '/' + groupId + '/link', authority).toPromise();
+  // }
+  //
+  // unlink(groupId: number, authority: string) {
+  //   return this.httpClient.delete(this.collectionName + '/' + groupId + '/unlink/' + authority).toPromise();
+  // }
 }

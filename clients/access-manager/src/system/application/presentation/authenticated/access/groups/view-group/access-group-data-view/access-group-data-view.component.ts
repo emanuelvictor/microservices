@@ -7,6 +7,7 @@ import {DialogService} from "../../../../../../../domain/services/dialog.service
 import {Group} from "../../../../../../../domain/entity/group.model";
 import {PermissionRepository} from "../../../../../../../domain/repository/permission.repository";
 import {Permission} from "../../../../../../../domain/entity/permission.model";
+import {AccessGroupPermissionRepository} from "../../../../../../../domain/repository/accessGroupPermission.repository";
 
 // @ts-ignore
 @Component({
@@ -28,7 +29,8 @@ export class AccessGroupDataViewComponent implements OnInit {
               public activatedRoute: ActivatedRoute,
               private messageService: MessageService,
               private homeView: AuthenticatedViewComponent,
-              private groupRepository: GroupRepository) {
+              private groupRepository: GroupRepository,
+              private accessGroupRepository: AccessGroupPermissionRepository) {
     homeView.toolbar.subhead = 'Grupo de Acesso / Detalhes';
   }
 
@@ -39,7 +41,10 @@ export class AccessGroupDataViewComponent implements OnInit {
   }
 
   async findPermissionsFromAccessGroupId(groupId: number): Promise<any> {
-    return (await this.groupRepository.findAccessGroupPermissionsByUserId(groupId).toPromise()).content.map(accessGroupPermission => accessGroupPermission.permission);
+    const pageable = {
+      'groupId': groupId
+    }
+    return (await this.accessGroupRepository.listByFilters(pageable).toPromise()).content.map(accessGroupPermission => accessGroupPermission.permission);
   }
 
   /**
