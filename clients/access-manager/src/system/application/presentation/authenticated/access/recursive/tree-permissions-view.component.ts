@@ -14,8 +14,8 @@ import {AccessGroupPermissionRepository} from "../../../../../domain/repository/
 })
 export class TreePermissionsViewComponent implements OnInit {
 
-  permissionRepository: PermissionRepository;
-  accessGroupPermissionRepository: AccessGroupPermissionRepository;
+  private permissionRepository: PermissionRepository;
+  private accessGroupPermissionRepository: AccessGroupPermissionRepository;
 
   expanded: boolean = false;
 
@@ -32,7 +32,7 @@ export class TreePermissionsViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.upperPermission.id == null)
+    if (this.upperPermission.id == null) // TODO se está no root
       this.permissionRepository.findById(1).subscribe(result => {
         this.upperPermission = result;
         this.verifyIfThePermissionIsCheckedInGroup(this.upperPermission, this.permissionsOfGroup)
@@ -44,8 +44,10 @@ export class TreePermissionsViewComponent implements OnInit {
       if (permission.id === permissionOfGroup.id)
         this.setChecked(permission, true);
     })
-    if (permission.upperPermission)
+    if (permission.upperPermission) // TODO, não é utilizado, pois esse método verifyIfThePermissionIsCheckedInGroup só é chamado para a root permission
+    {
       this.verifyIfThePermissionIsCheckedInGroup(permission.upperPermission, permissionsOfGroup);
+    }
   }
 
   areTheLowersPermissionsChecked(permission: Permission) {

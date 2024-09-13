@@ -11,10 +11,6 @@ export class AccessGroupPermissionRepository extends BaseRepository<GroupPermiss
     super(httpClient, 'access-manager/v1/access-group-permissions');
   }
 
-  // findAccessGroupPermissionsByGroupId(id: number): any {
-  //   return this.httpClient.get<any>(this.collectionName + '?id=' + id )
-  // }
-
   save(accessGroupPermission: GroupPermission) {
     return this.httpClient.post<any>(this.collectionName, accessGroupPermission).toPromise();
   }

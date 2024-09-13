@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -78,4 +79,34 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
      */
     @Query("from GroupPermission groupPermission where groupPermission.group.id = :groupId AND groupPermission.permission.authority = :authority")
     Optional<GroupPermission> findByGroupIdAndPermissionAuthority(long groupId, String authority);
+
+    /**
+     * Não verifica do leaf com o root quando os dois são o mesmo.
+     * Ou seja, e somente par aprocurar os filhos realmente.
+     * </p>
+     *
+     * @param groupId   {@link Long}
+     * @param authority {@link String}
+     * @return {@link  Optional<GroupPermission>}
+     */
+    @Query(value =
+            "WITH RECURSIVE permission_hierarquia AS (" +
+                    "    SELECT p.id," +
+                    "           p.authority," +
+                    "           p.upper_permission_id" +
+                    "    FROM permission p" +
+                    "        INNER JOIN permission upper_permission on upper_permission.id = p.upper_permission_id" +
+                    "    WHERE upper_permission.authority = ?2" +
+                    "    UNION ALL" +
+                    "    SELECT p.id," +
+                    "           p.authority," +
+                    "           p.upper_permission_id" +
+                    "    FROM permission p" +
+                    "             INNER JOIN permission_hierarquia ph ON ph.id = p.upper_permission_id)" +
+                    " SELECT count(ph.id) > 0" +
+                    " FROM permission_hierarquia ph" +
+                    "         INNER JOIN group_permission gp ON ph.id = gp.permission_id" +
+                    "         INNER JOIN \"group\" g ON g.id = gp.group_id" +
+                    " WHERE gp.group_id = ?1", nativeQuery = true)
+    boolean verifyIfThePermissionHasSomeChildLinkedToGroup(@Param("groupId") long groupId, @Param("authority") String authority);
 }

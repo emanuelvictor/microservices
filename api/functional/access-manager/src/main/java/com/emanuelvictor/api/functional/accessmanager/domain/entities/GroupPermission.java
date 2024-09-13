@@ -15,7 +15,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"group_permission_id", "permission_id"})
+        @UniqueConstraint(columnNames = {"group_id", "permission_id"})
 })
 public class GroupPermission extends PersistentEntity {
 
@@ -23,7 +23,7 @@ public class GroupPermission extends PersistentEntity {
     private Permission permission;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "group_permission_id")
+    @JoinColumn(name = "group_id")
     private Group group;
 
     @Builder

@@ -5,13 +5,19 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermi
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.GroupBuilder;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.PermissionBuilder;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
 
@@ -41,7 +47,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
 
         final GroupPermission groupPermissionSaved = groupPermissionRepository.save(groupPermissionToSave);
 
-        Assertions.assertThat(groupPermissionSaved).isEqualTo(groupPermissionToSave);
+        assertThat(groupPermissionSaved).isEqualTo(groupPermissionToSave);
     }
 
     @Test
@@ -72,7 +78,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
 
         var groupPermissions = groupPermissionRepository.findByGroupId(groupOne.getId(), Pageable.unpaged());
 
-        Assertions.assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupOne);
+        assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupOne);
     }
 
     @Test
@@ -103,7 +109,55 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
 
         var groupPermissions = groupPermissionRepository.findByGroupId(groupTwo.getId(), Pageable.unpaged());
 
-        Assertions.assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupTwo);
+        assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupTwo);
+    }
+
+    @ParameterizedTest
+    @MethodSource("getLeafPermissions")
+    public void mustFindAGroupLinkedToSomeRootOrLeafFromPermission(final String rootPermission,
+                                                                   final String leafPermission,
+                                                                   final boolean mustFind) {
+        insertTreeOfPermissions();
+        var accessGroupToBeLinkedToLeafPermission = new GroupBuilder().build();
+        groupRepository.save(accessGroupToBeLinkedToLeafPermission);
+        var permission = permissionRepository.findByAuthority(leafPermission).orElseThrow();
+        var groupPermissionToGroupOne = GroupPermission.builder().permission(permission).group(accessGroupToBeLinkedToLeafPermission).build();
+        groupPermissionRepository.save(groupPermissionToGroupOne);
+
+        final boolean hasSomeAccessGroupLinkedToChildPermission =
+                groupPermissionRepository.verifyIfThePermissionHasSomeChildLinkedToGroup(accessGroupToBeLinkedToLeafPermission.getId(), rootPermission);
+
+        assertThat(hasSomeAccessGroupLinkedToChildPermission).isEqualTo(mustFind);
+    }
+
+    private void insertTreeOfPermissions() {
+        rootPermission = new PermissionBuilder().authority("1").build();
+        permissionRepository.save(rootPermission);
+        for (int i = 0; i < 5; i++) {
+            final var childPermission = new PermissionBuilder()
+                    .authority("1." + i)
+                    .upperPermission(rootPermission)
+                    .build();
+            permissionRepository.save(childPermission);
+            for (int j = 0; j < 5; j++) {
+                final var grandChildPermission = new PermissionBuilder()
+                        .authority("1." + i + "." + j)
+                        .upperPermission(childPermission)
+                        .build();
+                permissionRepository.save(grandChildPermission);
+            }
+        }
+    }
+
+    public static Stream<Arguments> getLeafPermissions() {
+        return Stream.of(
+                Arguments.arguments("1", "1", false),
+                Arguments.arguments("1", "1.0", true),
+                Arguments.arguments("1", "1.0.0", true),
+                Arguments.arguments("1.0", "1.0", false),
+                Arguments.arguments("1.0", "1.0.0", true),
+                Arguments.arguments("1.1", "1.0.0", false)
+        );
     }
 
 }

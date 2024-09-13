@@ -1,7 +1,5 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
@@ -20,19 +18,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class UnlinkPermissionToGroupService {
 
     private final PermissionRepository permissionRepository;
-    private final GroupPermissionRepository groupPermissionRepository;
+    private final GroupPermissionRepository accessGroupPermissionRepository;
     private final LinkPermissionToGroupService linkPermissionToGroupService;
 
     public UnlinkPermissionToGroupService(GroupRepository groupRepository, PermissionRepository permissionRepository,
                                           GroupPermissionRepository groupPermissionRepository, LinkPermissionToGroupService linkPermissionToGroupService) {
         this.permissionRepository = permissionRepository;
-        this.groupPermissionRepository = groupPermissionRepository;
+        this.accessGroupPermissionRepository = groupPermissionRepository;
         this.linkPermissionToGroupService = linkPermissionToGroupService;
     }
 
     public void unlinkPermissionToGroup(final long groupId, final String authority) {
-        groupPermissionRepository.findByGroupIdAndPermissionAuthority(groupId, authority)
-                .ifPresentOrElse(groupPermission -> groupPermissionRepository.deleteByGroupIdAndPermissionAuthority(groupId, authority),
+        accessGroupPermissionRepository.findByGroupIdAndPermissionAuthority(groupId, authority)
+                .ifPresentOrElse(groupPermission -> accessGroupPermissionRepository.deleteByGroupIdAndPermissionAuthority(groupId, authority),
                         () -> {
                             // não encontrei?
                             // marco os irmãos
