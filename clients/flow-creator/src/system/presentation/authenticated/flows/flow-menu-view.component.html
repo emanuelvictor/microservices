@@ -1,0 +1,18 @@
+<div layout='row' layout-align='center center' class='nav-menu'>
+
+
+  <a layout-margin routerLinkActive #rlaFlows='routerLinkActive' [ngClass]="{'menu-active': rlaFlows.isActive}"
+    routerLink='flows'>
+    Meus Fluxos
+  </a>
+
+  <a layout-margin routerLinkActive #rlaOptions='routerLinkActive' [ngClass]="{'menu-active': rlaOptions.isActive}"
+    routerLink='options'>
+    Minhas Opções
+  </a>
+
+</div>
+
+<div class='main-content'>
+  <router-outlet></router-outlet>
+</div>

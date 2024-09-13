@@ -3,7 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.entities.generic;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdResolver;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 /**
  * @author Emanuel Victor

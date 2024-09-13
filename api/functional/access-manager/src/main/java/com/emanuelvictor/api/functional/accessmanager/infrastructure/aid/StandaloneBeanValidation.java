@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.accessmanager.infrastructure.aid;
 
-import javax.validation.*;
+import jakarta.validation.*;
 import java.util.Set;
 
 /**
@@ -22,7 +22,7 @@ public final class StandaloneBeanValidation {
         factory.close();
 
         final Set<ConstraintViolation<T>> violations = validator.validate(bean);
-		
+
 		/*violations.forEach(v -> {
 			System.out.println(v.getPropertyPath() + "- " + v.getMessage());
 		});*/

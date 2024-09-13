@@ -4,6 +4,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.services.ClientService;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -40,10 +41,16 @@ import java.util.List;
 @EnableAuthorizationServer
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
+
     /**
      *
      */
     private final TokenStore tokenStore;
+
+    /**
+     *
+     */
+    private final TokenService tokenService;
 
     /**
      *
@@ -79,7 +86,8 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         endpoints.tokenStore(tokenStore)
                 .tokenEnhancer(tokenEnhancerChain)
                 .authenticationManager(authenticationManager)
-                .userDetailsService(userDetailsService);
+                .userDetailsService(userDetailsService)
+                .tokenServices(tokenService);
 
     }
 
@@ -109,15 +117,14 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
 
 
     /**
-     * TODO tornar um bean gerenciável
-     * @return
+     * @return CorsConfigurationSource
      */
     public static CorsConfigurationSource corsConfigurationSource() {
 
         // Deve liberar o cors somente em ambiente de desenvolvimento
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+//        configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList("access-control-allow-origin", "x-requested-with", "authorization", "Access-Control-Allow-Headers", "Access-Control-Allow-Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers", "Origin", "Cache-Control", "Content-Type", "Authorization"));
         configuration.setAllowedMethods(Arrays.asList("OPTIONS", "DELETE", "GET", "POST", "PATCH", "PUT"));
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
+ * FIXME must create tests
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
@@ -36,7 +37,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * @return
      */
     @Query("FROM User u WHERE filter(:filter, u.username) = true")
-    Page<User> findByFiltro(final String filter, final Pageable pageable);
+    Page<User> listByFilters(final String filter, final Pageable pageable);
 
     /**
      * @param defaultFilter String

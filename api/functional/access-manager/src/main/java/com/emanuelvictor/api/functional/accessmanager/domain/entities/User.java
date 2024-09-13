@@ -3,17 +3,15 @@ package com.emanuelvictor.api.functional.accessmanager.domain.entities;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import org.hibernate.envers.Audited;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Pattern.Flag;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern.Flag;
 
 /**
  * @author Emanuel Victor
@@ -22,7 +20,6 @@ import javax.validation.constraints.Pattern.Flag;
  */
 @Data
 @Entity
-@Audited
 @Table(name = "\"user\"")
 @JsonIgnoreProperties({"authorities"})
 @lombok.EqualsAndHashCode(callSuper = true)

@@ -1,21 +1,18 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
+ * TODO we don't need this service
+ *
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 04/01/2020
@@ -28,11 +25,6 @@ public class GroupService {
      *
      */
     private final GroupRepository groupRepository;
-
-    /**
-     *
-     */
-    private final GroupPermissionRepository groupPermissionRepository;
 
     /**
      * @param defaultFilter String
@@ -57,53 +49,23 @@ public class GroupService {
      */
     @Transactional
     public Group save(final Group group) {
-        Assert.notEmpty(group.getGroupPermissions(), "Defina permissões para esse Grupo de Acesso");
         return groupRepository.save(group);
     }
 
     /**
-     * @param id          long
+     * @param id    long
      * @param group {@link Group}
      * @return {@link Group}
      */
     public Group save(final long id, final Group group) {
         group.setId(id);
-
-        Assert.notEmpty(group.getGroupPermissions(), "Defina permissões para esse Grupo de Acesso");
-
-        /*
-         * Lista auxiliar com os grupos acesso permissao que serão persistidos a posteriore
-         */
-        final Set<GroupPermission> groupPermissionList = group.getGroupPermissions();
-
-        /*
-         * Seto null nos grupos acesso permissoes, dessa forma o entityManager remove todos via cascade
-         */
-        group.setGroupPermissions(new HashSet<>());
-
-        /*
-         * Atualizo o grupo de acesso
-         */
-        this.groupRepository.save(group);
-
-        /*
-         * Insiro todos os grupo acesso permissao
-         */
-        groupPermissionList.forEach(groupPermission -> {
-            if (groupPermission.getId() == null)
-                groupPermission.setId(null);
-            this.groupPermissionRepository.save(groupPermission);
-        });
-
-        return group;
+        return groupRepository.save(group);
     }
 
     /**
      * @param id Long
-     * @return Boolean
      */
-    public Boolean delete(final long id) {
+    public void delete(final long id) {
         this.groupRepository.deleteById(id);
-        return true;
     }
 }

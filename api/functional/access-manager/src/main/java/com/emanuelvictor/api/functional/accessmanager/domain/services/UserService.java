@@ -1,24 +1,27 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
-import com.emanuelvictor.api.functional.accessmanager.application.context.ContextHolder;
-import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSourceHolder;
+import com.emanuelvictor.api.functional.accessmanager.application.context.ContextHolder; // TODO acoplamento
+import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSourceHolder; // TODO acoplamento
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.UserRepository;
-import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation;
-import lombok.RequiredArgsConstructor;
+import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation; // TODO acoplamento
+import lombok.RequiredArgsConstructor; // TODO acoplamento
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import org.springframework.security.authentication.DisabledException; // TODO acoplamento
+import org.springframework.security.core.userdetails.UsernameNotFoundException; // TODO acoplamento
+import org.springframework.security.crypto.bcrypt.BCrypt; // TODO acoplamento
+import org.springframework.security.crypto.password.PasswordEncoder; // TODO acoplamento
+import org.springframework.stereotype.Component; // TODO acoplamento
+import org.springframework.transaction.annotation.Transactional; // TODO acoplamento
+import org.springframework.util.Assert; // TODO ?
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
+ *  TODO também etm cara de application service
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 04/01/2020
@@ -27,15 +30,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserService {
 
-    /**
-     *
-     */
     private final UserRepository userRepository;
-
-    /**
-     *
-     */
     private final PasswordEncoder passwordEncoder;
+    private final GroupPermissionRepository groupPermissionRepository;
 
     /**
      * @param defaultFilter String
@@ -50,11 +47,11 @@ public class UserService {
     /**
      * @param username long
      * @return User
+     * <p>
      */
     @Transactional(readOnly = true)
-    public User findByUsername(final String username) {
-        return this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundByUsername", username)));
+    public Optional<User> loadUserByUsername(final String username) {
+        return userRepository.findByUsername(username);
     }
 
     /**

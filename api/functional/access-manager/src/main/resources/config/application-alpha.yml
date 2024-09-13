@@ -31,3 +31,11 @@ eureka:
   instance:
     hostname: localhost
     appname: access-manager
+
+oauth:
+  endpoints:
+    tokens: http://localhost:8080/auth-engine/tokens
+  token: http://localhost:8080/auth-engine/oauth/token
+  clientId: access-manager
+  clientSecret: browser
+

@@ -32,7 +32,7 @@ public class Group extends PersistentEntity {
     private String name;
 
     /**
-     *
+     * TODO remove
      */
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

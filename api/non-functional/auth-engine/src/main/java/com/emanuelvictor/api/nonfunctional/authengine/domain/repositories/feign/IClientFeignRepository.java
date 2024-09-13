@@ -19,7 +19,7 @@ public interface IClientFeignRepository {
      * @param clientId String
      * @return Optional<Client>
      */
-    @GetMapping("{clientId}")
+    @GetMapping("{clientId}/load")
     Optional<Client> loadClientByClientId(@PathVariable("clientId") final String clientId);
 
     /**

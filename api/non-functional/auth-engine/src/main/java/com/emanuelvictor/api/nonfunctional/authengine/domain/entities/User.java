@@ -58,7 +58,7 @@ public class User implements UserDetails {
     private boolean credentialsNonExpired;
 
     /**
-     * TODO remover
+     * TODO remover?
      */
     private String name;
 
@@ -115,7 +115,7 @@ public class User implements UserDetails {
             for (final GroupPermission groupPermission : this.group.getGroupPermissions()) {
                 permissions.add(groupPermission.getPermission().copy());
 
-                if (!groupPermission.getPermission().getLowerPermissions().isEmpty())
+                if (groupPermission.getPermission().getLowerPermissions() != null && !groupPermission.getPermission().getLowerPermissions().isEmpty())
                     permissions.addAll(populePermissions(groupPermission.getPermission().getLowerPermissions()));
             }
 

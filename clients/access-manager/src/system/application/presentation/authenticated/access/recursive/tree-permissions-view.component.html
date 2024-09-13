@@ -1,0 +1,28 @@
+<div layout="column">
+  <div layout="row">
+    <button style="min-width: 32px; margin: 0; padding: 0"
+            (click)="clickAtPermissionName(upperPermission)"
+            mat-button type="button" color="accent" aria-label="Load Permissions">
+      <mat-icon *ngIf="!expanded">chevron_right</mat-icon>
+      <mat-icon *ngIf="expanded">expand_more</mat-icon>
+    </button>
+    <!--    <mat-checkbox [checked]="areTheLowersPermissionsChecked(upperPermission) || areUpperPermissionsChecked(upperPermission)"-->
+    <!--                  (change)="setChecked(upperPermission, $event.checked)"-->
+    <!--                  style="padding: 10px; padding-left: 0">-->
+    <!--      {{upperPermission?.name}}-->
+    <!--    </mat-checkbox>-->
+    <mat-checkbox [checked]="upperPermission.checked"
+                  [indeterminate]="upperPermission.indeterminate"
+                  (change)="setChecked(upperPermission, $event.checked, true)"
+                  style="padding: 10px; padding-left: 0">
+      {{upperPermission?.name}} - {{!!upperPermission?.checked}}
+    </mat-checkbox>
+  </div>
+  <div layout='column' *ngIf="expanded">
+    <tree-permissions-view style="margin-left: 15px"
+                           [group]="group"
+                           [upperPermission]="lowerPermission"
+                           *ngFor="let lowerPermission of upperPermission.lowerPermissions">
+    </tree-permissions-view>
+  </div>
+</div>

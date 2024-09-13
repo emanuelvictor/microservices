@@ -1,0 +1,15 @@
+<list-page [gender]="'M'"
+           [deletavel]='true'
+           [desativavel]='false'
+           [hasAdvancedFilter]='false'
+           [columns]="columns"
+           [dataSource]="dataSource"
+           [headline]="'Fluxo'"
+           [subhead]="'Consultar Fluxos'"
+           (list)="listByFilters($event)"
+           [totalElements]="totalElements"
+           [pageSize]="pageSize"
+           [pageIndex]="pageIndex"
+           (delete)="openDeleteDialog($event)"
+           [displayedColumns]="displayedColumns">
+</list-page>

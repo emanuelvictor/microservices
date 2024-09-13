@@ -1,7 +1,6 @@
 package com.emanuelvictor.api.functional.accessmanager.domain.repositories;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.Application;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
+ * TODO must create tests
  * @author Emanuel Victor
  * @version 1.0.0
  * @since 2.0.0, 01/01/2020
@@ -42,12 +42,5 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
      * @return Optional<Application>
      */
     Optional<Application> findByClientIdAndIdNot(final String clientId, final Long id);
-
-    /**
-     * @param filter String
-     * @return Page<Application>
-     */
-    @Query("FROM Application a WHERE filter(:filter, a.clientId) = true")
-    Page<Application> findByFiltro(final String filter, final Pageable pageable);
 
 }

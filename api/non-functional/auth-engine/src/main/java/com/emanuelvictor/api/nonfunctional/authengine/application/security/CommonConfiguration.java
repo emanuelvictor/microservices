@@ -1,23 +1,27 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
+import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.impl.TokenRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.session.MapSessionRepository;
 import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.web.server.session.InMemoryWebSessionStore;
+import org.springframework.web.server.session.WebSessionStore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter.DEFAULT_KEY;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
@@ -28,39 +32,25 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Configuration
 public class CommonConfiguration {
 
-    private final static String DEFAULT_KEY = "integrator";
-    private final static String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
+    private final String DEFAULT_TOKEN_ENHANCER = DEFAULT_KEY;
 
     /**
      * @return TokenStore
      */
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
+        return new TokenRepository();
     }
 
-    /**
-     * @return JwtAccessTokenConverter
-     */
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(DEFAULT_KEY);
-        return converter;
-    }
-
-    /**
-     * @return DefaultTokenServices
-     */
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        defaultTokenServices.setSupportRefreshToken(true);
-        defaultTokenServices.setTokenEnhancer(tokenEnhancer()); //TODO non necessary
-        return defaultTokenServices;
-    }
+//    /**
+//     * @return JwtAccessTokenConverter
+//     */
+//    @Bean
+//    public JwtAccessTokenConverter accessTokenConverter() {
+//        final JwtAccessTokenConverter converter = JwtAccessTokenConverter.getInstance();
+//        converter.setSigningKey(DEFAULT_KEY);
+//        return converter;
+//    }
 
     /**
      * TokenEnhancer
@@ -70,6 +60,7 @@ public class CommonConfiguration {
      */
     @Bean
     public TokenEnhancer tokenEnhancer() {
+
         return (accessToken, authentication) -> {
 
             final Map<String, Object> additionalInfo = new HashMap<>();

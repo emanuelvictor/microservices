@@ -139,7 +139,7 @@ public class Client implements ClientDetails {
             for (GroupPermission grupoAcessoPermissao : this.group.getGroupPermissions()) {
                 permissions.add(grupoAcessoPermissao.getPermission().copy());
 
-                if (!grupoAcessoPermissao.getPermission().getLowerPermissions().isEmpty())
+                if (grupoAcessoPermissao.getPermission().getLowerPermissions() != null && !grupoAcessoPermissao.getPermission().getLowerPermissions().isEmpty())
                     permissions.addAll(populePermissions(grupoAcessoPermissao.getPermission().getLowerPermissions()));
             }
 
