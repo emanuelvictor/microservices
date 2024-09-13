@@ -19,7 +19,7 @@ public class TokenServiceTests extends AbstractsTests {
 
         final Set<SimpleGrantedAuthority> authorities = Set.of(
                 new SimpleGrantedAuthority("root"),
-                new SimpleGrantedAuthority("root.account-manager.access-groups.put.activate"),
+                new SimpleGrantedAuthority("root.account-manager.access-groups.update.activate"),
                 new SimpleGrantedAuthority("root.account-manager"),
                 new SimpleGrantedAuthority("root.financial"),
                 new SimpleGrantedAuthority("root.financial.insert-coin"),

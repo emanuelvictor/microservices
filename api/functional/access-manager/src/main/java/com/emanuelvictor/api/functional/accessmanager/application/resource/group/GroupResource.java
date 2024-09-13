@@ -32,7 +32,7 @@ public class GroupResource {
      * @return Page<group>
      */
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.read','root.access-manager.groups','root.access-manager','root')")
     public Page<Group> listByFilters(final String defaultFilter, final Pageable pageable) {
         return groupService.listByFilters(defaultFilter, pageable);
     }
@@ -42,7 +42,7 @@ public class GroupResource {
      * @return Optional<group>
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.read','root.access-manager.groups','root.access-manager','root')")
     public Optional<Group> findById(@PathVariable final long id) {
         return groupService.findById(id);
     }
@@ -52,7 +52,7 @@ public class GroupResource {
      * @return group
      */
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.post','root.access-manager.groups','root.access-manager','root')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.create','root.access-manager.groups','root.access-manager','root')")
     public Group save(@RequestBody final Group grupoAcesso) {
         return groupService.save(grupoAcesso);
     }
