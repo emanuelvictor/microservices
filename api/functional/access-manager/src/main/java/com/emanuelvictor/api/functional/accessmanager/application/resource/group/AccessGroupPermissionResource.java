@@ -4,12 +4,12 @@ import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermi
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.LinkPermissionToGroupService;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.UnlinkPermissionToGroupService;
-import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,6 +45,7 @@ public class AccessGroupPermissionResource {
      * @param accessGroupPermission {@link GroupPermission}
      * @return ResponseEntity<Object>
      */
+    @Transactional
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.post','root.access-manager.access-group-permissions','root.access-manager','root')")
     public ResponseEntity<Object> save(@RequestBody final GroupPermission accessGroupPermission) {
@@ -56,6 +57,7 @@ public class AccessGroupPermissionResource {
      * @param id Long
      * @return ResponseEntity<Object>
      */
+    @Transactional
     @DeleteMapping("{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.delete','root.access-manager.access-group-permissions','root.access-manager','root')")
     public ResponseEntity<Object> remove(@PathVariable final long id) {
@@ -70,6 +72,7 @@ public class AccessGroupPermissionResource {
      * @param authority String
      * @return ResponseEntity<Object>
      */
+    @Transactional
     @DeleteMapping("{groupId}/{authority}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.delete','root.access-manager.access-group-permissions','root.access-manager','root')")
     public ResponseEntity<Object> remove(@PathVariable final long groupId, @PathVariable final String authority) {

@@ -2,9 +2,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.services;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Emanuel Victor
@@ -14,14 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
  * This service contains the algorithms to unlink a Permission from AccessGroup.
  * The service with the link algorithms is {@link LinkPermissionToGroupService}
  */
-@Transactional // TODO the transaction must be kept on Application Layer
 public class UnlinkPermissionToGroupService {
 
     private final PermissionRepository permissionRepository;
     private final GroupPermissionRepository accessGroupPermissionRepository;
     private final LinkPermissionToGroupService linkPermissionToGroupService;
 
-    public UnlinkPermissionToGroupService(GroupRepository groupRepository, PermissionRepository permissionRepository,
+    public UnlinkPermissionToGroupService(PermissionRepository permissionRepository,
                                           GroupPermissionRepository groupPermissionRepository, LinkPermissionToGroupService linkPermissionToGroupService) {
         this.permissionRepository = permissionRepository;
         this.accessGroupPermissionRepository = groupPermissionRepository;

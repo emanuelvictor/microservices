@@ -19,10 +19,9 @@ public class Beans {
     }
 
     @Bean
-    UnlinkPermissionToGroupService unlinkPermissionToGroupService(final GroupRepository groupRepository,
-                                                                  final PermissionRepository permissionRepository,
+    UnlinkPermissionToGroupService unlinkPermissionToGroupService(final PermissionRepository permissionRepository,
                                                                   final GroupPermissionRepository groupPermissionRepository,
                                                                   final LinkPermissionToGroupService linkPermissionToGroupService) {
-        return new UnlinkPermissionToGroupService(groupRepository, permissionRepository, groupPermissionRepository, linkPermissionToGroupService);
+        return new UnlinkPermissionToGroupService(permissionRepository, groupPermissionRepository, linkPermissionToGroupService);
     }
 }
