@@ -47,7 +47,7 @@ public class AccessGroupPermissionResource {
      */
     @Transactional
     @PostMapping
-    @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.post','root.access-manager.access-group-permissions','root.access-manager','root')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.create','root.access-manager.access-group-permissions','root.access-manager','root')")
     public ResponseEntity<Object> save(@RequestBody final GroupPermission accessGroupPermission) {
         linkPermissionToGroupService.linkPermissionToGroup(accessGroupPermission.getGroupId(), accessGroupPermission.getAuthority());
         return ResponseEntity.ok().build();
