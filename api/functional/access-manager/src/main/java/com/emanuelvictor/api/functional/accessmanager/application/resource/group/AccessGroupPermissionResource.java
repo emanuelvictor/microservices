@@ -48,26 +48,12 @@ public class AccessGroupPermissionResource {
     @Transactional
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.create','root.access-manager.access-group-permissions','root.access-manager','root')")
-    public ResponseEntity<Object> save(@RequestBody final GroupPermission accessGroupPermission) {
+    public ResponseEntity<Object> create(@RequestBody final GroupPermission accessGroupPermission) {
         linkPermissionToGroupService.linkPermissionToGroup(accessGroupPermission.getGroupId(), accessGroupPermission.getAuthority());
         return ResponseEntity.ok().build();
     }
 
     /**
-     * @param id Long
-     * @return ResponseEntity<Object>
-     */
-    @Transactional
-    @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyAuthority('root.access-manager.access-group-permissions.delete','root.access-manager.access-group-permissions','root.access-manager','root')")
-    public ResponseEntity<Object> remove(@PathVariable final long id) {
-        final var accessGroupPermission = accessGroupPermissionRepository.findById(id).orElseThrow();
-        unlinkPermissionToGroupService.unlinkPermissionToGroup(accessGroupPermission.getGroupId(), accessGroupPermission.getAuthority());
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * TODO verificar possibilidade de remover
      * @param groupId   Long
      * @param authority String
      * @return ResponseEntity<Object>

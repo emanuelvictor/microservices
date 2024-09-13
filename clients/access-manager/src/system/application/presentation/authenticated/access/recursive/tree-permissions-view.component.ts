@@ -87,16 +87,16 @@ export class TreePermissionsViewComponent implements OnInit {
 
   setChecked(permission: Permission, checked: boolean, saveOnBackend: boolean = false) {
     if (saveOnBackend) {
+      const group: Group = new Group(this.group.id);
+      const permissionToSave: Permission = new Permission(permission.authority);
+      const accessGroupPermission: GroupPermission = new GroupPermission(permissionToSave, group);
       if (checked) {
-        console.log('Link: ' + permission.authority);
-        const group: Group = new Group(this.group.id);
-        const permissionToSave: Permission = new Permission(permission.authority);
-        const accessGroupPermission: GroupPermission = new GroupPermission(permissionToSave, group);
+        console.log('Linking: ' + permission.authority);
         this.accessGroupPermissionRepository.save(accessGroupPermission).then(value => {
         })
       } else {
-        console.log('Unlink: ' + permission.authority);
-        this.accessGroupPermissionRepository.removeAccessGroupPermission(this.group.id, permission.authority).then(value => {
+        console.log('Unlinking: ' + permission.authority);
+        this.accessGroupPermissionRepository.remove(accessGroupPermission).then(value => {
         })
       }
     }

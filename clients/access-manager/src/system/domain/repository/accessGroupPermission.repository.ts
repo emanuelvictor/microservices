@@ -15,15 +15,7 @@ export class AccessGroupPermissionRepository extends BaseRepository<GroupPermiss
     return this.httpClient.post<any>(this.collectionName, accessGroupPermission).toPromise();
   }
 
-  saveAccessGroupPermission(groupId: number, authority: string) {
-    const accessGroupPermission = {
-      group: {id: groupId},
-      permission: {authority: authority}
-    }
-    return this.httpClient.post<any>(this.collectionName, accessGroupPermission).toPromise();
-  }
-
-  removeAccessGroupPermission(groupId: number, authority: string) {
-    return this.httpClient.delete(this.collectionName + '/' + groupId + '/unlink/' + authority).toPromise();
+  remove(accessGroupPermission: GroupPermission) {
+    return this.httpClient.delete(this.collectionName + '/' + accessGroupPermission.group.id + '/' + accessGroupPermission.permission.authority).toPromise();
   }
 }
