@@ -1,15 +1,15 @@
-<div layout="column">
-  <div layout="row">
-    <button style="min-width: 32px; margin: 0; padding: 0"
-            (click)="clickAtPermissionName(upperPermission)"
-            mat-button type="button" color="accent" aria-label="Load Permissions">
-      <mat-icon *ngIf="!expanded">chevron_right</mat-icon>
-      <mat-icon *ngIf="expanded">expand_more</mat-icon>
+<div layout='column'>
+  <div layout='row'>
+    <button style='min-width: 32px; margin: 0; padding: 0'
+            (click)='clickAtPermissionName(upperPermission)'
+            mat-button type='button' color='accent' aria-label='Load Permissions'>
+      <mat-icon *ngIf='hasChildren && !expanded'>chevron_right</mat-icon>
+      <mat-icon *ngIf='hasChildren && expanded'>expand_more</mat-icon>
     </button>
-    <mat-checkbox [checked]="upperPermission.checked"
-                  [indeterminate]="upperPermission.indeterminate"
-                  (change)="setCheckedAndSave(upperPermission, $event.checked)"
-                  style="padding: 10px; padding-left: 0">
+    <mat-checkbox [checked]='upperPermission.checked'
+                  [indeterminate]='upperPermission.indeterminate'
+                  (change)='setCheckedAndSave(upperPermission, $event.checked)'
+                  style='padding: 10px; padding-left: 0'>
         {{upperPermission?.name}}
     </mat-checkbox>
   </div>

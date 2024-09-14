@@ -18,6 +18,8 @@ export class TreePermissionsViewComponent implements OnInit {
 
   expanded: boolean = false;
 
+  hasChildren: boolean = false;
+
   @Input() group: Group = new Group();
 
   @Input() permissionsOfGroup: Permission[];
@@ -31,6 +33,9 @@ export class TreePermissionsViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.verifyIfThePermissionHasChildren(this.upperPermission).then(hasChildren => {
+      this.hasChildren = hasChildren
+    })
     if (!this.upperPermission.checked)
       this.verifyIfThePermissionIsLinkedToGroup(this.group, this.upperPermission)
         .then(isPermissionLinkedToGroup => {
@@ -45,6 +50,13 @@ export class TreePermissionsViewComponent implements OnInit {
               });
           }
         });
+  }
+
+  async verifyIfThePermissionHasChildren(permission: Permission) {
+    const pageable = {
+      'upperPermissionId': permission.id
+    }
+    return (await this.permissionRepository.listByFilters(pageable).toPromise()).content.length > 0;
   }
 
   async verifyIfThePermissionHasSomeChildLinked(accessGroup: Group, permissionToSearch: Permission) {
@@ -108,12 +120,12 @@ export class TreePermissionsViewComponent implements OnInit {
     const permissionToSave: Permission = new Permission(permission.authority);
     const accessGroupPermission: GroupPermission = new GroupPermission(permissionToSave, group);
     if (checked) {
-      console.log('Linking: ' + permission.authority);
-      this.accessGroupPermissionRepository.save(accessGroupPermission).then(value => {
+      this.accessGroupPermissionRepository.save(accessGroupPermission).then(() => {
+        console.log('Linked authority ' + permission.authority + ' to group ' + group.id);
       })
     } else {
-      console.log('Unlinking: ' + permission.authority);
-      this.accessGroupPermissionRepository.remove(accessGroupPermission).then(value => {
+      this.accessGroupPermissionRepository.remove(accessGroupPermission).then(() => {
+        console.log('Unlinked authority ' + permission.authority + ' from group ' + group.id);
       })
     }
     permission.checked = checked
