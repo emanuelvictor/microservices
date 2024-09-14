@@ -31,6 +31,22 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
     Page<GroupPermission> findByGroupId(final long groupId, final Pageable pageable);
 
     /**
+     * @param groupId  {@link Long}
+     * @param pageable {@link Pageable}
+     * @return {@link Page}
+     */
+    @Query("from GroupPermission groupPermission where (" +
+            "   (" +
+            "       (:groupId IS NOT NULL and groupPermission.group.id = :groupId) OR :groupId IS NULL" +
+            "   )" +
+            "   AND" +
+            "   (" +
+            "       (:authority IS NOT NULL and groupPermission.permission.authority = :authority) OR :authority IS NULL" +
+            "   )" +
+            ")")
+    Page<GroupPermission> listByFilters(final long groupId, final String authority, final Pageable pageable); // TODO we need incrementing tests with new authority parameter
+
+    /**
      * FIxme MAKE TESTS
      *
      * @param upperPermissionId {@link Long}
@@ -103,10 +119,10 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
                     "           p.upper_permission_id" +
                     "    FROM permission p" +
                     "             INNER JOIN permission_hierarquia ph ON ph.id = p.upper_permission_id)" +
-                    " SELECT count(ph.id) > 0" +
+                    " SELECT count(ph.id)" +
                     " FROM permission_hierarquia ph" +
                     "         INNER JOIN group_permission gp ON ph.id = gp.permission_id" +
                     "         INNER JOIN \"group\" g ON g.id = gp.group_id" +
                     " WHERE gp.group_id = ?1", nativeQuery = true)
-    boolean verifyIfThePermissionHasSomeChildLinkedToGroup(@Param("groupId") long groupId, @Param("authority") String authority);
+    int verifyIfThePermissionHasSomeChildLinkedToGroup(@Param("groupId") long groupId, @Param("authority") String authority);
 }

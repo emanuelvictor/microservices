@@ -1,9 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {AuthenticatedViewComponent} from '../../../../authenticated-view.component';
-import {MessageService} from '../../../../../../../domain/services/message.service';
-import {GroupRepository} from "../../../../../../../domain/repository/group.repository";
-import {DialogService} from "../../../../../../../domain/services/dialog.service";
 import {Group} from "../../../../../../../domain/entity/group.model";
 import {PermissionRepository} from "../../../../../../../domain/repository/permission.repository";
 import {Permission} from "../../../../../../../domain/entity/permission.model";
@@ -17,26 +14,26 @@ import {AccessGroupPermissionRepository} from "../../../../../../../domain/repos
 })
 export class AccessGroupDataViewComponent implements OnInit {
 
-  permissions: Permission[];
-
   @Input()
   group: Group;
 
+  rootPermission: Permission;
+
   permissionsOfGroup: Permission[];
 
-  constructor(private router: Router,
-              private dialogService: DialogService,
+  constructor(homeView: AuthenticatedViewComponent,
               public activatedRoute: ActivatedRoute,
-              private messageService: MessageService,
-              private homeView: AuthenticatedViewComponent,
-              private groupRepository: GroupRepository,
-              private accessGroupRepository: AccessGroupPermissionRepository) {
+              public permissionRepository: PermissionRepository,
+              private accessGroupPermissionRepository: AccessGroupPermissionRepository) {
     homeView.toolbar.subhead = 'Grupo de Acesso / Detalhes';
   }
 
   ngOnInit() {
-    this.findPermissionsFromAccessGroupId(this.group.id).then(resultFromGroupPermissionRequest => {
-      this.permissionsOfGroup = resultFromGroupPermissionRequest;
+    this.permissionRepository.findById(1).subscribe(permission => {
+      this.rootPermission = permission;
+      this.findPermissionsFromAccessGroupId(this.group.id).then(resultFromGroupPermissionRequest => {
+        this.permissionsOfGroup = resultFromGroupPermissionRequest;
+      });
     });
   }
 
@@ -44,25 +41,7 @@ export class AccessGroupDataViewComponent implements OnInit {
     const pageable = {
       'groupId': groupId
     }
-    return (await this.accessGroupRepository.listByFilters(pageable).toPromise()).content.map(accessGroupPermission => accessGroupPermission.permission);
-  }
-
-  /**
-   * Função para confirmar a exclusão de um registro permanentemente
-   * @param group
-   */
-  public openDeleteDialog(group) {
-
-    this.dialogService.confirmDelete(group, 'Grupo de Acesso')
-      .then((accept: boolean) => {
-
-        if (accept) {
-          this.groupRepository.delete(group.id)
-            .then(() => {
-              this.router.navigate(['access/groups']);
-              this.messageService.toastSuccess('Registro excluído com sucesso')
-            })
-        }
-      })
+    return (await this.accessGroupPermissionRepository.listByFilters(pageable).toPromise())
+      .content.map((accessGroupPermission: { permission: any; }) => accessGroupPermission.permission);
   }
 }

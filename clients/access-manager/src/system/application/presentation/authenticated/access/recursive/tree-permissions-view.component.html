@@ -6,24 +6,19 @@
       <mat-icon *ngIf="!expanded">chevron_right</mat-icon>
       <mat-icon *ngIf="expanded">expand_more</mat-icon>
     </button>
-    <!--    <mat-checkbox [checked]="areTheLowersPermissionsChecked(upperPermission) || areUpperPermissionsChecked(upperPermission)"-->
-    <!--                  (change)="setChecked(upperPermission, $event.checked)"-->
-    <!--                  style="padding: 10px; padding-left: 0">-->
-    <!--      {{upperPermission?.name}}-->
-    <!--    </mat-checkbox>-->
     <mat-checkbox [checked]="upperPermission.checked"
                   [indeterminate]="upperPermission.indeterminate"
-                  (change)="setChecked(upperPermission, $event.checked, true)"
+                  (change)="setCheckedAndSave(upperPermission, $event.checked)"
                   style="padding: 10px; padding-left: 0">
-<!--      {{upperPermission?.name}} - {{!!upperPermission?.checked}}-->
         {{upperPermission?.name}}
     </mat-checkbox>
   </div>
-  <div layout='column' *ngIf="expanded">
-    <tree-permissions-view style="margin-left: 15px"
-                           [group]="group"
-                           [upperPermission]="lowerPermission"
-                           *ngFor="let lowerPermission of upperPermission.lowerPermissions">
+  <div layout='column' *ngIf='expanded'>
+    <tree-permissions-view style='margin-left: 15px'
+                           [group]='group'
+                           [upperPermission]='lowerPermission'
+                           [permissionsOfGroup]='permissionsOfGroup'
+                           *ngFor='let lowerPermission of upperPermission.lowerPermissions'>
     </tree-permissions-view>
   </div>
 </div>
