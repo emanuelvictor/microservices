@@ -37,8 +37,21 @@ public class AccessGroupPermissionResource {
      */
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
-    public Page<GroupPermission> findAccessGroupPermissionsByGroupId(@RequestParam final long groupId, final Pageable pageable) {
-        return accessGroupPermissionRepository.findByGroupId(groupId, pageable);
+    public Page<GroupPermission> findAccessGroupPermissionsByGroupId(@RequestParam final long groupId,
+                                                                     @RequestParam(required = false) final String authority,
+                                                                     final Pageable pageable) {
+        return accessGroupPermissionRepository.listByFilters(groupId, authority, pageable);
+    }
+
+    /**
+     * @param groupId long
+     * @return Page<GroupPermission>
+     */
+    @GetMapping("{groupId}/{authority}")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.groups.get','root.access-manager.groups','root.access-manager','root')")
+    public int verifyIfThePermissionHasSomeChildLinkedToGroup(@PathVariable("groupId") long groupId,
+                                                              @PathVariable("authority") String authority) {
+        return accessGroupPermissionRepository.verifyIfThePermissionHasSomeChildLinkedToGroup(groupId, authority);
     }
 
     /**

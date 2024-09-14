@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,7 +78,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
                 .build();
         groupPermissionRepository.saveAll(Arrays.asList(groupPermissionToGroupOne, groupPermissionToGroupTwo));
 
-        var groupPermissions = groupPermissionRepository.findByGroupId(groupOne.getId(), Pageable.unpaged());
+        var groupPermissions = groupPermissionRepository.listByFilters(groupOne.getId(), null, Pageable.unpaged());
 
         assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupOne);
     }
@@ -107,7 +109,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
                 .build();
         groupPermissionRepository.saveAll(Arrays.asList(groupPermissionToGroupOne, groupPermissionToGroupTwo));
 
-        var groupPermissions = groupPermissionRepository.findByGroupId(groupTwo.getId(), Pageable.unpaged());
+        var groupPermissions = groupPermissionRepository.listByFilters(groupTwo.getId(), null, Pageable.unpaged());
 
         assertThat(groupPermissions).extracting(GroupPermission::getGroup).containsExactly(groupTwo);
     }
@@ -115,19 +117,22 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
     @ParameterizedTest
     @MethodSource("getLeafPermissions")
     public void mustFindAGroupLinkedToSomeRootOrLeafFromPermission(final String rootPermission,
-                                                                   final String leafPermission,
-                                                                   final boolean mustFind) {
+                                                                   final Set<String> leafPermissions,
+                                                                   final int countOfLinkedPermissionsExpected) {
         insertTreeOfPermissions();
         var accessGroupToBeLinkedToLeafPermission = new GroupBuilder().build();
         groupRepository.save(accessGroupToBeLinkedToLeafPermission);
-        var permission = permissionRepository.findByAuthority(leafPermission).orElseThrow();
-        var groupPermissionToGroupOne = GroupPermission.builder().permission(permission).group(accessGroupToBeLinkedToLeafPermission).build();
-        groupPermissionRepository.save(groupPermissionToGroupOne);
+        leafPermissions.forEach(leafPermission -> {
+            var permission = permissionRepository.findByAuthority(leafPermission).orElseThrow();
+            var groupPermissionToGroupOne = GroupPermission.builder().permission(permission)
+                    .group(accessGroupToBeLinkedToLeafPermission).build();
+            groupPermissionRepository.save(groupPermissionToGroupOne);
+        });
 
-        final boolean hasSomeAccessGroupLinkedToChildPermission =
+        final int hasSomeAccessGroupLinkedToChildPermission =
                 groupPermissionRepository.verifyIfThePermissionHasSomeChildLinkedToGroup(accessGroupToBeLinkedToLeafPermission.getId(), rootPermission);
 
-        assertThat(hasSomeAccessGroupLinkedToChildPermission).isEqualTo(mustFind);
+        assertThat(hasSomeAccessGroupLinkedToChildPermission).isEqualTo(countOfLinkedPermissionsExpected);
     }
 
     private void insertTreeOfPermissions() {
@@ -151,12 +156,14 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
 
     public static Stream<Arguments> getLeafPermissions() {
         return Stream.of(
-                Arguments.arguments("1", "1", false),
-                Arguments.arguments("1", "1.0", true),
-                Arguments.arguments("1", "1.0.0", true),
-                Arguments.arguments("1.0", "1.0", false),
-                Arguments.arguments("1.0", "1.0.0", true),
-                Arguments.arguments("1.1", "1.0.0", false)
+                Arguments.arguments("1", Collections.singleton("1"), 0),
+                Arguments.arguments("1", Collections.singleton("1.0"), 1),
+                Arguments.arguments("1", Set.of("1.0", "1.1"), 2),
+                Arguments.arguments("1", Collections.singleton("1.0.0"), 1),
+                Arguments.arguments("1", Set.of("1.0.0", "1.0.1", "1.1.0", "1.1.1"), 4),
+                Arguments.arguments("1.0", Collections.singleton("1.0"), 0),
+                Arguments.arguments("1.0", Collections.singleton("1.0.0"), 1),
+                Arguments.arguments("1.1", Collections.singleton("1.0.0"), 0)
         );
     }
 

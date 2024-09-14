@@ -79,35 +79,6 @@ export class ViewGroupComponent implements OnInit {
 
   /**
    *
-   * @param permissions
-   */
-  deletePermissionsMarked(permissions) {
-    for (let i = 0; i < permissions.length; i++) {
-      if (permissions[i].mustBeDeleted) {
-        permissions.splice(i, 1);
-        i--;
-      } else
-        this.deletePermissionsMarked(permissions[i].lowerPermissions)
-    }
-  }
-
-  /**
-   *
-   * @param permission
-   */
-  markToDelete(permission) {
-    if (!permission.selected && permission.lowerPermissions.length) {
-      for (let i = 0; i < permission.lowerPermissions.length; i++)
-        this.markToDelete(permission.lowerPermissions[i]);
-      if (!this.hasSomeChildSelected(permission))
-        permission.mustBeDeleted = true;
-    } else if (!permission.selected && !permission.lowerPermissions.length) {
-      permission.mustBeDeleted = true
-    }
-  }
-
-  /**
-   *
    * @param permission
    */
   hasSomeChildSelected(permission) {
@@ -115,26 +86,6 @@ export class ViewGroupComponent implements OnInit {
       lowerPermission => lowerPermission.selected ||
         this.hasSomeChildSelected(lowerPermission)
     ).length > 0
-  }
-
-  /**
-   *
-   * @param permissions
-   */
-  organize(permissions: Permission[]): Permission[] {
-
-    for (let i = 0; i < permissions.length; i++) {
-
-      if (permissions[i].upperPermission && (permissions[i].upperPermission as any).id)
-        permissions[i].upperPermission = (permissions[i].upperPermission as any).id;
-
-      if (!permissions[i].id)
-        permissions[i] = this.findPermission(this.permissions, (permissions[i] as any));
-      else if (permissions[i].lowerPermissions)
-        permissions[i].lowerPermissions = this.organize(permissions[i].lowerPermissions);
-    }
-
-    return permissions
   }
 
   /**

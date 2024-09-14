@@ -2,7 +2,6 @@ import {Component, Input, OnInit} from '@angular/core';
 import {PermissionRepository} from "../../../../../domain/repository/permission.repository";
 import {Permission} from "../../../../../domain/entity/permission.model";
 import {Group} from "../../../../../domain/entity/group.model";
-import {GroupRepository} from "../../../../../domain/repository/group.repository";
 import {GroupPermission} from "../../../../../domain/entity/group-permission.model";
 import {AccessGroupPermissionRepository} from "../../../../../domain/repository/accessGroupPermission.repository";
 
@@ -32,22 +31,35 @@ export class TreePermissionsViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.upperPermission.id == null) // TODO se está no root
-      this.permissionRepository.findById(1).subscribe(result => {
-        this.upperPermission = result;
-        this.verifyIfThePermissionIsCheckedInGroup(this.upperPermission, this.permissionsOfGroup)
-      })
+    if (!this.upperPermission.checked)
+      this.verifyIfThePermissionIsLinkedToGroup(this.group, this.upperPermission)
+        .then(isPermissionLinkedToGroup => {
+          if (isPermissionLinkedToGroup) {
+            this.upperPermission.checked = true;
+            this.upperPermission.indeterminate = false;
+          } else {
+            this.verifyIfThePermissionHasSomeChildLinked(this.group, this.upperPermission)
+              .then(countOfLinkedPermissions => {
+                this.upperPermission.checked = false;
+                this.upperPermission.indeterminate = countOfLinkedPermissions > 0
+              });
+          }
+        });
   }
 
-  verifyIfThePermissionIsCheckedInGroup(permission: Permission, permissionsOfGroup: Permission[]) {
-    permissionsOfGroup.forEach(permissionOfGroup => {
-      if (permission.id === permissionOfGroup.id)
-        this.setChecked(permission, true);
-    })
-    if (permission.upperPermission) // TODO, não é utilizado, pois esse método verifyIfThePermissionIsCheckedInGroup só é chamado para a root permission
-    {
-      this.verifyIfThePermissionIsCheckedInGroup(permission.upperPermission, permissionsOfGroup);
+  async verifyIfThePermissionHasSomeChildLinked(accessGroup: Group, permissionToSearch: Permission) {
+    if (permissionToSearch && !permissionToSearch.indeterminate && !permissionToSearch.checked) {
+      const authority = permissionToSearch && permissionToSearch.authority ? permissionToSearch.authority : 'root';
+      return await this.accessGroupPermissionRepository.verifyIfThePermissionHasSomeChildLinked(accessGroup.id, authority);
+    } else return 0;
+  }
+
+  async verifyIfThePermissionIsLinkedToGroup(accessGroup: Group, permission: Permission) {
+    const pageable = {
+      'groupId': accessGroup.id,
+      'authority': permission.authority
     }
+    return (await this.accessGroupPermissionRepository.listByFilters(pageable).toPromise()).content.length > 0
   }
 
   areTheLowersPermissionsChecked(permission: Permission) {
@@ -66,7 +78,7 @@ export class TreePermissionsViewComponent implements OnInit {
     }
   }
 
-  clickAtPermissionName(permission) {
+  clickAtPermissionName(permission: Permission) {
     if (this.expanded)
       this.expanded = false;
     else {
@@ -80,29 +92,33 @@ export class TreePermissionsViewComponent implements OnInit {
       this.permissionRepository.listByFilters({upperPermissionId: upperPermission.id})
         .subscribe(result => {
           this.upperPermission.lowerPermissions = result.content;
-          this.upperPermission.lowerPermissions.forEach(permission => permission.upperPermission = this.upperPermission);
+          this.upperPermission.lowerPermissions.forEach(permission => permission.upperPermission = upperPermission);
           this.setChecked(upperPermission, upperPermission.checked);
         })
   }
 
-  setChecked(permission: Permission, checked: boolean, saveOnBackend: boolean = false) {
-    if (saveOnBackend) {
-      const group: Group = new Group(this.group.id);
-      const permissionToSave: Permission = new Permission(permission.authority);
-      const accessGroupPermission: GroupPermission = new GroupPermission(permissionToSave, group);
-      if (checked) {
-        console.log('Linking: ' + permission.authority);
-        this.accessGroupPermissionRepository.save(accessGroupPermission).then(value => {
-        })
-      } else {
-        console.log('Unlinking: ' + permission.authority);
-        this.accessGroupPermissionRepository.remove(accessGroupPermission).then(value => {
-        })
-      }
+  setChecked(permission: Permission, checked: boolean) {
+    permission.checked = checked
+    if (permission.lowerPermissions != null)
+      permission.lowerPermissions.forEach(lowerPermission => (this.setChecked(lowerPermission, checked)))
+  }
+
+  setCheckedAndSave(permission: Permission, checked: boolean) {
+    const group: Group = new Group(this.group.id);
+    const permissionToSave: Permission = new Permission(permission.authority);
+    const accessGroupPermission: GroupPermission = new GroupPermission(permissionToSave, group);
+    if (checked) {
+      console.log('Linking: ' + permission.authority);
+      this.accessGroupPermissionRepository.save(accessGroupPermission).then(value => {
+      })
+    } else {
+      console.log('Unlinking: ' + permission.authority);
+      this.accessGroupPermissionRepository.remove(accessGroupPermission).then(value => {
+      })
     }
     permission.checked = checked
     if (permission.lowerPermissions != null)
-      permission.lowerPermissions.forEach(p => (this.setChecked(p, checked, false)))
+      permission.lowerPermissions.forEach(lowerPermission => (this.setChecked(lowerPermission, checked)))
     this.areTheLowersPermissionsChecked(permission.upperPermission)
   }
 }

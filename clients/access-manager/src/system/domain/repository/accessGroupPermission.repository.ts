@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BaseRepository} from "../../infrastructure/repository/base/base.repository";
 import {HttpClient} from "@angular/common/http";
-import {Group} from "../entity/group.model";
 import {GroupPermission} from "../entity/group-permission.model";
 
 @Injectable()
@@ -17,5 +16,9 @@ export class AccessGroupPermissionRepository extends BaseRepository<GroupPermiss
 
   remove(accessGroupPermission: GroupPermission) {
     return this.httpClient.delete(this.collectionName + '/' + accessGroupPermission.group.id + '/' + accessGroupPermission.permission.authority).toPromise();
+  }
+
+  verifyIfThePermissionHasSomeChildLinked(accessGroupId: number, authority: string) {
+    return this.httpClient.get(this.collectionName + '/' + accessGroupId + '/' + authority).toPromise();
   }
 }
