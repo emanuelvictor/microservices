@@ -125,4 +125,14 @@ public interface GroupPermissionRepository extends JpaRepository<GroupPermission
                     "         INNER JOIN \"group\" g ON g.id = gp.group_id" +
                     " WHERE gp.group_id = ?1", nativeQuery = true)
     int verifyIfThePermissionHasSomeChildLinkedToGroup(@Param("groupId") long groupId, @Param("authority") String authority);
+
+    /**
+     * FIxme MAKE TESTS
+     *
+     * @param groupId {@link Long}
+     */
+    @Modifying
+    @Transactional
+    @Query("delete from GroupPermission groupPermission where groupPermission.group.id = :groupId")
+    void deleteAllByGroupId(long groupId);
 }

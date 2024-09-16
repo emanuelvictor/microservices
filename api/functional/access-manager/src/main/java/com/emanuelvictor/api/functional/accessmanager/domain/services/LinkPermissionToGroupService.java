@@ -69,7 +69,7 @@ public class LinkPermissionToGroupService {
     }
 
     void link(final Group group, final Permission permission) {
-        final GroupPermission groupPermission = GroupPermission.builder().permission(permission).group(group).build();
+        final GroupPermission groupPermission = new GroupPermission(permission, group);
         groupPermissionRepository.save(groupPermission);
     }
 

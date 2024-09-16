@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource.group;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class GroupResource {
 
     private final GroupService groupService;
+    private final GroupRepository groupRepository;
 
     /**
      * @param defaultFilter String
@@ -34,7 +36,7 @@ public class GroupResource {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.read','root.access-manager.groups','root.access-manager','root')")
     public Page<Group> listByFilters(final String defaultFilter, final Pageable pageable) {
-        return groupService.listByFilters(defaultFilter, pageable);
+        return groupRepository.listByFilters(defaultFilter, pageable);
     }
 
     /**
@@ -44,7 +46,7 @@ public class GroupResource {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.read','root.access-manager.groups','root.access-manager','root')")
     public Optional<Group> findById(@PathVariable final long id) {
-        return groupService.findById(id);
+        return groupRepository.findById(id);
     }
 
     /**
@@ -54,7 +56,7 @@ public class GroupResource {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.groups.create','root.access-manager.groups','root.access-manager','root')")
     public Group save(@RequestBody final Group grupoAcesso) {
-        return groupService.save(grupoAcesso);
+        return groupRepository.save(grupoAcesso);
     }
 
     /**

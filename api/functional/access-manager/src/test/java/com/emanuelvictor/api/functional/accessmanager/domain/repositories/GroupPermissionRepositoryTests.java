@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.domain.repositories;
 import com.emanuelvictor.api.functional.accessmanager.AbstractIntegrationTests;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
+import com.emanuelvictor.api.functional.accessmanager.domain.entity.AccessGroupPermissionBuilder;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.GroupBuilder;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.PermissionBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +43,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
     public void mustSaveGroupPermission() {
         final var group = new GroupBuilder().name("Access Group Name").build();
         groupRepository.save(group);
-        var groupPermissionToSave = GroupPermission.builder()
+        var groupPermissionToSave = new AccessGroupPermissionBuilder()
                 .permission(rootPermission)
                 .group(group)
                 .build();
@@ -68,11 +69,11 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
                 .authority("authorityPermissionTwo")
                 .build();
         permissionRepository.saveAll(Arrays.asList(permissionOne, permissionTwo));
-        var groupPermissionToGroupOne = GroupPermission.builder()
+        var groupPermissionToGroupOne = new AccessGroupPermissionBuilder()
                 .permission(permissionOne)
                 .group(groupOne)
                 .build();
-        var groupPermissionToGroupTwo = GroupPermission.builder()
+        var groupPermissionToGroupTwo = new AccessGroupPermissionBuilder()
                 .permission(permissionTwo)
                 .group(groupTwo)
                 .build();
@@ -99,11 +100,11 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
                 .authority("authorityPermissionTwo")
                 .build();
         permissionRepository.saveAll(Arrays.asList(permissionOne, permissionTwo));
-        var groupPermissionToGroupOne = GroupPermission.builder()
+        var groupPermissionToGroupOne = new AccessGroupPermissionBuilder()
                 .permission(permissionOne)
                 .group(groupOne)
                 .build();
-        var groupPermissionToGroupTwo = GroupPermission.builder()
+        var groupPermissionToGroupTwo = new AccessGroupPermissionBuilder()
                 .permission(permissionTwo)
                 .group(groupTwo)
                 .build();
@@ -124,7 +125,7 @@ public class GroupPermissionRepositoryTests extends AbstractIntegrationTests {
         groupRepository.save(accessGroupToBeLinkedToLeafPermission);
         leafPermissions.forEach(leafPermission -> {
             var permission = permissionRepository.findByAuthority(leafPermission).orElseThrow();
-            var groupPermissionToGroupOne = GroupPermission.builder().permission(permission)
+            var groupPermissionToGroupOne = new AccessGroupPermissionBuilder().permission(permission)
                     .group(accessGroupToBeLinkedToLeafPermission).build();
             groupPermissionRepository.save(groupPermissionToGroupOne);
         });
