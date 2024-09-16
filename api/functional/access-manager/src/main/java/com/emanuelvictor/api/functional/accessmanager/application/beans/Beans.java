@@ -3,6 +3,7 @@ package com.emanuelvictor.api.functional.accessmanager.application.beans;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
+import com.emanuelvictor.api.functional.accessmanager.domain.services.GroupService;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.LinkPermissionToGroupService;
 import com.emanuelvictor.api.functional.accessmanager.domain.services.UnlinkPermissionToGroupService;
 import org.springframework.context.annotation.Bean;
@@ -23,5 +24,10 @@ public class Beans {
                                                                   final GroupPermissionRepository groupPermissionRepository,
                                                                   final LinkPermissionToGroupService linkPermissionToGroupService) {
         return new UnlinkPermissionToGroupService(permissionRepository, groupPermissionRepository, linkPermissionToGroupService);
+    }
+
+    @Bean
+    GroupService groupService(final GroupRepository groupRepository,final GroupPermissionRepository accessGroupPermissionRepository){
+        return new GroupService(groupRepository, accessGroupPermissionRepository);
     }
 }

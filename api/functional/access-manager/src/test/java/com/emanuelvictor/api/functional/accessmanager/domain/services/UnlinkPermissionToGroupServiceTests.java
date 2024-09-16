@@ -4,7 +4,6 @@ import com.emanuelvictor.api.functional.accessmanager.AbstractIntegrationTests;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.GroupPermission;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Permission;
-import com.emanuelvictor.api.functional.accessmanager.domain.entities.generic.PersistentEntity;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.GroupBuilder;
 import com.emanuelvictor.api.functional.accessmanager.domain.entity.PermissionBuilder;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
@@ -30,7 +29,6 @@ public class UnlinkPermissionToGroupServiceTests extends AbstractIntegrationTest
     private UnlinkPermissionToGroupService unlinkPermissionToGroupService;
 
     private final Group group = new GroupBuilder().build();
-    private Permission rootPermission;
 
     @BeforeEach
     void setUp() {
@@ -104,7 +102,7 @@ public class UnlinkPermissionToGroupServiceTests extends AbstractIntegrationTest
     }
 
     private void insertTreeOfPermissions() {
-        rootPermission = new PermissionBuilder().authority("1").build();
+        final Permission rootPermission = new PermissionBuilder().authority("1").build();
         permissionRepository.save(rootPermission);
         for (int i = 0; i < 5; i++) {
             final var childPermission = new PermissionBuilder()

@@ -36,6 +36,6 @@ public class UpdateAccessGroupResource {
 
         final Group accessGroup = accessGroupDTOConverter.convert(accessGroupDTO);
 
-        return accessGroupService.save(id, accessGroup);
+        return accessGroupService.update(id, accessGroup);
     }
 }

@@ -26,9 +26,13 @@ public class GroupPermission extends PersistentEntity {
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @Builder
-    private GroupPermission(Long id, Permission permission, Group group) {
+    public GroupPermission(Long id, Permission permission, Group group) {
         super(id);
+        this.permission = permission;
+        this.group = group;
+    }
+
+    public GroupPermission(Permission permission, Group group) {
         this.permission = permission;
         this.group = group;
     }

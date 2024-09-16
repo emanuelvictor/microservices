@@ -229,13 +229,13 @@ public class LinkPermissionToGroupServiceTests extends AbstractIntegrationTests 
     private void linkAllTheFatherPermissionsToGroup() { // TODO verificar
         for (int i = 0; i < 5; i++) { // linking from all first level
             final var permissionToLink = permissionRepository.findByAuthority("1." + i).orElseThrow();
-            final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
+            final var groupPermission = new GroupPermission(permissionToLink, group);
             groupPermissionRepository.save(groupPermission);
         }
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) { // linking all from second level
                 final var permissionToLink = permissionRepository.findByAuthority("1." + i + "." + j).orElseThrow();
-                final var groupPermission = GroupPermission.builder().permission(permissionToLink).group(group).build();
+                final var groupPermission = new GroupPermission(permissionToLink, group);
                 groupPermissionRepository.save(groupPermission);
             }
         }
