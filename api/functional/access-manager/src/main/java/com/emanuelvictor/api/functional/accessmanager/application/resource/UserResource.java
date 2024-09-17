@@ -1,29 +1,38 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
+import com.emanuelvictor.api.functional.accessmanager.application.context.ContextHolder;
+import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSourceHolder;
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
-import com.emanuelvictor.api.functional.accessmanager.domain.services.UserService;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.UserRepository;
+import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  *
  */
+@Transactional
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("users")
 public class UserResource {
 
-    /**
-     *
-     */
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * @param defaultFilter String
@@ -34,7 +43,7 @@ public class UserResource {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.read','root.access-manager.users','root.access-manager','root')")
     public Page<User> listByFilters(final String defaultFilter, final Boolean enableFilter, final Pageable pageable) {
-        return this.userService.listByFilters(defaultFilter, enableFilter, pageable);
+        return userRepository.listByFilters(defaultFilter, enableFilter, pageable);
     }
 
     /**
@@ -44,7 +53,7 @@ public class UserResource {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.read','root.access-manager.users','root.access-manager','root')")
     public User findById(@PathVariable final long id) {
-        return this.userService.findById(id);
+        return userRepository.findById(id).orElseThrow();
     }
 
     /**
@@ -54,7 +63,7 @@ public class UserResource {
     @PostMapping
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.create','root.access-manager.users','root.access-manager','root')")
     public User save(@RequestBody final User user) {
-        return this.userService.save(user);
+        return userRepository.save(user);
     }
 
     /**
@@ -64,8 +73,15 @@ public class UserResource {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.update','root.access-manager.users','root.access-manager','root')")
-    public User updateUser(@PathVariable final long id, @RequestBody final User user) {
-        return this.userService.save(id, user);
+    public User update(@PathVariable final long id, @RequestBody final User user) {
+        user.setId(id);
+
+        final User userSaved = userRepository.findById(user.getId())
+                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", user.getId())));
+
+        user.setPassword(userSaved.getPassword());
+
+        return userRepository.saveAndFlush(user);
     }
 
     /**
@@ -74,20 +90,46 @@ public class UserResource {
      */
     @PutMapping("/enable")
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.update.activate','root.access-manager.users.update','root.access-manager.users','root.access-manager','root')")
-    public boolean updateEnable(@RequestBody final long id) {
-        return this.userService.updateEnable(id).getEnabled();
+    public boolean enable(@RequestBody final long id) {
+
+        final User userSaved = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", id)));
+
+        Assert.notNull(userSaved, MessageSourceHolder.getMessage("repository.notFoundById", id));
+
+        userSaved.setEnabled(!userSaved.getEnabled());
+
+        return userRepository.save(userSaved).isEnabled();
     }
 
     /**
      * @param id Long
      */
     @PutMapping("/update-password/{id}")
-//    @PreAuthorize("hasAnyAuthority('root.access-manager.users.update.change-password','root.access-manager.users.update','root.access-manager.users','root.access-manager','root')")
+    @PreAuthorize("hasAnyAuthority('root.access-manager.users.update.change-password','root.access-manager.users.update','root.access-manager.users','root.access-manager','root')")
     public void updatePassword(@PathVariable final long id, final HttpServletRequest request) {
         final String currentPassword = request.getParameter("actualPassword");
         final String newPassword = request.getParameter("newPassword");
 
-        this.userService.updatePassword(id, currentPassword, newPassword);
+
+        final User authenticatedUser = ContextHolder.getAuthenticatedUser();
+
+        Assert.isTrue(authenticatedUser.getId().equals(id), MessageSourceHolder.getMessage("security.accessDenied"));
+        final User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(MessageSourceHolder.getMessage("repository.notFoundById", id)));
+
+        Assert.notNull(currentPassword, "A senha atual não pode ser vazia.");
+        Assert.notNull(newPassword, "A nova senha não pode ser vazia.");
+
+        Assert.isTrue(BCrypt.checkpw(currentPassword, user.getPassword()), "A senha atual está incorreta.");
+
+        //somente para fins de validação, sem econdar a senha
+        user.setPassword(newPassword);
+        StandaloneBeanValidation.validate(user);
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
     }
 
     /**
@@ -97,7 +139,7 @@ public class UserResource {
      */
     @GetMapping("{username}/username") // TODO mudar para load
     public Optional<User> loadUserByUsername(@PathVariable final String username) {
-        return userService.loadUserByUsername(username);
+        return userRepository.findByUsername(username);
     }
 
     /**
@@ -108,7 +150,9 @@ public class UserResource {
     @GetMapping("{userId}/change-password")
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.update.change-password','root.access-manager.users.update','root.access-manager.users','root.access-manager','root')")
     User changePassword(@PathVariable final long userId, @RequestParam final String newPassword) {
-        return this.userService.changePassword(userId, newPassword);
+        final User user = userRepository.findById(userId).orElse(null);
+        Objects.requireNonNull(user).setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return user;
     }
-
 }
