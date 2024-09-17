@@ -5,19 +5,25 @@ import com.emanuelvictor.api.functional.accessmanager.application.i18n.MessageSo
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.User;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.UserRepository;
 import com.emanuelvictor.api.functional.accessmanager.infrastructure.aid.StandaloneBeanValidation;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -61,8 +67,10 @@ public class UserResource {
      * @return User
      */
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('root.access-manager.users.create','root.access-manager.users','root.access-manager','root')")
     public User save(@RequestBody final User user) {
+        user.setPassword(passwordEncoder.encode(User.DEFAULT_PASSWORD));
         return userRepository.save(user);
     }
 
@@ -110,7 +118,6 @@ public class UserResource {
     public void updatePassword(@PathVariable final long id, final HttpServletRequest request) {
         final String currentPassword = request.getParameter("actualPassword");
         final String newPassword = request.getParameter("newPassword");
-
 
         final User authenticatedUser = ContextHolder.getAuthenticatedUser();
 
