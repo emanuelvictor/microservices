@@ -29,7 +29,6 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </properties>
 
     <dependencies>
-
         <!--        database-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,7 +46,6 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-
         <!--        web & security-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,17 +64,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
-        <!--        <dependency> TODO remove-->
-        <!--            <groupId>org.springframework.security</groupId>-->
-        <!--            <artifactId>spring-security-config</artifactId>-->
-        <!--        </dependency>-->
-        <!--        deprecated-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
             <version>2.2.5.RELEASE</version>
         </dependency>
-
         <!--        request-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -86,7 +78,6 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
-
         <!--        Utilities-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -98,25 +89,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
         </dependency>
-        <!--        TODO REMOVER deprecated-->
-        <!--        <dependency>-->
-        <!--            <groupId>commons-beanutils</groupId>-->
-        <!--            <artifactId>commons-beanutils</artifactId>-->
-        <!--            <version>1.9.4</version>-->
-        <!--        </dependency>-->
-        <!--        Validação de CPF e CNPJ &ndash;&gt;-->
-        <!--        todo remover stella-->
-        <!--        <dependency>-->
-        <!--            <groupId>br.com.caelum.stella</groupId>-->
-        <!--            <artifactId>caelum-stella-core</artifactId>-->
-        <!--            <version>${stella.caelumn.version}</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>io.github.emanuelvictor</groupId>
             <artifactId>commons</artifactId>
             <version>${ev-commons.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -131,7 +108,6 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
         <!--        spring-boot testing-->
         <dependency>
             <groupId>org.springframework.restdocs</groupId>
@@ -160,7 +136,6 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <artifactId>junit-platform-runner</artifactId>
             <version>1.7.0</version>
         </dependency>
-
         <!--        test containers-->
         <dependency>
             <groupId>org.testcontainers</groupId>
