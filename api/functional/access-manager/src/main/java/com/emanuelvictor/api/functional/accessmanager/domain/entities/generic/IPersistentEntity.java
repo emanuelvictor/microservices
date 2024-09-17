@@ -20,12 +20,13 @@ public interface IPersistentEntity<T extends Serializable> extends Serializable 
      * @return
      */
     @JsonIgnore
+    // TODO acoplamento
     boolean isSaved();
 
     /**
      * @return
      */
-    @JsonIgnore
+    @JsonIgnore // TODO acoplamento
     default boolean isNotSaved() {
         return !this.isSaved();
     }

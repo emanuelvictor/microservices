@@ -10,7 +10,7 @@ import jakarta.persistence.EntityManager;
  * @version 1.0.0
  * @since 1.0.0, 10/09/2019
  */
-public class EntityIdResolver implements ObjectIdResolver {
+public class EntityIdResolver implements ObjectIdResolver { // TODO acoplamento ObjectIdResolver
 
     /**
      *

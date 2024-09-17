@@ -1,9 +1,11 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.services.TokenService;
+import com.emanuelvictor.api.functional.accessmanager.application.feign.ITokenFeignRepository;
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -16,10 +18,8 @@ import java.util.Set;
 @RequestMapping("tokens")
 public class TokenResource {
 
-    /**
-     *
-     */
-    private final TokenService tokenService;
+    private final TokenStore tokenStore;
+    private final ITokenFeignRepository tokenFeignRepository;
 
     /**
      * todo deve ter preauthorize
@@ -27,7 +27,8 @@ public class TokenResource {
     @DeleteMapping("{token}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable final String token) {
-        tokenService.revoke(token);
+        // Black list
+        ((JwtTokenStore) this.tokenStore).revoke(token);
     }
 
     /**
@@ -36,7 +37,7 @@ public class TokenResource {
     @GetMapping("{name}")
     @ResponseStatus(HttpStatus.OK)
     public Set<Object> findTokenByName(@PathVariable final String name) {
-        return tokenService.findTokenByName(name);
+        return tokenFeignRepository.findTokenByName(name);
     }
 
     /*Dedicated to tests of the scope of the application. Client Credentials tests*/
@@ -48,7 +49,7 @@ public class TokenResource {
     @ResponseStatus(HttpStatus.OK)
 //    @PreAuthorize("#oauth2.hasScope('root.access-manager.sessions.read')")
     public ResponseEntity<String> mustReturn403() {
-        return tokenService.mustReturn403();
+        return tokenFeignRepository.mustReturn403();
     }
 
     /**
@@ -59,7 +60,7 @@ public class TokenResource {
     @GetMapping("must-return-200")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> mustReturn200() {
-        return tokenService.mustReturn200();
+        return tokenFeignRepository.mustReturn200();
     }
 
 }

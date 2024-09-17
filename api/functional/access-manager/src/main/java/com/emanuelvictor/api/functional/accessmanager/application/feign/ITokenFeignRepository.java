@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign;
+package com.emanuelvictor.api.functional.accessmanager.application.feign;
 
 import org.springframework.cloud.openfeign.FeignClient; // TODO acoplamento
 import org.springframework.http.ResponseEntity;

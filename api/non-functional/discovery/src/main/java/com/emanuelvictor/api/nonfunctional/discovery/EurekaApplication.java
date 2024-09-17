@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.discoverer;
+package com.emanuelvictor.api.nonfunctional.discovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
