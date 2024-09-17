@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
-import com.emanuelvictor.api.functional.accessmanager.domain.services.TokenService;
+import com.emanuelvictor.api.functional.accessmanager.application.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

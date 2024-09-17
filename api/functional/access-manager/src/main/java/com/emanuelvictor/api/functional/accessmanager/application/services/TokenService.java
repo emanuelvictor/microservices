@@ -1,7 +1,7 @@
-package com.emanuelvictor.api.functional.accessmanager.domain.services;
+package com.emanuelvictor.api.functional.accessmanager.application.services;
 
 import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore; // TODO acoplamento
-import com.emanuelvictor.api.functional.accessmanager.domain.repositories.feign.ITokenFeignRepository;
+import com.emanuelvictor.api.functional.accessmanager.application.feign.ITokenFeignRepository;
 import lombok.RequiredArgsConstructor; // TODO acoplamento
 import org.springframework.http.ResponseEntity; // TODO acoplamento
 import org.springframework.security.oauth2.provider.token.TokenStore; // TODO acoplamento

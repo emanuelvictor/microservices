@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.emanuelvictor.api.nonfunctional</groupId>
-    <artifactId>discoverer</artifactId>
+    <artifactId>discovery</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>discoverer</name>
+    <name>discovery</name>
 
     <properties>
         <java.version>1.8</java.version>
