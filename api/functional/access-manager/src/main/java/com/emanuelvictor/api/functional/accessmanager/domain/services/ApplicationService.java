@@ -40,7 +40,6 @@ public class ApplicationService {
 
     private final PermissionRepository permissionRepository;
     private final ApplicationRepository applicationRepository;
-    private final GroupPermissionRepository groupPermissionRepository;
 
     private final List<ApplicationSavingLogic> applicationSavingLogics;
     private final List<ApplicationUpdatingLogic> userUpdatingLogics;
