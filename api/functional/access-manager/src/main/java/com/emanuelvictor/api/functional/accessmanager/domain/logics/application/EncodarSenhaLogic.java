@@ -10,11 +10,11 @@ import org.springframework.stereotype.Component;
  * @version 1.0.0
  * @since 2.0.0, 04/01/2020
  */
-@Component
+@Component // TODO acoplamento
 @RequiredArgsConstructor
 public class EncodarSenhaLogic implements ApplicationSavingLogic {
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;  // TODO acoplamento
 
     /**
      * @param value Aplicacao

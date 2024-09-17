@@ -28,7 +28,7 @@ public class User extends PersistentEntity {
     /**
      *
      */
-    public static final String DEFAULT_PASSWORD = "testeteste";
+    public static final String DEFAULT_PASSWORD = "!DefaultPassword0*";
 
     /**
      *
@@ -49,7 +49,7 @@ public class User extends PersistentEntity {
      */
     @NotNull
     @Column(nullable = false)
-    private Boolean enabled;
+    private Boolean enabled = true;
 
     /**
      *
