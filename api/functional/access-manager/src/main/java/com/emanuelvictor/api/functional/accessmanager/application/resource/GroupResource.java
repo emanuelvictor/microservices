@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.accessmanager.application.resource.group;
+package com.emanuelvictor.api.functional.accessmanager.application.resource;
 
 import com.emanuelvictor.api.functional.accessmanager.domain.entities.Group;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
