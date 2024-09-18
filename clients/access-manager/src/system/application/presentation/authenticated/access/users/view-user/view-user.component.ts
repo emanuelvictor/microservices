@@ -78,7 +78,7 @@ export class ViewUserComponent implements OnInit {
    *
    */
   public updateEnabled(id: number) {
-    this.userRepository.updateAtivo(id)
+    this.userRepository.updateEnable(id)
       .then((enabled) => {
         this.user.enabled = enabled;
         this.messageService.toastSuccess(this.user.enabled ? 'Ativado com sucesso' : 'Inativado com sucesso')

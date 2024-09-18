@@ -94,37 +94,4 @@ public class ApplicationResource {
     public Application updateApplication(@PathVariable final long id, @RequestBody final Application application) {
         return applicationService.save(id, application);
     }
-
-//    /**
-//     * @param id {long}
-//     * @return boolean
-//     */
-//    @PutMapping("/enable")
-//    @PreAuthorize("hasAnyAuthority('" + APPLICATION_PUT_ACTIVATE_ROLE + "')")
-//    public boolean updateEnable(@RequestBody final long id) {
-//        return this.applicationService.updateEnable(id).getEnabled();
-//    }
-//
-//    /**
-//     * @param id Long
-//     */
-//    @PutMapping("/update-password/{id}")
-//    public void updatePassword(@PathVariable final long id, final HttpServletRequest request) {
-//        final String currentPassword = request.getParameter("actualPassword");
-//        final String newPassword = request.getParameter("newPassword");
-//
-//        this.applicationService.updatePassword(id, currentPassword, newPassword);
-//    }
-//
-//    /**
-//     * @param applicationId      long
-//     * @param newPassword String
-//     * @return Application
-//     */
-//    @GetMapping("{applicationId}/change-password")
-//    @PreAuthorize("hasAnyAuthority('" + APPLICATION_PUT_CHANGE_PASSWORD_ROLE + "')")
-//    Application changePassword(@PathVariable final long applicationId, @RequestParam final String newPassword) {
-//        return this.applicationService.changePassword(applicationId, newPassword);
-//    }
-
 }

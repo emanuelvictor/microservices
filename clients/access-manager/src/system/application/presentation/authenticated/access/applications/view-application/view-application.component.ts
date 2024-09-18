@@ -70,7 +70,7 @@ export class ViewApplicationComponent implements OnInit {
    *
    */
   public updateEnabled(id: number) {
-    this.applicationRepository.updateAtivo(id)
+    this.applicationRepository.updateEnable(id)
       .then((enabled) => {
         this.application.enabled = enabled;
         this.messageService.toastSuccess(this.application.enabled ? 'Ativado com sucesso' : 'Inativado com sucesso')

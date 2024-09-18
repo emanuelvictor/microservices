@@ -34,15 +34,13 @@ export class ViewGroupComponent implements OnInit {
    * @param activatedRoute
    * @param messageService
    * @param groupRepository
-   * @param permissionRepository
    */
   constructor(private router: Router,
               private dialogService: DialogService,
               public activatedRoute: ActivatedRoute,
               private messageService: MessageService,
               private homeView: AuthenticatedViewComponent,
-              private groupRepository: GroupRepository,
-              private permissionRepository: PermissionRepository) {
+              private groupRepository: GroupRepository) {
 
     this.group.id = +this.activatedRoute.snapshot.params.id || null;
     homeView.toolbar.subhead = 'Grupo de Acesso / Detalhes';
@@ -65,63 +63,7 @@ export class ViewGroupComponent implements OnInit {
     this.groupRepository.findById(this.group.id)
       .subscribe((result) => {
         this.group = result;
-
-        // this.permissionRepository.listByFilters({branch: true}) TODO remove
-        //   .subscribe(result => {
-        //     this.permissions = result.content;
-        //
-        //     let permissions = this.group.groupPermissions.map(a => a.permission);
-        //     permissions = this.organize(permissions);
-        //     this.organizeTheSelecteds(permissions, this.permissions);
-        //   })
       })
-  }
-
-  /**
-   *
-   * @param permission
-   */
-  hasSomeChildSelected(permission) {
-    return permission.lowerPermissions.filter(
-      lowerPermission => lowerPermission.selected ||
-        this.hasSomeChildSelected(lowerPermission)
-    ).length > 0
-  }
-
-  /**
-   * Pesqusia a permissão pelo ID
-   * @param ownPermissoes
-   * @param allPermissoes
-   */
-  public organizeTheSelecteds(ownPermissoes: Permission[], allPermissoes: Permission[]): void {
-    for (let i = 0; i < allPermissoes.length; i++) {
-      const permission: Permission = this.findPermission(ownPermissoes, allPermissoes[i].id);
-
-      if (permission) {
-        (permission as any).selected = true;
-        allPermissoes[i] = permission;
-      } else if (allPermissoes[i].lowerPermissions && allPermissoes[i].lowerPermissions.length)
-        this.organizeTheSelecteds(ownPermissoes, allPermissoes[i].lowerPermissions)
-    }
-  }
-
-  /**
-   * Pesqusia a permissão pelo ID
-   * @param permissions
-   * @param id
-   */
-  public findPermission(permissions: Permission[], id: number): Permission {
-    for (let i = 0; i < permissions.length; i++) {
-      if (permissions[i]) {
-        if (permissions[i].id === id)
-          return permissions[i];
-        else if (permissions[i].lowerPermissions && permissions[i].lowerPermissions.length) {
-          const permission: Permission = this.findPermission(permissions[i].lowerPermissions, id);
-          if (permission)
-            return permission;
-        }
-      }
-    }
   }
 
   /**

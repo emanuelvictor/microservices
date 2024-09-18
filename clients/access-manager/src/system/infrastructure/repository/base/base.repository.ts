@@ -50,8 +50,8 @@ export abstract class BaseRepository<T> implements IWrite<T>, IRead<T> {
     return this.httpClient.get<T[]>(this.collectionName);
   }
 
-  updateAtivo(id: number): Promise<boolean> {
-    return this.httpClient.put<boolean>(this.collectionName + '/ativo', id).toPromise();
+  updateEnable(id: number): Promise<boolean> {
+    return this.httpClient.put<boolean>(this.collectionName + '/enable', id).toPromise();
   }
 
 }
