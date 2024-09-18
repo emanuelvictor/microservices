@@ -8,14 +8,6 @@
       <mat-icon>arrow_back</mat-icon>
       <span>Voltar</span>
     </button>
-    <div *hasPermission="['root', 'applications/put/activate']; operation 'OR'">
-      <button mat-raised-button type='button' *ngIf='!itsMe'
-              (click)='updateEnabled(application?.id)' class='ml-25'
-              [ngClass]="{'activate': !application?.enabled, 'inactivate': application?.enabled}">
-        <mat-icon>{{ !application?.enabled ? 'check' : 'block' }}</mat-icon>
-        <span>{{ !application?.enabled ? 'Ativar' : 'Inativar' }}</span>
-      </button>
-    </div>
     <a color='primary' routerLink='edit'
        class='ml-25' mat-raised-button type='button'
        *hasPermission="['root', 'applications/put']; operation 'OR'">
@@ -33,7 +25,7 @@
     </div>
   </div>
   <vertical-space></vertical-space>
-  <access-group-data-view [group]='application?.group' [readOnly]='true'>
+  <access-group-data-view *ngIf='application?.group?.name' [group]='application?.group' [readOnly]='true'>
     <div accessGroupLabelName layout="row" *ngIf='application?.group?.name'>
       <div layout="column" flex>
         <label class="title">Grupo de Acesso:</label>

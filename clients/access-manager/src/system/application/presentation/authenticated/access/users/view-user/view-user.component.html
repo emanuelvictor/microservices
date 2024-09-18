@@ -82,8 +82,8 @@
   </div>
   <vertical-space></vertical-space>
   <div layout='row' layout-sm='column' layout-xs='column'>
-    <access-group-data-view [group]='user?.group' [readOnly]='true'>
-      <div accessGroupLabelName layout="row" *ngIf='user?.group'>
+    <access-group-data-view *ngIf='user?.group?.name' [group]='user?.group' [readOnly]='true'>
+      <div accessGroupLabelName layout="row" *ngIf='user?.group?.name'>
         <div layout="column" flex>
           <label class="title">Grupo de Acesso:</label>
           <label class="text">{{ user?.group?.name }}</label>
