@@ -15,33 +15,22 @@ import {AccessGroupPermissionRepository} from "../../../../../../../domain/repos
 export class AccessGroupDataViewComponent implements OnInit {
 
   @Input()
+  readOnly: boolean = false;
+
+  @Input()
   group: Group;
 
   rootPermission: Permission;
 
-  permissionsOfGroup: Permission[];
-
   constructor(homeView: AuthenticatedViewComponent,
               public activatedRoute: ActivatedRoute,
-              public permissionRepository: PermissionRepository,
-              private accessGroupPermissionRepository: AccessGroupPermissionRepository) {
+              public permissionRepository: PermissionRepository) {
     homeView.toolbar.subhead = 'Grupo de Acesso / Detalhes';
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.permissionRepository.findById(1).subscribe(permission => {
-      this.rootPermission = permission;
-      this.findPermissionsFromAccessGroupId(this.group.id).then(resultFromGroupPermissionRequest => {
-        this.permissionsOfGroup = resultFromGroupPermissionRequest;
-      });
-    });
-  }
-
-  async findPermissionsFromAccessGroupId(groupId: number): Promise<any> {
-    const pageable = {
-      'groupId': groupId
-    }
-    return (await this.accessGroupPermissionRepository.listByFilters(pageable).toPromise())
-      .content.map((accessGroupPermission: { permission: any; }) => accessGroupPermission.permission);
+      this.rootPermission = permission
+    })
   }
 }

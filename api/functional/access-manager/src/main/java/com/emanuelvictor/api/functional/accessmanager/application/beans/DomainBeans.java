@@ -1,5 +1,8 @@
 package com.emanuelvictor.api.functional.accessmanager.application.beans;
 
+import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.ClientIdDuplicated;
+import com.emanuelvictor.api.functional.accessmanager.domain.logics.application.EncodeClientSecret;
+import com.emanuelvictor.api.functional.accessmanager.domain.repositories.ApplicationRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupPermissionRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.GroupRepository;
 import com.emanuelvictor.api.functional.accessmanager.domain.repositories.PermissionRepository;
@@ -7,9 +10,10 @@ import com.emanuelvictor.api.functional.accessmanager.domain.services.LinkPermis
 import com.emanuelvictor.api.functional.accessmanager.domain.services.UnlinkPermissionToGroupService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class Beans {
+public class DomainBeans {
 
     @Bean
     LinkPermissionToGroupService linkPermissionToGroupService(final GroupRepository groupRepository,
@@ -23,5 +27,15 @@ public class Beans {
                                                                   final GroupPermissionRepository groupPermissionRepository,
                                                                   final LinkPermissionToGroupService linkPermissionToGroupService) {
         return new UnlinkPermissionToGroupService(permissionRepository, groupPermissionRepository, linkPermissionToGroupService);
+    }
+
+    @Bean
+    EncodeClientSecret encodeClientSecret(final PasswordEncoder passwordEncoder) {
+        return new EncodeClientSecret(passwordEncoder);
+    }
+
+    @Bean
+    ClientIdDuplicated clientIdDuplicated(ApplicationRepository applicationRepository) {
+        return new ClientIdDuplicated(applicationRepository);
     }
 }

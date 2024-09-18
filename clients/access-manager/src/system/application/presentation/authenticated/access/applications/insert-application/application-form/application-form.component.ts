@@ -1,6 +1,6 @@
 import {Component, ElementRef, EventEmitter, Inject, Input, OnInit, Output, Renderer} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatSnackBar, MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions} from '@angular/material';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions, MatSnackBar} from '@angular/material';
 import {AuthenticatedViewComponent} from '../../../../authenticated-view.component';
 import {MessageService} from '../../../../../../../domain/services/message.service';
 import {debounce} from "../../../../../../utils/debounce";
@@ -9,7 +9,6 @@ import {ApplicationRepository} from "../../../../../../../domain/repository/appl
 import {CrudViewComponent} from "../../../../../../controls/crud/crud-view.component";
 import {Application} from "../../../../../../../domain/entity/application.model";
 import 'rxjs/add/operator/debounceTime';
-import {debounceTime, switchMap} from 'rxjs/operators';
 import {AuthenticationService} from "../../../../../../../domain/services/authentication.service";
 
 const appearance: MatFormFieldDefaultOptions = {
@@ -74,8 +73,7 @@ export class ApplicationFormComponent extends CrudViewComponent implements OnIni
     this.entity.enabled = true;
 
     this.form = this.fb.group({
-      name: new FormControl({value: '', disabled: false}, Validators.required),
-      clientId: ['clientId', [Validators.required/*, Validators.email*/]],
+      clientId: ['clientId', [Validators.required]],
     });
 
     // this.form
@@ -112,12 +110,6 @@ export class ApplicationFormComponent extends CrudViewComponent implements OnIni
   }
 
   emit(entity: any) {
-
-    if (entity.root)
-      delete entity.group; // Se for root não tem grupo de acesso
-    else if (entity.group)
-      delete entity.group.groupPermissions; // Remove recursividade
-
     this.save.emit(entity);
   }
 

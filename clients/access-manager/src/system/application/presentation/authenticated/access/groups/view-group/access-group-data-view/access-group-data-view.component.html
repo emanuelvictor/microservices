@@ -2,5 +2,6 @@
 
 <vertical-space></vertical-space>
 
-<tree-permissions-view *ngIf='permissionsOfGroup' [group]='group'
-                       [permissionsOfGroup]='permissionsOfGroup' [upperPermission]='rootPermission' ></tree-permissions-view>
+<tree-permissions-view *ngIf='rootPermission?.id' [readOnly]='readOnly'
+                       [group]='group' [upperPermission]='rootPermission'>
+</tree-permissions-view>

@@ -72,13 +72,7 @@ export class InsertUserComponent implements OnInit {
    *
    * @param user
    */
-  public save(user) {
-    console.log(user)
-    if (!user.root && this.isString(user.grupoAcesso)) {
-      this.messageService.toastWarning('Nenhum grupo de acesso válido foi selecionada.')
-      return
-    }
-
+  public save(user: User) {
     this.userRepository.save(user)
       .then(() => {
         this.router.navigate(['access/users']);

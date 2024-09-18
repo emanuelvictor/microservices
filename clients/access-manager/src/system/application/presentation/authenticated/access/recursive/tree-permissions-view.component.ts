@@ -20,9 +20,9 @@ export class TreePermissionsViewComponent implements OnInit {
 
   hasChildren: boolean = false;
 
-  @Input() group: Group = new Group();
+  @Input() readOnly: boolean = false;
 
-  @Input() permissionsOfGroup: Permission[];
+  @Input() group: Group = new Group();
 
   @Input() upperPermission: Permission = new Permission();
 
