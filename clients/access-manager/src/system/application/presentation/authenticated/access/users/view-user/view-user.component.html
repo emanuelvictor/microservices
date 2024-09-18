@@ -31,11 +31,6 @@
 <mat-card id='default-form'>
   <div layout='row' layout-sm='column' layout-xs='column'>
     <div layout='column' flex>
-      <label class='title'>Usuário interno: </label>
-      <label class='text'>{{ user.internal ? 'Sim' : 'Não' }}</label>
-    </div>
-    <horizontal-space></horizontal-space>
-    <div layout='column' flex>
       <label class='title'>Nome:</label>
       <label class='text'>{{ user.name }}</label>
     </div>
@@ -57,8 +52,7 @@
 
     <mat-accordion class="example-headers-align" multi style='margin-left: -23px'>
       <mat-expansion-panel *ngFor='let session of user.sessions'
-                           style='box-shadow: none; padding-bottom: 0; margin-bottom: 0;'
-                           [ngStyle]="{'background-color': (session.revoked ? 'gray' : 'white')}">
+                           style='box-shadow: none'>
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{session.createdOn | date:'dd/MM/yyyy HH:mm:ss'}} -
@@ -66,13 +60,12 @@
             Sessão Revogada' : ''}}
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <div flex>
-          <div flex layout-margin style="overflow-wrap: break-word; text-overflow: ellipsis;">{{session?.value}}</div>
-          <div layout='column' flex layout-margin layout-align="end end">
-            <button layout-align='end end' flex
-                    layout-margin style='margin: 0' mat-button color="warn"
-                    *ngIf='!session?.revoked'
-                    (click)='revoke(session)'>
+        <div flex layout='row'>
+          <div layout-margin layout-align="center center">
+              <label flex layout-margin>{{session?.value}}</label>
+          </div>
+          <div layout-margin>
+            <button flex layout-margin mat-button color='warn' (click)='revoke(session)' *ngIf='!session?.revoked'>
               Revogar
             </button>
           </div>
