@@ -112,12 +112,6 @@ export class UserFormComponent extends CrudViewComponent implements OnInit {
   }
 
   emit(entity: any) {
-
-    if (entity.root)
-      delete entity.group; // Se for root não tem grupo de acesso
-    else if (entity.group)
-      delete entity.group.groupPermissions; // Remove recursividade
-
     this.save.emit(entity);
   }
 

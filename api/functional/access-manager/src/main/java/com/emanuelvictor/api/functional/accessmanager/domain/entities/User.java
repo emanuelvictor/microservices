@@ -28,7 +28,7 @@ public class User extends PersistentEntity {
     /**
      *
      */
-    public static final String DEFAULT_PASSWORD = "!DefaultPassword0*";
+    public static final String DEFAULT_PASSWORD = "!UserDefaultPassword0*";
 
     /**
      *
@@ -41,7 +41,8 @@ public class User extends PersistentEntity {
      */
     @NotBlank
     @Column(nullable = false, length = 100)
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@!%*#?&+,./])[A-Za-z\\d$@!%*#?&+,./]{8,}$", flags = Flag.UNICODE_CASE, message = "A senha deve conter ao menos 8 caracteres com letras, números e um caractere especial.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@!%*#?&+,./])[A-Za-z\\d$@!%*#?&+,./]{8,}$", flags = Flag.UNICODE_CASE,
+            message = "A senha deve conter ao menos 8 caracteres com letras, números e um caractere especial.")
     private String password;
 
     /**

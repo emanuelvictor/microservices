@@ -77,9 +77,6 @@ import {ApplicationRepository} from "./repository/application.repository";
 import {ApplicationFormComponent} from "../application/presentation/authenticated/access/applications/insert-application/application-form/application-form.component";
 import {TokenRepository} from "./repository/token.repository";
 import {
-  ViewPermissionsComponent
-} from "../application/presentation/authenticated/access/groups/view-group/view-permissions/view-permissions.component";
-import {
   AccessGroupDataViewComponent
 } from "../application/presentation/authenticated/access/groups/view-group/access-group-data-view/access-group-data-view.component";
 import {TreePermissionsViewComponent} from "../application/presentation/authenticated/access/recursive/tree-permissions-view.component";
@@ -156,7 +153,6 @@ export function customTranslateLoader(http: HttpClient) {
     UpdateUserComponent,
     UpdatePasswordDialogComponent,
     RootFormComponent,
-    ViewPermissionsComponent,
     LinkPermissionsComponent,
     UpdatePasswordComponent,
 

@@ -72,12 +72,7 @@ export class InsertApplicationComponent implements OnInit {
    *
    * @param application
    */
-  public save(application) {
-    if (!application.root && this.isString(application.grupoAcesso)) {
-      this.messageService.toastWarning('Nenhum grupo de acesso válido foi selecionada.')
-      return
-    }
-
+  public save(application: Application) {
     this.applicationRepository.save(application)
       .then(() => {
         this.router.navigate(['access/applications']);

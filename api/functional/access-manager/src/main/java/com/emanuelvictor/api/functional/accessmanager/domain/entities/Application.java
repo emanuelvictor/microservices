@@ -25,6 +25,11 @@ import java.util.Set;
 public class Application extends PersistentEntity {
 
     /**
+     *
+     */
+    public static final String DEFAULT_PASSWORD = "!ApplicationDefaultPassword0*";
+
+    /**
      * Corresponds to the clientId
      */
     @Getter
@@ -38,7 +43,7 @@ public class Application extends PersistentEntity {
      */
     @Getter
     @Setter
-    @NotBlank(message = "A client secrete must be informed")
+    @NotBlank(message = "A client secret must be informed")
     @Column(name = "client_secret", length = 90, nullable = false)
     private String clientSecret;
 
