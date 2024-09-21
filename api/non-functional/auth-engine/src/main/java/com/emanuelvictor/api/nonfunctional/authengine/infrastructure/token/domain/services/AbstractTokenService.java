@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 
 /**
+ * TODO it's can be a application service, and not abstract.
  * Base implementation for token services using random UUID values for the access token and refresh token values. The
  * main extension point for customizations is the {@link TokenEnhancer} which will be called after the access and
  * refresh tokens have been generated but before they are stored.
@@ -38,25 +39,20 @@ public abstract class AbstractTokenService implements ITokenService {
     protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
     protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
 
-    /**
-     *
-     */
     protected final ClientDetailsService clientDetailsService;
-
-    /**
-     *
-     */
     protected final AbstractTokenRepository abstractTokenRepository;
+    private final RevokeTokenDomainService revokeTokenDomainService;
 
     /**
      * @param clientDetailsService    ClientDetailsService
      * @param abstractTokenRepository AbstractTokenRepository
      */
-    public AbstractTokenService(
-                                final ClientDetailsService clientDetailsService,
-                                final AbstractTokenRepository abstractTokenRepository) {
+    public AbstractTokenService(final ClientDetailsService clientDetailsService,
+                                final AbstractTokenRepository abstractTokenRepository,
+                                RevokeTokenDomainService revokeTokenDomainService) {
         this.clientDetailsService = clientDetailsService;
         this.abstractTokenRepository = abstractTokenRepository;
+        this.revokeTokenDomainService = revokeTokenDomainService;
     }
 
     /**
@@ -226,14 +222,14 @@ public abstract class AbstractTokenService implements ITokenService {
         }
         return result;
     }
+
     /**
-     *
+     * TODO utilize correct injection. Without @Autowired
      */
     @Autowired
     private MapSessionRepository sessionRepository;
+
     /**
-     *
-     *
      * @param tokenValue String
      * @return boolean
      */
@@ -253,21 +249,50 @@ public abstract class AbstractTokenService implements ITokenService {
 
         token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
 
-            if (!innerToken.isRoot()) {
-                final Set<String> clients = extractClientsId(oAuth2Authentication);
-
-                clients.forEach(clientString -> {
-                    final Client client = (Client) this.clientDetailsService.loadClientByClientId(clientString);
-                    if (client != null && client.getRevokeTokenUrl() != null)
-                        // Get the access token from authentication
-                        delete(client.getRevokeTokenUrl(), innerToken.getValue());
-                });
-            }
+            revokeTokenDomainService.revokeToken(innerToken.getValue());
 
         }));
 
         return true;
     }
+
+//    /**
+//     *
+//     *
+//     * @param tokenValue String
+//     * @return boolean
+//     */
+//    @Override
+//    public boolean revokeToken(final String tokenValue) {
+//
+//        final Optional<IToken> token = abstractTokenRepository.findTokenByValue(tokenValue);
+//
+//        // Removing jsessionId
+//        sessionRepository.deleteById(token.orElseThrow().getRoot().orElseThrow().getValue());
+//
+//        // Revoke the token in this application
+//        abstractTokenRepository.revoke(token.orElseThrow().getValue());
+//
+//        // Revoke the token in other applications
+//        final OAuth2Authentication oAuth2Authentication = abstractTokenRepository.readAuthentication(token.orElseThrow().getAccess().orElseThrow().getValue());
+//
+//        token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
+//
+//            if (!innerToken.isRoot()) {
+//                final Set<String> clients = extractClientsId(oAuth2Authentication);
+//
+//                clients.forEach(clientString -> {
+//                    final Client client = (Client) this.clientDetailsService.loadClientByClientId(clientString);
+//                    if (client != null && client.getRevokeTokenUrl() != null)
+//                        // Get the access token from authentication
+//                        delete(client.getRevokeTokenUrl(), innerToken.getValue()); // TODO substitute its by tokenRepository.delete(
+//                });
+//            }
+//
+//        }));
+//
+//        return true;
+//    }
 
     /**
      * @param name String

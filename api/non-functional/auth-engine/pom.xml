@@ -23,6 +23,8 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
         <!--validação de cpf e cnpj-->
         <stella.caelumn.version>2.1.2</stella.caelumn.version>
+
+        <lettuce-core.version>6.1.10.RELEASE</lettuce-core.version>
     </properties>
 
     <profiles>
@@ -60,6 +62,11 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </profiles>
 
     <dependencies>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>${lettuce-core.version}</version>
+        </dependency>
         <!--        Necessary to revoke session after revoke token-->
         <dependency>
             <groupId>org.springframework.session</groupId>

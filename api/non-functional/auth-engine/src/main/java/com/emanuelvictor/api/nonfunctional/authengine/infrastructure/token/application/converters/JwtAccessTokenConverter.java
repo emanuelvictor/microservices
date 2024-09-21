@@ -26,7 +26,8 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+// TODO we need to discover whay this class exists.
+// TODO Cause it's looks identical to org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConverter, InitializingBean {
 
     public final static String DEFAULT_KEY = "integrator";

@@ -43,7 +43,7 @@ public class JwtTokenStore implements TokenStore {
 
     private ApprovalStore approvalStore;
 
-    private final Set<String> revokedTokens = new HashSet<>();
+    private final Set<String> blackList = new HashSet<>();
 
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
@@ -79,7 +79,7 @@ public class JwtTokenStore implements TokenStore {
 
     @Override
     public OAuth2AccessToken readAccessToken(String tokenValue) {
-        if (this.revokedTokens.contains(tokenValue))
+        if (this.blackList.contains(tokenValue))
             return null;
 
         OAuth2AccessToken accessToken = convertAccessToken(tokenValue);
@@ -97,19 +97,19 @@ public class JwtTokenStore implements TokenStore {
         final OAuth2AccessToken accessToken = convertAccessToken(token);
         if (!jwtTokenEnhancer.isRefreshToken(accessToken)) {
             if (accessToken.getRefreshToken() != null)
-                this.revokedTokens.add(accessToken.getRefreshToken().getValue());
+                this.blackList.add(accessToken.getRefreshToken().getValue());
         }
-        this.revokedTokens.add(token);
+        this.blackList.add(token);
     }
 
     public void revoke(final OAuth2AccessToken accessToken) {
         if (accessToken.getRefreshToken() != null)
-            this.revokedTokens.add(accessToken.getRefreshToken().getValue());
-        this.revokedTokens.add(accessToken.getValue());
+            this.blackList.add(accessToken.getRefreshToken().getValue());
+        this.blackList.add(accessToken.getValue());
     }
 
     public void revoke(final OAuth2RefreshToken refreshToken) {
-        this.revokedTokens.add(refreshToken.getValue());
+        this.blackList.add(refreshToken.getValue());
     }
 
     @Override
@@ -123,7 +123,7 @@ public class JwtTokenStore implements TokenStore {
 
     @Override
     public OAuth2RefreshToken readRefreshToken(String tokenValue) {
-        if (this.revokedTokens.contains(tokenValue))
+        if (this.blackList.contains(tokenValue))
             return null;
         OAuth2AccessToken encodedRefreshToken = convertAccessToken(tokenValue);
         OAuth2RefreshToken refreshToken = createRefreshToken(encodedRefreshToken);

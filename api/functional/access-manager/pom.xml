@@ -26,9 +26,15 @@ http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <stella.caelumn.version>2.1.2</stella.caelumn.version>
 
         <ev-commons.version>2.2</ev-commons.version>
+        <lettuce-core.version>6.1.10.RELEASE</lettuce-core.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>${lettuce-core.version}</version>
+        </dependency>
         <!--        database-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
