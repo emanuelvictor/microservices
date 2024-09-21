@@ -42,34 +42,11 @@ import java.util.List;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 
-    /**
-     *
-     */
     private final TokenStore tokenStore;
-
-    /**
-     *
-     */
     private final TokenService tokenService;
-
-    /**
-     *
-     */
     private final List<TokenEnhancer> tokenEnhancers;
-
-    /**
-     *
-     */
     private final ClientService clientDetailsService;
-
-    /**
-     *
-     */
     private final UserDetailsService userDetailsService;
-
-    /**
-     *
-     */
     private final AuthenticationManager authenticationManager;
 
     /**

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// TODO it's can be TokenRepository and it's no need be abstract. @Component annotation can be used.
 @Repository
 public abstract class AbstractTokenRepository implements ITokenRepository {
 
@@ -36,7 +37,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      *
      */
     @Getter
-    private final JwtAccessTokenConverter jwtAccessTokenConverter = JwtAccessTokenConverter.getInstance();
+    private final JwtAccessTokenConverter jwtAccessTokenConverter = JwtAccessTokenConverter.getInstance();  // TODO the JwtAccessTokenConverter is needed only to this.
 
     /**
      * Create several and return the root

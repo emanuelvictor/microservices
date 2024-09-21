@@ -21,6 +21,7 @@ ribbon:
   ReadTimeout: 10000
 
 zuul:
+  ignored-headers: Access-Control-Allow-Credentials, Access-Control-Allow-Origin #  https://github.com/spring-cloud/spring-cloud-netflix/issues/1250
   routes:
     integrator:
       path: /integrator/**

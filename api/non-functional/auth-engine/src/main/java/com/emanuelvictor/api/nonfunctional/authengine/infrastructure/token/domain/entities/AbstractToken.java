@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
+// TODO it's no need be abstract. It's can bee Token.
 @JsonIgnoreProperties({"next", "previous", "root", "leaf", "refresh", "access", "all"})
 public abstract class AbstractToken implements IToken {
 
@@ -79,7 +79,7 @@ public abstract class AbstractToken implements IToken {
     public static String extractNameFromToken(final String token) {
         if (token != null)
             try {
-                return JwtAccessTokenConverter.getInstance().extractAuthentication(JwtAccessTokenConverter.getInstance().decode(token)).getName();
+                return JwtAccessTokenConverter.getInstance().extractAuthentication(JwtAccessTokenConverter.getInstance().decode(token)).getName(); // TODO the JwtAccessTokenConverter is needed only to this.
             } catch (final Exception ignored) {
             }
         return token;

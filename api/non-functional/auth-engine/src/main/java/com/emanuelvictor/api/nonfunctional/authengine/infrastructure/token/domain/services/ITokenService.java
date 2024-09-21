@@ -6,9 +6,4 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 
 public interface ITokenService extends AuthorizationServerTokenServices, ResourceServerTokenServices, ConsumerTokenServices {
 
-    /**
-     *
-     */
-    void delete(final String url, final String token);
-
 }
