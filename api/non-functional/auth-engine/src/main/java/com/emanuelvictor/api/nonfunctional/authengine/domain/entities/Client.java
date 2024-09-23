@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.core.GrantedAuthority; // TODO acoplamento
+import org.springframework.security.oauth2.provider.ClientDetails;  // TODO acoplamento
 
 import java.util.HashSet;
 import java.util.Map;

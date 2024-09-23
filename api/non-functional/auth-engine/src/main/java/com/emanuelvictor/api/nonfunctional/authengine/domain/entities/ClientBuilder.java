@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.core.GrantedAuthority;  // TODO acoplamento
+import org.springframework.security.oauth2.provider.ClientDetails;  // TODO acoplamento
 
 import java.util.*;
 import java.util.stream.Collectors;

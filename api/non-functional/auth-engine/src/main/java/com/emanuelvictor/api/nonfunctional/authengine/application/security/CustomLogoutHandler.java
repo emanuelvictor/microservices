@@ -1,14 +1,10 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.services.TokenService;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.services.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.session.SessionRepositoryUnavailableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-import org.springframework.security.web.context.HttpRequestResponseHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;

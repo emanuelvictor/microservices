@@ -1,43 +1,28 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories;
+package com.emanuelvictor.api.nonfunctional.authengine.application.services.token.repositories;
 
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.TokenImpl;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.common.*;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.session.MapSessionRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-// TODO it's can be TokenRepository and it's no need be abstract. @Component annotation can be used.
-@Repository
-public abstract class AbstractTokenRepository implements ITokenRepository {
+public class TokenRepositoryImpl implements TokenRepository {
 
-    /**
-     *
-     */
-    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractTokenRepository.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(TokenRepositoryImpl.class);
 
-    /**
-     *
-     */
-    private final Set<IToken> tokens = new HashSet<>();
+    private final Set<Token> tokens = new HashSet<>();
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
 
-    /**
-     *
-     */
-    @Getter
-    private final JwtAccessTokenConverter jwtAccessTokenConverter = JwtAccessTokenConverter.getInstance();  // TODO the JwtAccessTokenConverter is needed only to this.
+    public TokenRepositoryImpl(JwtAccessTokenConverter jwtAccessTokenConverter) {
+        this.jwtAccessTokenConverter = jwtAccessTokenConverter;
+    }
 
     /**
      * Create several and return the root
@@ -45,13 +30,13 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      * @param tokensValueToCreate String
      * @return Optional<IToken>
      */
-    public Optional<IToken> save(final String... tokensValueToCreate) {
+    public Optional<Token> save(final String... tokensValueToCreate) {
 
         if (tokensValueToCreate == null)
             throw new RuntimeException("Token value to create must be not null");
 
         // Create the root token
-        final Optional<IToken> root = this.save(tokensValueToCreate[0]);
+        final Optional<Token> root = this.save(tokensValueToCreate[0]);
 
         // Run the others token and add then
         for (final String tokenToCreate : tokensValueToCreate) {
@@ -73,35 +58,52 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
 
         // Verify if the token to create alaredy exists
         this.findTokenByValue(tokenValueToCreate).ifPresentOrElse(iToken -> {
-            LOGGER.warn("Token with value: " + iToken.getValue() + " already found");
-        }, () -> this.findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> iToken.add(new Token(tokenValueToCreate)), () -> {
-            this.save(tokenValueToFind);
-            this.save(tokenValueToFind, tokenValueToCreate);
+            LOGGER.warn("Token with value: {} already found", iToken.getValue());
+        }, () -> findTokenByValue(tokenValueToFind).ifPresentOrElse(iToken -> {
+            final String name = extractNameFromToken(tokenValueToCreate);
+            iToken.add(new TokenImpl(tokenValueToCreate, name));
+        }, () -> {
+            save(tokenValueToFind);
+            save(tokenValueToFind, tokenValueToCreate);
         }));
 
-        this.findTokenByValue(tokenValueToCreate);
+        findTokenByValue(tokenValueToCreate);
     }
 
     /**
      * @param tokenValueToCreate String
      * @return IToken
      */
-    private Optional<IToken> save(final String tokenValueToCreate) {
+    private Optional<Token> save(final String tokenValueToCreate) {
 
+        final String name = extractNameFromToken(tokenValueToCreate);
         this.findTokenByValue(tokenValueToCreate)
-                .ifPresentOrElse(iToken -> LOGGER.warn(("Token already exists")), () -> this.tokens.add(new Token(tokenValueToCreate)));
+                .ifPresentOrElse(iToken -> LOGGER.warn(("Token already exists")), () -> tokens.add(new TokenImpl(tokenValueToCreate, name)));
 
         return this.findTokenByValue(tokenValueToCreate);
+    }
+
+    /**
+     * @param token String
+     * @return String
+     */
+    public String extractNameFromToken(final String token) {
+        if (token != null)
+            try {
+                return jwtAccessTokenConverter.extractAuthentication(jwtAccessTokenConverter.decode(token)).getName();
+            } catch (final Exception ignored) {
+            }
+        return token;
     }
 
     /**
      * @param tokenValue String
      * @return Optional<IToken>
      */
-    public Optional<IToken> findTokenByValue(final String tokenValue) {
+    public Optional<Token> findTokenByValue(final String tokenValue) {
 
-        for (final IToken iToken : this.tokens) {
-            final Optional<IToken> found = iToken.findByValue(tokenValue);
+        for (final Token token : this.tokens) {
+            final Optional<Token> found = token.findByValue(tokenValue);
             if (found.isPresent())
                 return found;
         }
@@ -115,7 +117,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
      * @return Optional<IToken>
      */
     @Override
-    public Set<IToken> listTokensByName(final String name) {
+    public Set<Token> listTokensByName(final String name) {
         return this.tokens.stream().filter(iToken ->
                 iToken.getName() != null && iToken.getName().equals(name)
         ).collect(Collectors.toSet());
@@ -123,17 +125,15 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
 
     /**
      * @param tokenValue String
-     * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> revoke(final String tokenValue) {
-        final Optional<IToken> token = this.findTokenByValue(tokenValue);
+    public void revoke(final String tokenValue) {
+        final Optional<Token> token = findTokenByValue(tokenValue);
 
-        token.ifPresentOrElse(IToken::revoke, () -> {
+        token.ifPresentOrElse(Token::revoke, () -> {
             throw new RuntimeException("Token with value: " + tokenValue + " not found");
         });
 
-        return token;
     }
 
     /**
@@ -144,14 +144,6 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
     @Override
     public void remove(final String tokenValue) {
         this.findTokenByValue(tokenValue).ifPresent(this.tokens::remove);
-    }
-
-    /**
-     * @return Set<IToken>
-     */
-    @Override
-    public Set<IToken> findAll() {
-        return this.tokens;
     }
 
 // Is the following code is Legacy
@@ -199,8 +191,10 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
         return jwtAccessTokenConverter.extractAccessToken(tokenValue, jwtAccessTokenConverter.decode(tokenValue));
     }
 
+    // TODO?????
     @Override
     public void removeAccessToken(final OAuth2AccessToken oAuth2AccessToken) {
+        revoke(oAuth2AccessToken.getValue());
     }
 
     /**
@@ -254,7 +248,7 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
 
     @Override
     public void removeRefreshToken(final OAuth2RefreshToken oAuth2RefreshToken) {
-        this.revoke(oAuth2RefreshToken.getValue());
+        revoke(oAuth2RefreshToken.getValue());
     }
 
     /**
@@ -273,13 +267,13 @@ public abstract class AbstractTokenRepository implements ITokenRepository {
                 if (authentication.getUserAuthentication().getDetails() instanceof WebAuthenticationDetails)
                     if (((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId() != null) {
                         final String root = ((WebAuthenticationDetails) authentication.getUserAuthentication().getDetails()).getSessionId();
-                        final Optional<IToken> toReturn = findTokenByValue(root);
+                        final Optional<Token> toReturn = findTokenByValue(root);
                         if (toReturn.isPresent()) {
-                            final OAuth2AccessToken accessToken = readAccessToken(toReturn.map(iToken -> iToken.getLeaf().orElseThrow().getPrevious().orElseThrow()).map(IToken::getValue).orElse(null));
+                            final OAuth2AccessToken accessToken = readAccessToken(toReturn.map(iToken -> iToken.getLeaf().orElseThrow().getPrevious().orElseThrow()).map(Token::getValue).orElse(null));
                             if (accessToken.getRefreshToken() != null)
                                 return accessToken;
                             else {
-                                final OAuth2RefreshToken refreshToken = readRefreshToken(toReturn.map(iToken -> iToken.getLeaf().orElseThrow()).map(IToken::getValue).orElse(null));
+                                final OAuth2RefreshToken refreshToken = readRefreshToken(toReturn.map(iToken -> iToken.getLeaf().orElseThrow()).map(Token::getValue).orElse(null));
                                 final DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(accessToken);
                                 token.setRefreshToken(refreshToken);
                                 return token;

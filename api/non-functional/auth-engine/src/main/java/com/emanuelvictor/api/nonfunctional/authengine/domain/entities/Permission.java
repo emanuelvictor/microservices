@@ -1,13 +1,13 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.generic.PersistentEntity;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;  // TODO acoplamento
+import com.fasterxml.jackson.annotation.JsonProperty;  // TODO acoplamento
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;  // TODO acoplamento
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.GrantedAuthority;  // TODO acoplamento
 
 import java.util.Set;
 

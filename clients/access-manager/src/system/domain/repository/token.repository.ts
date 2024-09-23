@@ -29,13 +29,5 @@ export class TokenRepository extends BaseRepository<Token> {
    */
   revoke(token: string): Promise<void> {
     return this.httpClient.delete<void>(environment.api + '/auth-engine/tokens/' + token).toPromise()
-    // return this.deleteData('http://localhost:8081/tokens/' + token);
-  }
-
-  deleteData(url) {
-    return fetch(url, {
-      method: 'delete'
-    })
-      .then(response => response.json());
   }
 }

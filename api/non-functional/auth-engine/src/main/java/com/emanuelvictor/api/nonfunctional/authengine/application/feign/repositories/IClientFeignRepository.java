@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign;
+package com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Client;
 import org.springframework.cloud.openfeign.FeignClient;

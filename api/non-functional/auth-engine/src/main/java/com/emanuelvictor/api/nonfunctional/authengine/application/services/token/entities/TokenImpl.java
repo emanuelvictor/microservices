@@ -1,8 +1,5 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities;
+package com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities;
 
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters.JwtAccessTokenConverter;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,14 +11,14 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-// TODO it's no need be abstract. It's can bee Token.
+
 @JsonIgnoreProperties({"next", "previous", "root", "leaf", "refresh", "access", "all"})
-public abstract class AbstractToken implements IToken {
+public class TokenImpl implements Token {
 
     /**
      *
      */
-    public static final Logger LOGGER = LoggerFactory.getLogger(AbstractToken.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(TokenImpl.class);
 
     /**
      *
@@ -33,13 +30,13 @@ public abstract class AbstractToken implements IToken {
      *
      */
     @Setter
-    private IToken next;
+    private Token next;
 
     /**
      *
      */
     @Setter
-    private IToken previous;
+    private Token previous;
 
     /**
      *
@@ -65,24 +62,10 @@ public abstract class AbstractToken implements IToken {
     /**
      * @param value String
      */
-    public AbstractToken(final String value) {
+    public TokenImpl(final String value, final String name) {
         this.createdOn = LocalDateTime.now();
         this.value = value;
-
-        this.name = extractNameFromToken(value);
-    }
-
-    /**
-     * @param token String
-     * @return String
-     */
-    public static String extractNameFromToken(final String token) {
-        if (token != null)
-            try {
-                return JwtAccessTokenConverter.getInstance().extractAuthentication(JwtAccessTokenConverter.getInstance().decode(token)).getName(); // TODO the JwtAccessTokenConverter is needed only to this.
-            } catch (final Exception ignored) {
-            }
-        return token;
+        this.name = name;
     }
 
     /**
@@ -90,21 +73,20 @@ public abstract class AbstractToken implements IToken {
      */
     @Override
     public void extractNameFromToken() {
-        this.name = extractNameFromToken(this.value);
         this.getRoot().orElseThrow().setName(this.name);
     }
 
     /**
      * @return Optional<IToken>
      */
-    public Optional<IToken> getNext() {
+    public Optional<Token> getNext() {
         return Optional.ofNullable(next);
     }
 
     /**
      * @return Optional<IToken>
      */
-    public Optional<IToken> getPrevious() {
+    public Optional<Token> getPrevious() {
         return Optional.ofNullable(previous);
     }
 
@@ -112,7 +94,7 @@ public abstract class AbstractToken implements IToken {
      * @param next IToken
      * @return Optional<IToken>
      */
-    public Optional<IToken> add(final IToken next) {
+    public Optional<Token> add(final Token next) {
 
         if (this.getValue().equals(next.getValue())) {
 //            LOGGER.info("Token already exits for this session");
@@ -137,7 +119,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> revoke() {
+    public Optional<Token> revoke() {
         this.revokePrevious();
         if (!this.isRevoked()) {
             this.setRevoked(true);
@@ -150,8 +132,8 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> revokeNext() {
-        return this.getNext().flatMap(IToken::revoke);
+    public Optional<Token> revokeNext() {
+        return this.getNext().flatMap(Token::revoke);
     }
 
     /**
@@ -200,7 +182,7 @@ public abstract class AbstractToken implements IToken {
      */
     @Override
     public void printNext() {
-        this.getNext().ifPresent(IToken::print);
+        this.getNext().ifPresent(Token::print);
     }
 
 
@@ -211,7 +193,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> findByValue(final String value) {
+    public Optional<Token> findByValue(final String value) {
 
         if (this.getValue().equals(value))
             return Optional.of(this);
@@ -229,7 +211,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> getRoot() {
+    public Optional<Token> getRoot() {
         if (this.getPrevious().isEmpty())
             return Optional.of(this);
         else {
@@ -241,7 +223,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken>
      */
     @Override
-    public Optional<IToken> getLeaf() {
+    public Optional<Token> getLeaf() {
         if (this.getNext().isEmpty())
             return Optional.of(this);
         else {
@@ -254,7 +236,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken> the last access token
      */
     @Override
-    public Optional<IToken> getAccess() {
+    public Optional<Token> getAccess() {
         return this.getLeaf().orElseThrow().getPrevious();
     }
 
@@ -262,7 +244,7 @@ public abstract class AbstractToken implements IToken {
      * @return Optional<IToken> the last refresh token
      */
     @Override
-    public Optional<IToken> getRefresh() {
+    public Optional<Token> getRefresh() {
         return this.getLeaf();
     }
 
@@ -291,7 +273,7 @@ public abstract class AbstractToken implements IToken {
     /**
      * @return Set<IToken>
      */
-    public Set<IToken> getAll() {
+    public Set<Token> getAll() {
         return this.getRoot().orElseThrow().getAll(new HashSet<>());
     }
 
@@ -301,7 +283,7 @@ public abstract class AbstractToken implements IToken {
      * @param tokens Set<IToken>
      * @return Set<IToken>
      */
-    public Set<IToken> getAll(final Set<IToken> tokens) {
+    public Set<Token> getAll(final Set<Token> tokens) {
 
         tokens.add(this);
 
@@ -331,7 +313,7 @@ public abstract class AbstractToken implements IToken {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractToken that = (AbstractToken) o;
+        TokenImpl that = (TokenImpl) o;
 
         return value != null ? value.equals(that.value) : that.value == null;
     }

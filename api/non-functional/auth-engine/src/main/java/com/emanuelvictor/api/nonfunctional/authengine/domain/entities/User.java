@@ -2,7 +2,7 @@ package com.emanuelvictor.api.nonfunctional.authengine.domain.entities;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetails;  // TODO acoplamento
 
 import java.util.HashSet;
 import java.util.Set;

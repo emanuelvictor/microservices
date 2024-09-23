@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.repositories;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.Token;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static com.emanuelvictor.api.nonfunctional.authengine.domain.entity.TokenTests.TOKEN_VALUES;
 
-public class TokenRepositoryTests extends AbstractsTests {
+public class TokenRepositoryImplTests extends AbstractsTests {
 
 
     /**
@@ -53,7 +53,7 @@ public class TokenRepositoryTests extends AbstractsTests {
     @Test
     public void countTests() {
 
-        final IToken firstToken = this.tokenStore.save(TOKEN_VALUES[1]).orElseThrow();
+        final Token firstToken = this.tokenStore.save(TOKEN_VALUES[1]).orElseThrow();
         this.tokenStore.save(TOKEN_VALUES[1], TOKEN_VALUES[2]);
         this.tokenStore.save(TOKEN_VALUES[2], TOKEN_VALUES[3]);
         this.tokenStore.save(TOKEN_VALUES[3], TOKEN_VALUES[4]);
@@ -73,7 +73,7 @@ public class TokenRepositoryTests extends AbstractsTests {
     @Test
     public void createRepeatedTokenInThisSessionMustBeUpdate() {
 
-        final IToken firstToken = this.tokenStore.save(TOKEN_VALUES[1]).orElseThrow();
+        final Token firstToken = this.tokenStore.save(TOKEN_VALUES[1]).orElseThrow();
         this.tokenStore.save(TOKEN_VALUES[1], TOKEN_VALUES[2]);
         this.tokenStore.save(TOKEN_VALUES[2], TOKEN_VALUES[3]);
         this.tokenStore.save(TOKEN_VALUES[3], TOKEN_VALUES[4]);
@@ -145,7 +145,7 @@ public class TokenRepositoryTests extends AbstractsTests {
         this.tokenStore.save(TOKEN_VALUES[15], TOKEN_VALUES[13]);
         Assertions.assertEquals(2, this.tokenStore.findTokenByValue(TOKEN_VALUES[15]).orElseThrow().count());
 
-        final IToken token = this.tokenStore.findTokenByValue(TOKEN_VALUES[15]).orElseThrow();
+        final Token token = this.tokenStore.findTokenByValue(TOKEN_VALUES[15]).orElseThrow();
         Assertions.assertTrue(token.getPrevious().isEmpty());
         Assertions.assertTrue(token.getNext().isPresent());
         Assertions.assertEquals(TOKEN_VALUES[15], token.getValue());
@@ -172,7 +172,7 @@ public class TokenRepositoryTests extends AbstractsTests {
         this.tokenStore.save(TOKEN_VALUES[2], TOKEN_VALUES[3]);
         this.tokenStore.save(TOKEN_VALUES[3], TOKEN_VALUES[4]);
         this.tokenStore.save(TOKEN_VALUES[4], TOKEN_VALUES[5]);
-        this.tokenStore.findTokenByValue(TOKEN_VALUES[3]).ifPresent(IToken::printFromRoot);
+        this.tokenStore.findTokenByValue(TOKEN_VALUES[3]).ifPresent(Token::printFromRoot);
 
         Assertions.assertEquals(this.tokenStore.findTokenByValue(TOKEN_VALUES[2]).orElseThrow().getValue(), this.tokenStore.findTokenByValue(TOKEN_VALUES[1]).orElseThrow().getNext().orElseThrow().getValue());
         Assertions.assertEquals(this.tokenStore.findTokenByValue(TOKEN_VALUES[3]).orElseThrow().getValue(), this.tokenStore.findTokenByValue(TOKEN_VALUES[2]).orElseThrow().getNext().orElseThrow().getValue());
@@ -187,7 +187,7 @@ public class TokenRepositoryTests extends AbstractsTests {
         this.tokenStore.save(TOKEN_VALUES[14], TOKEN_VALUES[18]);
         this.tokenStore.save(TOKEN_VALUES[12], TOKEN_VALUES[16]);
         this.tokenStore.save(TOKEN_VALUES[13], TOKEN_VALUES[17]);
-        this.tokenStore.findTokenByValue(TOKEN_VALUES[13]).ifPresent(IToken::printFromRoot);
+        this.tokenStore.findTokenByValue(TOKEN_VALUES[13]).ifPresent(Token::printFromRoot);
 
         Assertions.assertEquals(this.tokenStore.findTokenByValue(TOKEN_VALUES[12]).orElseThrow().getValue(), this.tokenStore.findTokenByValue(TOKEN_VALUES[11]).orElseThrow().getNext().orElseThrow().getValue());
         Assertions.assertEquals(this.tokenStore.findTokenByValue(TOKEN_VALUES[13]).orElseThrow().getValue(), this.tokenStore.findTokenByValue(TOKEN_VALUES[12]).orElseThrow().getNext().orElseThrow().getValue());
@@ -297,7 +297,7 @@ public class TokenRepositoryTests extends AbstractsTests {
             severalTokens[i] = token;
         }
 
-        final Optional<IToken> rootToken = this.tokenStore.save(severalTokens);
+        final Optional<Token> rootToken = this.tokenStore.save(severalTokens);
 
         Assertions.assertEquals(root, rootToken.orElseThrow().getValue());
         Assertions.assertEquals(leaf, rootToken.orElseThrow().getLeaf().orElseThrow().getValue());
@@ -317,7 +317,7 @@ public class TokenRepositoryTests extends AbstractsTests {
         final String token2 = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbkBhZG1pbi5jb20iLCJzY29wZSI6WyJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3VwcyIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlciIsInJvb3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQvY2hhbmdlLXBhc3N3b3JkIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQvY2hhbmdlLXBhc3N3b3JkIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMiXSwiYXRpIjoiYzJhZDM2ODUtNTdhMC00NTY2LWJlMDAtNjYyNTIxZGRlYjM4IiwiZXhwIjoyNjAzOTE2Mzc3LCJhdXRob3JpdGllcyI6WyJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3VwcyIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlciIsInJvb3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQvY2hhbmdlLXBhc3N3b3JkIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvZ2V0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQvY2hhbmdlLXBhc3N3b3JkIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMiXSwianRpIjoiYmZiZTJjODUtYTZmZi00Y2JiLTllMjMtMDU4NmIzMjU5MWZkIiwiY2xpZW50X2lkIjoiYnJvd3NlciJ9.WyaWplkzF9fDAqn46dSCxOH3fsMafmNWG9lnJpbjIus";
 
         tokenStore.save(token1, token2, TOKEN_VALUES[3], TOKEN_VALUES[4], TOKEN_VALUES[5], TOKEN_VALUES[6], TOKEN_VALUES[7], TOKEN_VALUES[8]);
-        Assertions.assertTrue(this.tokenStore.listTokensByName("admin@admin.com").size() > 0); // TODO refactor
+        Assertions.assertFalse(this.tokenStore.listTokensByName("admin@admin.com").isEmpty());
     }
 
 }

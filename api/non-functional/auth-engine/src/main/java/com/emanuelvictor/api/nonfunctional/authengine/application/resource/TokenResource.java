@@ -1,7 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.resource;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.services.TokenService;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +40,7 @@ public class TokenResource {
     @GetMapping("{name}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAnyAuthority('root.access-manager.sessions.get', 'root.access-manager.sessions', 'root.access-manager', 'root')")
-    public Set<IToken> findTokenByName(@PathVariable final String name) {
+    public Set<Token> findTokenByName(@PathVariable final String name) {
         return tokenService.listTokensByName(name);
     }
 
