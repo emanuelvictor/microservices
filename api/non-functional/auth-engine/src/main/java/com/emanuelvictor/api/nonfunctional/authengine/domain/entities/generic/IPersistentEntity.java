@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entities.generic;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnore;  // TODO acoplamento
 
 import java.io.Serializable;
 

@@ -1,10 +1,7 @@
-/**
- *
- */
 package com.emanuelvictor.api.nonfunctional.authengine.application.security;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.services.ClientService;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.services.TokenService;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.ClientService;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

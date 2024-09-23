@@ -1,9 +1,13 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.services;
+package com.emanuelvictor.api.nonfunctional.authengine.application.services.token.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Client;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.repositories.JwtAccessTokenConverter;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.repositories.TokenRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GrantType;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.repositories.AbstractTokenRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.repositories.TokenRepositoryImpl;
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.pubsub.api.async.RedisPubSubAsyncCommands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -15,6 +19,7 @@ import org.springframework.security.oauth2.common.exceptions.InvalidTokenExcepti
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.session.MapSessionRepository;
+import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -22,7 +27,6 @@ import java.util.stream.Collectors;
 
 
 /**
- * TODO it's can be a application service, and not abstract.
  * Base implementation for token services using random UUID values for the access token and refresh token values. The
  * main extension point for customizations is the {@link TokenEnhancer} which will be called after the access and
  * refresh tokens have been generated but before they are stored.
@@ -34,25 +38,29 @@ import java.util.stream.Collectors;
  * @author Luke Taylor
  * @author Dave Syer
  */
-public abstract class AbstractTokenService implements ITokenService {
+@Service
+public class TokenServiceImpl implements TokenService {
 
-    protected static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
-    protected static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
+    private static final String SEPARATOR = ".";
+    private static final int REFRESH_TOKEN_VALIDITY_SECONDS = 60 * 60 * 24 * 30; // default 30 days.
+    private static final int ACCESS_TOKEN_VALIDITY_SECONDS = 60 * 60 * 12; // default 12 hours.
 
-    protected final ClientDetailsService clientDetailsService;
-    protected final AbstractTokenRepository abstractTokenRepository;
-    private final RevokeTokenDomainService revokeTokenDomainService;
+    private final RedisClient redisClient;
+    private final ClientDetailsService clientDetailsService;
+    private final TokenRepository tokenRepository;
+    private final JwtAccessTokenConverter jwtAccessTokenConverter;
 
     /**
-     * @param clientDetailsService    ClientDetailsService
-     * @param abstractTokenRepository AbstractTokenRepository
+     * @param clientDetailsService ClientDetailsService
+     * @param tokenRepository      TokenRepository
      */
-    public AbstractTokenService(final ClientDetailsService clientDetailsService,
-                                final AbstractTokenRepository abstractTokenRepository,
-                                RevokeTokenDomainService revokeTokenDomainService) {
+    public TokenServiceImpl(final RedisClient redisClient,
+                            final ClientDetailsService clientDetailsService,
+                            final List<TokenRepository> tokenRepository, final JwtAccessTokenConverter jwtAccessTokenConverter) {
+        this.redisClient = redisClient;
         this.clientDetailsService = clientDetailsService;
-        this.abstractTokenRepository = abstractTokenRepository;
-        this.revokeTokenDomainService = revokeTokenDomainService;
+        this.tokenRepository = tokenRepository.get(0);
+        this.jwtAccessTokenConverter = jwtAccessTokenConverter;
     }
 
     /**
@@ -63,8 +71,8 @@ public abstract class AbstractTokenService implements ITokenService {
     @Override
     public OAuth2AccessToken createAccessToken(final OAuth2Authentication authentication) throws AuthenticationException {
 
-        return AbstractTokenRepository.extractSessionID(authentication)
-                .flatMap(sessionId -> this.abstractTokenRepository.findTokenByValue(sessionId).map(iToken ->
+        return TokenRepositoryImpl.extractSessionID(authentication)
+                .flatMap(sessionId -> this.tokenRepository.findTokenByValue(sessionId).map(iToken ->
                         // Is a authentication in the browser navigator, and Jessionid was found in repository
                 {
 
@@ -86,7 +94,7 @@ public abstract class AbstractTokenService implements ITokenService {
                         // Create access token with refresh token associated
                         final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                         // Save de root (or jsessionid), access token and refresh token
-                        this.abstractTokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                        tokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                         return accessToken;
                     } else {
                         return defaultOAuth2AccessToken;
@@ -99,7 +107,7 @@ public abstract class AbstractTokenService implements ITokenService {
                     // Create access token with refresh token associated
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
                     // Save de root (or jsessionid), access token and refresh token
-                    this.abstractTokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    tokenRepository.save(sessionId, accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
                     // If the request is not a authorization code, or that is no have jsessionid.
@@ -110,13 +118,13 @@ public abstract class AbstractTokenService implements ITokenService {
                     // So it not must be replace the old access token already saved
                     if (authentication.getOAuth2Request().getGrantType().equals(GrantType.CLIENT_CREDENTIALS.getValue())) {
                         // Remove the old access token associated to the clientId
-                        this.abstractTokenRepository.remove(authentication.getOAuth2Request().getClientId());
+                        tokenRepository.remove(authentication.getOAuth2Request().getClientId());
 
                         // Create a access token without refresh, because it is note necessary
                         final OAuth2AccessToken accessToken = createAccessTokenWithoutRefreshToken(authentication);
 
                         // Save the new access token associated to the client Id
-                        this.abstractTokenRepository.save(authentication.getOAuth2Request().getClientId(), accessToken.getValue()).orElseThrow().printFromRoot();
+                        tokenRepository.save(authentication.getOAuth2Request().getClientId(), accessToken.getValue()).orElseThrow().printFromRoot();
                         return Optional.of((DefaultOAuth2AccessToken) accessToken);
                     }
 
@@ -125,7 +133,7 @@ public abstract class AbstractTokenService implements ITokenService {
                     final OAuth2AccessToken accessToken = createAccessTokenWithRefreshToken(authentication);
 
                     // Save access token and refresh token
-                    this.abstractTokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+                    tokenRepository.save(accessToken.getValue(), accessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
                     return Optional.of((DefaultOAuth2AccessToken) accessToken);
 
                 }).orElseThrow();
@@ -141,15 +149,15 @@ public abstract class AbstractTokenService implements ITokenService {
     @Override
     public OAuth2AccessToken refreshAccessToken(final String refreshTokenValue, final TokenRequest tokenRequest) throws AuthenticationException {
 
-        final IToken iToken = abstractTokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
+        final Token token = tokenRepository.findTokenByValue(refreshTokenValue).orElseThrow();
 
-        final OAuth2Authentication authentication = abstractTokenRepository.readAuthentication(iToken.getAccess().orElseThrow().getValue());
+        final OAuth2Authentication authentication = tokenRepository.readAuthentication(token.getAccess().orElseThrow().getValue());
 //        authentication = createRefreshedAuthentication(authentication, tokenRequest);
         final DefaultOAuth2AccessToken defaultOAuth2AccessToken = new DefaultOAuth2AccessToken(createAccessTokenWithRefreshToken(authentication));
         final int refreshTokenValiditySeconds = getRefreshTokenValiditySeconds(authentication.getOAuth2Request());
         if (refreshTokenValiditySeconds > 0) {
             final DefaultExpiringOAuth2RefreshToken defaultExpiringOAuth2RefreshToken = new DefaultExpiringOAuth2RefreshToken(defaultOAuth2AccessToken.getRefreshToken().getValue(),
-                    new Date(iToken.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
+                    new Date(token.getRefresh().orElseThrow().getCreatedOn().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() + (refreshTokenValiditySeconds * 1000L)));
             defaultOAuth2AccessToken.setRefreshToken(defaultExpiringOAuth2RefreshToken);
         }
 
@@ -158,17 +166,17 @@ public abstract class AbstractTokenService implements ITokenService {
             throw new InvalidGrantException("Wrong client for this refresh token: " + refreshTokenValue);
         }
 
-        if (iToken.isRevoked())
-            throw new InvalidTokenException("Invalid refresh token (revoked): " + iToken.getAccess().orElseThrow().getValue());
+        if (token.isRevoked())
+            throw new InvalidTokenException("Invalid refresh token (revoked): " + token.getAccess().orElseThrow().getValue());
 
         if (isExpired(defaultOAuth2AccessToken.getRefreshToken()))
             throw new InvalidTokenException("Invalid refresh token (expired): " + defaultOAuth2AccessToken.getRefreshToken());
 
-        if (this.abstractTokenRepository.findTokenByValue(defaultOAuth2AccessToken.getValue()).isPresent() || this.abstractTokenRepository.findTokenByValue(defaultOAuth2AccessToken.getRefreshToken().getValue()).isPresent())
+        if (tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getValue()).isPresent() || tokenRepository.findTokenByValue(defaultOAuth2AccessToken.getRefreshToken().getValue()).isPresent())
             throw new RuntimeException("The access token and refresh token is already saved");
 
         // Save de root (or jsessionid), access token and refresh token
-        this.abstractTokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
+        tokenRepository.save(refreshTokenValue, defaultOAuth2AccessToken.getValue(), defaultOAuth2AccessToken.getRefreshToken().getValue()).orElseThrow().printFromRoot();
         return defaultOAuth2AccessToken;
     }
 
@@ -178,7 +186,7 @@ public abstract class AbstractTokenService implements ITokenService {
      */
     @Override
     public OAuth2AccessToken getAccessToken(final OAuth2Authentication authentication) {
-        return abstractTokenRepository.getAccessToken(authentication);
+        return tokenRepository.getAccessToken(authentication);
     }
 
     /**
@@ -187,7 +195,7 @@ public abstract class AbstractTokenService implements ITokenService {
      */
     @Override
     public OAuth2AccessToken readAccessToken(final String accessToken) {
-        return abstractTokenRepository.readAccessToken(accessToken);
+        return tokenRepository.readAccessToken(accessToken);
     }
 
     /**
@@ -199,15 +207,15 @@ public abstract class AbstractTokenService implements ITokenService {
     @Override
     public OAuth2Authentication loadAuthentication(final String accessTokenValue) throws AuthenticationException, InvalidTokenException {
 
-        final OAuth2AccessToken accessToken = abstractTokenRepository.readAccessToken(accessTokenValue);
+        final OAuth2AccessToken accessToken = tokenRepository.readAccessToken(accessTokenValue);
         if (accessToken == null) {
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
         } else if (accessToken.isExpired()) {
-            abstractTokenRepository.removeAccessToken(accessToken);
+            tokenRepository.removeAccessToken(accessToken);
             throw new InvalidTokenException("Access token expired: " + accessTokenValue);
         }
 
-        final OAuth2Authentication result = abstractTokenRepository.readAuthentication(accessToken);
+        final OAuth2Authentication result = tokenRepository.readAuthentication(accessToken);
         if (result == null) {
             // in case of race condition
             throw new InvalidTokenException("Invalid access token: " + accessTokenValue);
@@ -236,73 +244,33 @@ public abstract class AbstractTokenService implements ITokenService {
     @Override
     public boolean revokeToken(final String tokenValue) {
 
-        final Optional<IToken> token = abstractTokenRepository.findTokenByValue(tokenValue);
+        final Optional<Token> token = tokenRepository.findTokenByValue(tokenValue);
 
         // Removing jsessionId
         sessionRepository.deleteById(token.orElseThrow().getRoot().orElseThrow().getValue());
 
         // Revoke the token in this application
-        abstractTokenRepository.revoke(token.orElseThrow().getValue());
-
-        // Revoke the token in other applications
-        final OAuth2Authentication oAuth2Authentication = abstractTokenRepository.readAuthentication(token.orElseThrow().getAccess().orElseThrow().getValue());
+        tokenRepository.revoke(token.orElseThrow().getValue());
 
         token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
 
-            revokeTokenDomainService.revokeToken(innerToken.getValue());
+            final StatefulRedisPubSubConnection<String, String> connection = redisClient.connectPubSub();
+            final RedisPubSubAsyncCommands<String, String> async = connection.async();
+            async.publish("revoke-token-redis-channel", innerToken.getValue());
 
         }));
 
         return true;
     }
 
-//    /**
-//     *
-//     *
-//     * @param tokenValue String
-//     * @return boolean
-//     */
-//    @Override
-//    public boolean revokeToken(final String tokenValue) {
-//
-//        final Optional<IToken> token = abstractTokenRepository.findTokenByValue(tokenValue);
-//
-//        // Removing jsessionId
-//        sessionRepository.deleteById(token.orElseThrow().getRoot().orElseThrow().getValue());
-//
-//        // Revoke the token in this application
-//        abstractTokenRepository.revoke(token.orElseThrow().getValue());
-//
-//        // Revoke the token in other applications
-//        final OAuth2Authentication oAuth2Authentication = abstractTokenRepository.readAuthentication(token.orElseThrow().getAccess().orElseThrow().getValue());
-//
-//        token.ifPresent(iToken -> iToken.getAll().forEach(innerToken -> {
-//
-//            if (!innerToken.isRoot()) {
-//                final Set<String> clients = extractClientsId(oAuth2Authentication);
-//
-//                clients.forEach(clientString -> {
-//                    final Client client = (Client) this.clientDetailsService.loadClientByClientId(clientString);
-//                    if (client != null && client.getRevokeTokenUrl() != null)
-//                        // Get the access token from authentication
-//                        delete(client.getRevokeTokenUrl(), innerToken.getValue()); // TODO substitute its by tokenRepository.delete(
-//                });
-//            }
-//
-//        }));
-//
-//        return true;
-//    }
-
     /**
      * @param name String
      * @return Set<String>
      */
-    public Set<IToken> listTokensByName(final String name) {
-        return abstractTokenRepository.listTokensByName(name);
+    @Override
+    public Set<Token> listTokensByName(final String name) {
+        return tokenRepository.listTokensByName(name);
     }
-
-    static final String SEPARATOR = ".";
 
     /**
      * @param grantedAuthorities Collection<? extends GrantedAuthority>
@@ -348,7 +316,7 @@ public abstract class AbstractTokenService implements ITokenService {
         token.setRefreshToken(createRefreshToken(authentication));
         token.setScope(authentication.getOAuth2Request().getScope());
 
-        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+        return jwtAccessTokenConverter != null ? jwtAccessTokenConverter.enhance(token, authentication) : token;
     }
 
     /**
@@ -363,7 +331,7 @@ public abstract class AbstractTokenService implements ITokenService {
         }
         token.setScope(authentication.getOAuth2Request().getScope());
 
-        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+        return jwtAccessTokenConverter != null ? jwtAccessTokenConverter.enhance(token, authentication) : token;
     }
 
     /**
@@ -464,7 +432,7 @@ public abstract class AbstractTokenService implements ITokenService {
         token.setRefreshToken(refreshToken);
         token.setScope(authentication.getOAuth2Request().getScope());
 
-        return this.abstractTokenRepository.getJwtAccessTokenConverter() != null ? this.abstractTokenRepository.getJwtAccessTokenConverter().enhance(token, authentication) : token;
+        return jwtAccessTokenConverter != null ? jwtAccessTokenConverter.enhance(token, authentication) : token;
     }
 
 }

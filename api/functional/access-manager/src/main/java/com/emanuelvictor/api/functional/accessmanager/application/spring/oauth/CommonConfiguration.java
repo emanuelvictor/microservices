@@ -1,5 +1,7 @@
 package com.emanuelvictor.api.functional.accessmanager.application.spring.oauth;
 
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.jwt.MyJwtAccessTokenConverter;
+import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.jwt.MyJwtTokenStore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -9,8 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtAccessTokenConverter;
-import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.custom.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 /**
  * @author Emanuel Victor
@@ -20,28 +21,24 @@ import com.emanuelvictor.api.functional.accessmanager.application.spring.oauth.c
 @Configuration
 public class CommonConfiguration {
 
-    private final static String DEFAULT_KEY = "integrator";
-
     /**
-     * @return TokenStore
+     * @return {@link TokenStore}
      */
     @Bean
     public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
+        return new MyJwtTokenStore(accessTokenConverter());
     }
 
     /**
-     * @return JwtAccessTokenConverter
+     * @return {@link MyJwtAccessTokenConverter}
      */
     @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(DEFAULT_KEY);
-        return converter;
+    public MyJwtAccessTokenConverter accessTokenConverter() {
+        return new MyJwtAccessTokenConverter();
     }
 
     /**
-     * @return DefaultTokenServices
+     * @return {@link DefaultTokenServices}
      */
     @Bean
     @Primary
@@ -53,13 +50,16 @@ public class CommonConfiguration {
     }
 
     /**
-     * @return PasswordEncoder
+     * @return {@link PasswordEncoder}
      */
     @Bean
     public PasswordEncoder encoder() {
         return new BCryptPasswordEncoder(12);
     }
 
+    /**
+     * @return {@link AuthenticationManager}
+     */
     @Bean
     public AuthenticationManager authenticationManagerBean() {
         OAuth2AuthenticationManager authenticationManager = new OAuth2AuthenticationManager();

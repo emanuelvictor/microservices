@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.application.converters;
+package com.emanuelvictor.api.nonfunctional.authengine.application.services.token.repositories;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -6,8 +6,18 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
-import org.springframework.security.jwt.crypto.sign.*;
-import org.springframework.security.oauth2.common.*;
+import org.springframework.security.jwt.crypto.sign.InvalidSignatureException;
+import org.springframework.security.jwt.crypto.sign.MacSigner;
+import org.springframework.security.jwt.crypto.sign.RsaSigner;
+import org.springframework.security.jwt.crypto.sign.RsaVerifier;
+import org.springframework.security.jwt.crypto.sign.SignatureVerifier;
+import org.springframework.security.jwt.crypto.sign.Signer;
+import org.springframework.security.oauth2.common.DefaultExpiringOAuth2RefreshToken;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
+import org.springframework.security.oauth2.common.DefaultOAuth2RefreshToken;
+import org.springframework.security.oauth2.common.ExpiringOAuth2RefreshToken;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.common.util.JsonParser;
 import org.springframework.security.oauth2.common.util.JsonParserFactory;
@@ -26,30 +36,14 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-// TODO we need to discover whay this class exists.
-// TODO Cause it's looks identical to org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
+
 public class JwtAccessTokenConverter implements TokenEnhancer, AccessTokenConverter, InitializingBean {
 
     public final static String DEFAULT_KEY = "integrator";
 
-    /**
-     *
-     */
-    private static final JwtAccessTokenConverter instance = new JwtAccessTokenConverter();
-
-    /**
-     *
-     */
-    private JwtAccessTokenConverter() {
-    }
-
-    /**
-     * @return JwtAccessTokenConverter
-     */
-    public static JwtAccessTokenConverter getInstance() {
-        instance.setSigningKey(DEFAULT_KEY);
-        instance.afterPropertiesSet();
-        return instance;
+    public JwtAccessTokenConverter() {
+        setSigningKey(DEFAULT_KEY);
+        afterPropertiesSet();
     }
 
     /**

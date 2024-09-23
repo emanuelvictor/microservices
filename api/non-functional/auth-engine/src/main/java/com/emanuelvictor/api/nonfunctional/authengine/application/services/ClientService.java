@@ -1,8 +1,8 @@
-package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
+package com.emanuelvictor.api.nonfunctional.authengine.application.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.*;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IAccessGroupPermissionFeignRepository;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.repositories.feign.IClientFeignRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IAccessGroupPermissionFeignRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IClientFeignRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;

@@ -1,8 +1,8 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.entity;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.AbstractToken;
-import com.emanuelvictor.api.nonfunctional.authengine.infrastructure.token.domain.entities.IToken;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.Token;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.entities.TokenImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,34 +10,35 @@ import java.util.Set;
 
 public class TokenTests extends AbstractsTests {
 
+    private static final String TOKEN_NAME = "token";
 
     /**
      *
      */
     @Test
-    public void recursiveTokensHanlder() {
+    public void recursiveTokensHandler() {
 
         //Creates two composites containing the tokens
-        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[1]);
-        final IToken token2 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[2]);
+        final Token token1 = new TokenImpl(TOKEN_VALUES[1], TOKEN_NAME);
+        final Token token2 = new TokenImpl(TOKEN_VALUES[2], TOKEN_NAME);
         token1.add(token2);
 
-        final IToken token3 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[3]);
+        final Token token3 = new TokenImpl(TOKEN_VALUES[3], TOKEN_NAME);
         token1.add(token3);
 
-        final IToken token4 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[4]);
+        final Token token4 = new TokenImpl(TOKEN_VALUES[4], TOKEN_NAME);
         token3.add(token4);
-        final IToken token5 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[6]);
+        final Token token5 = new TokenImpl(TOKEN_VALUES[6], TOKEN_NAME);
         token4.add(token5);
-        final IToken token7 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[7]);
+        final Token token7 = new TokenImpl(TOKEN_VALUES[7], TOKEN_NAME);
         token4.add(token7);
 
 
-        final IToken token6 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[5]);
+        final Token token6 = new TokenImpl(TOKEN_VALUES[5], TOKEN_NAME);
         token3.add(token6);
-        final IToken token8 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[8]);
+        final Token token8 = new TokenImpl(TOKEN_VALUES[8], TOKEN_NAME);
         token6.add(token8);
-        final IToken token9 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[9]);
+        final Token token9 = new TokenImpl(TOKEN_VALUES[9], TOKEN_NAME);
         token6.add(token9);
 
         Assertions.assertFalse(token1.isRevoked());
@@ -72,18 +73,18 @@ public class TokenTests extends AbstractsTests {
     @Test
     public void addTokenMustPass() {
 
-        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[1]);
+        final Token token1 = new TokenImpl(TOKEN_VALUES[1], TOKEN_NAME);
 
-        final IToken token2 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[2]);
+        final Token token2 = new TokenImpl(TOKEN_VALUES[2], TOKEN_NAME);
         token1.add(token2);
 
-        final IToken token3 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[3]);
+        final Token token3 = new TokenImpl(TOKEN_VALUES[3], TOKEN_NAME);
         token1.add(token3);
 
-        final IToken token4 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[4]);
+        final Token token4 = new TokenImpl(TOKEN_VALUES[4], TOKEN_NAME);
         token2.add(token4);
 
-        final IToken token5 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[5]);
+        final Token token5 = new TokenImpl(TOKEN_VALUES[5], TOKEN_NAME);
         token1.add(token5);
 
         Assertions.assertNotNull(token4.getNext(), "The next token must be non null");
@@ -100,18 +101,18 @@ public class TokenTests extends AbstractsTests {
      */
     @Test
     public void countTests() {
-        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[1]);
+        final Token token1 = new TokenImpl(TOKEN_VALUES[1], TOKEN_NAME);
 
-        final IToken token2 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[2]);
+        final Token token2 = new TokenImpl(TOKEN_VALUES[2], TOKEN_NAME);
         token1.add(token2);
 
-        final IToken token3 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[3]);
+        final Token token3 = new TokenImpl(TOKEN_VALUES[3], TOKEN_NAME);
         token1.add(token3);
 
-        final IToken token4 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[4]);
+        final Token token4 = new TokenImpl(TOKEN_VALUES[4], TOKEN_NAME);
         token2.add(token4);
 
-        final IToken token5 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[5]);
+        final Token token5 = new TokenImpl(TOKEN_VALUES[5], TOKEN_NAME);
         token1.add(token5);
 
         final int expected = 5;
@@ -159,8 +160,8 @@ public class TokenTests extends AbstractsTests {
      */
     @Test
     public void getAccessToken() {
-        final IToken iToken = dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[4]).orElseThrow();
-        Assertions.assertEquals(iToken.getAccess().orElseThrow().getValue(), TOKEN_VALUES[iToken.count() - 1]);
+        final Token token = dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[4]).orElseThrow();
+        Assertions.assertEquals(token.getAccess().orElseThrow().getValue(), TOKEN_VALUES[token.count() - 1]);
     }
 
     /**
@@ -168,8 +169,8 @@ public class TokenTests extends AbstractsTests {
      */
     @Test
     public void getRefreshToken() {
-        final IToken iToken = dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[4]).orElseThrow();
-        Assertions.assertEquals(iToken.getRefresh().orElseThrow().getValue(), TOKEN_VALUES[iToken.count()]);
+        final Token token = dataSet().stream().findFirst().orElseThrow().findByValue(TOKEN_VALUES[4]).orElseThrow();
+        Assertions.assertEquals(token.getRefresh().orElseThrow().getValue(), TOKEN_VALUES[token.count()]);
     }
 
     /**
@@ -180,29 +181,29 @@ public class TokenTests extends AbstractsTests {
     /**
      * @return Set<IToken>
      */
-    public static Set<IToken> dataSet() {
+    public static Set<Token> dataSet() {
 
         //Creates two composites containing the tokens
-        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[1]);
-        final IToken token2 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[2]);
+        final Token token1 = new TokenImpl(TOKEN_VALUES[1], TOKEN_NAME);
+        final Token token2 = new TokenImpl(TOKEN_VALUES[2], TOKEN_NAME);
         token1.add(token2);
 
-        final IToken token3 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[3]);
+        final Token token3 = new TokenImpl(TOKEN_VALUES[3], TOKEN_NAME);
         token1.add(token3);
 
-        final IToken token4 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[4]);
+        final Token token4 = new TokenImpl(TOKEN_VALUES[4], TOKEN_NAME);
         token3.add(token4);
-        final IToken token5 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[6]);
+        final Token token5 = new TokenImpl(TOKEN_VALUES[6], TOKEN_NAME);
         token4.add(token5);
-        final IToken token7 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[7]);
+        final Token token7 = new TokenImpl(TOKEN_VALUES[7], TOKEN_NAME);
         token4.add(token7);
 
 
-        final IToken token6 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[5]);
+        final Token token6 = new TokenImpl(TOKEN_VALUES[5], TOKEN_NAME);
         token3.add(token6);
-        final IToken token8 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[8]);
+        final Token token8 = new TokenImpl(TOKEN_VALUES[8], TOKEN_NAME);
         token6.add(token8);
-        final IToken token9 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token(TOKEN_VALUES[9]);
+        final Token token9 = new TokenImpl(TOKEN_VALUES[9], TOKEN_NAME);
         token6.add(token9);
 
         return Set.of(token1);
@@ -214,7 +215,7 @@ public class TokenTests extends AbstractsTests {
      */
     @Test
     void extractNameFromTokenMustPass() {
-        final IToken token1 = new com.emanuelvictor.api.nonfunctional.authengine.domain.entities.Token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDM5MTE1MjEsInVzZXJfbmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImF1dGhvcml0aWVzIjpbInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2VycyIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyIiwicm9vdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucyJdLCJqdGkiOiIxOGJhNGE3ZC0zN2NkLTRkZTMtYmM4My1kODE2YzM3NzYwOTEiLCJjbGllbnRfaWQiOiJicm93c2VyIiwic2NvcGUiOlsicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIiLCJyb290Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zIl19.ea_AstAbyaO8019VzK0XGAWySrUJOJqq8LKuEBc-sLg");
+        final Token token1 = new TokenImpl("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDM5MTE1MjEsInVzZXJfbmFtZSI6ImFkbWluQGFkbWluLmNvbSIsImF1dGhvcml0aWVzIjpbInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2VycyIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcG9zdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9wdXQvYWN0aXZhdGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyIiwicm9vdCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2RlbGV0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9nZXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9jaGFuZ2UtcGFzc3dvcmQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucyJdLCJqdGkiOiIxOGJhNGE3ZC0zN2NkLTRkZTMtYmM4My1kODE2YzM3NzYwOTEiLCJjbGllbnRfaWQiOiJicm93c2VyIiwic2NvcGUiOlsicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2dyb3Vwcy9kZWxldGUiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2FjdGl2YXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci91c2Vycy9wb3N0Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9ncm91cHMiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL2FwcGxpY2F0aW9ucy9wdXQiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvZ3JvdXBzL3B1dC9hY3RpdmF0ZSIsInJvb3QvYWNjZXNzLW1hbmFnZXIiLCJyb290Iiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvZGVsZXRlIiwicm9vdC9hY2Nlc3MtbWFuYWdlci9hcHBsaWNhdGlvbnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zL3Bvc3QiLCJyb290L2FjY2Vzcy1tYW5hZ2VyL3VzZXJzL2dldCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvdXNlcnMvcHV0L2NoYW5nZS1wYXNzd29yZCIsInJvb3QvYWNjZXNzLW1hbmFnZXIvYXBwbGljYXRpb25zIl19.ea_AstAbyaO8019VzK0XGAWySrUJOJqq8LKuEBc-sLg", TOKEN_NAME);
         Assertions.assertEquals(token1.getName(), "admin@admin.com");
     }
 }

@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.nonfunctional.authengine.domain.services;
 
 import com.emanuelvictor.api.nonfunctional.authengine.domain.AbstractsTests;
+import com.emanuelvictor.api.nonfunctional.authengine.application.services.token.services.TokenServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.util.Assert;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 
 //@SpringBootTest
-public class TokenServiceTests extends AbstractsTests {
+public class TokenServiceImplTests extends AbstractsTests {
 
     /**
      *
@@ -27,7 +28,7 @@ public class TokenServiceTests extends AbstractsTests {
                 new SimpleGrantedAuthority("root.falcatrua.outra")
         );
 
-        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", TokenService.extractClientsId(authorities))), "");
+        Assert.isTrue("account-manager;financial;falcatrua".equals(String.join(";", TokenServiceImpl.extractClientsId(authorities))), "");
 
     }
 
