@@ -1,19 +1,20 @@
 <div layout='row' layout-align='center center' class='nav-menu'>
 
-  <a layout-margin routerLinkActive #rlaUsers='routerLinkActive' [ngClass]="{'menu-active': rlaUsers.isActive}"
-     routerLink='users' *hasPermission="['root', 'root.access-manager.users', 'root.access-manager.users.get']; operation 'OR'">
-    Clientes
-  </a>
+    <!--    <a layout-margin routerLinkActive #rlaUsers='routerLinkActive'-->
+    <!--       routerLink='users' [ngClass]="{'menu-active': rlaUsers.isActive}"-->
+    <!--       *hasPermission="['root', 'root.vehicle-financing-simulators.simulations', 'root.vehicle-financing-simulators.simulations.get']; operation 'OR'">-->
+    <!--        Simulações-->
+    <!--    </a>-->
 
-  <a class='ml-25' layout-margin routerLinkActive
-     [ngClass]="{'menu-active': rlaApplications.isActive}"
-     routerLink='applications' #rlaApplications='routerLinkActive'
-     *hasPermission="['root', 'root.access-manager.applications', 'root.access-manager.applications.get']; operation 'OR'">
-    Simulações
-  </a>
+    <a class='ml-25' layout-margin
+       routerLink='vehicles' #rlaApplications='routerLinkActive'
+       routerLinkActive [ngClass]="{'menu-active': rlaApplications.isActive}"
+       *hasPermission="['root', 'root.vehicle-financing-simulators.vehicles', 'root.vehicle-financing-simulators.vehicles.get']; operation 'OR'">
+        Veículos
+    </a>
 
 </div>
 
 <div class='main-content'>
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
 </div>

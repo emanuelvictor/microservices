@@ -1,14 +1,9 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {LoadingMode, LoadingType, TdLoadingService} from '@covalent/core';
-import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material';
 import {Subscription} from 'rxjs';
-import {MessageService} from '../../../domain/services/message.service';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthenticationService} from "../../../domain/services/authentication.service";
 import {User} from "../../../domain/entity/user.model";
-import {UserRepository} from "../../../domain/repository/user.repository";
-import {UpdatePasswordDialogComponent} from "./access/users/update-password-dialog.component";
 
 // @ts-ignore
 @Component({
@@ -32,20 +27,11 @@ export class AuthenticatedViewComponent implements OnInit, OnDestroy {
   /**
    *
    * @param translate
-   * @param activeRoute
-   * @param messageService
    * @param loadingService
-   * @param userRepository
-   * @param dialog
-   * @param router
    * @param authenticationService
    */
-  constructor(private translate: TranslateService,
-              private activeRoute: ActivatedRoute,
-              private messageService: MessageService,
+  constructor(translate: TranslateService,
               private loadingService: TdLoadingService,
-              private userRepository: UserRepository,
-              private dialog: MatDialog, private router: Router,
               private authenticationService: AuthenticationService) {
 
     // this language will be used as a fallback when a translation isn't found in the current language
@@ -81,17 +67,6 @@ export class AuthenticatedViewComponent implements OnInit, OnDestroy {
    */
   public getAuthenticatedUser() {
     this.user = this.authenticationService.user;
-  }
-
-  /**
-   *
-   */
-  public openDialogChangePassword() {
-    this.dialog.open(UpdatePasswordDialogComponent, {
-      width: '400px',
-      height: 'auto',
-      data: {user: this.user || null}
-    })
   }
 
   /**
