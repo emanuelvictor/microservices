@@ -1,69 +1,55 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.ports.rest.aid;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.aid.converters.InstanciesConverterWithGson;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.aid.DeleteCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.aid.InsertCommand;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.aid.UpdateCommand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.rests.aid.Converter;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.rests.aid.Rest;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.CreateRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.DeleteRepository;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.aid.UpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
-import java.lang.reflect.ParameterizedType;
+public abstract class AbstractRest<DomainObject, InputObject, OutputObject> implements Rest<InputObject, OutputObject> {
 
-public abstract class AbstractRest<CommandInputObject, CommandOutputObject, InputObject, OutputObject> implements Rest<InputObject, OutputObject> {
-
-    @Autowired(required = false)
-    private InsertCommand<CommandInputObject, CommandOutputObject> insertCommand;
+    @Autowired
+    private Converter<DomainObject, InputObject, OutputObject> converter;
 
     @Autowired(required = false)
-    private UpdateCommand<CommandInputObject, CommandOutputObject> updateCommand;
+    private CreateRepository<DomainObject> createRepository;
 
     @Autowired(required = false)
-    private DeleteCommand<CommandInputObject> deleteCommand;
+    private UpdateRepository<DomainObject> updateRepository;
 
-    // TODO if the command is not implemented, then throw a exception
+    @Autowired(required = false)
+    private DeleteRepository<DomainObject> deleteRepository;
+
     @PostMapping
     public OutputObject create(InputObject inputObject) {
-        final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        final CommandOutputObject commandOutputObject = insertCommand.execute(commandInputObject);
-        return convertCommandOutputObjectToOutputObject(commandOutputObject);
+        final DomainObject domainObject = convertInputObjectToDomainObject(inputObject);
+        final DomainObject domainObjectCreated = createRepository.create(domainObject);
+        return convertDomainObjectoToOutputObject(domainObjectCreated);
     }
 
-    @PutMapping
-    public OutputObject update(InputObject inputObject) {
-        final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        final CommandOutputObject commandOutputObject = updateCommand.execute(commandInputObject);
-        return convertCommandOutputObjectToOutputObject(commandOutputObject);
+    @PutMapping("{id}")
+    public OutputObject update(@PathVariable final Object id, InputObject inputObject) {
+        final DomainObject domainObject = convertInputObjectToDomainObject(inputObject);
+        final DomainObject domainObjectUpdated = updateRepository.update(id, domainObject);
+        return convertDomainObjectoToOutputObject(domainObjectUpdated);
     }
 
-    @DeleteMapping
-    public void delete(InputObject inputObject) {
-        final CommandInputObject commandInputObject = convertInputObjectToCommandInputObject(inputObject);
-        deleteCommand.execute(commandInputObject);
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable final Object id) {
+        deleteRepository.delete(id);
     }
 
-    protected CommandInputObject convertInputObjectToCommandInputObject(InputObject inputObject) {
-        return InstanciesConverterWithGson.tryConvertInstances(getCommandInputObjectClass(), inputObject);
+    private DomainObject convertInputObjectToDomainObject(InputObject inputObject) {
+        return converter.convertInputObjectToDomainObject(inputObject);
     }
 
-    protected OutputObject convertCommandOutputObjectToOutputObject(CommandOutputObject outputObject) {
-        return InstanciesConverterWithGson.tryConvertInstances(getOutputObjectClass(), outputObject);
-    }
-
-    private Class<CommandInputObject> getCommandInputObjectClass() {
-        return reflectClassType(0);
-    }
-
-    private Class<OutputObject> getOutputObjectClass() {
-        return reflectClassType(3);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class reflectClassType(int indexOfGenericClass) {
-        return ((Class) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[indexOfGenericClass]);
+    private OutputObject convertDomainObjectoToOutputObject(DomainObject domainObject) {
+        return converter.convertDomainObjectoToOutputObject(domainObject);
     }
 
 }

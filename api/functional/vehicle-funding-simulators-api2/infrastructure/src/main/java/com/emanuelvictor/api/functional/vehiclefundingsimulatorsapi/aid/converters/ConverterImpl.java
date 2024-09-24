@@ -1,6 +1,6 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.aid.converters;
 
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.aid.Converter;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.rests.aid.Converter;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.ParameterizedType;

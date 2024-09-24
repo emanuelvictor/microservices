@@ -51,12 +51,12 @@ public class VehicleRepositoryImpl implements VehicleRepository {
     }
 
     @Override
-    public void delete(Vehicle vehicle) {
+    public void delete(Object id) {
         throw new NotImplementedException("Not implemented yet");
     }
 
     @Override
-    public Vehicle update(Vehicle vehicle) {
+    public Vehicle update(final Object id, Vehicle vehicle) {
         throw new NotImplementedException("Not implemented yet");
     }
 }

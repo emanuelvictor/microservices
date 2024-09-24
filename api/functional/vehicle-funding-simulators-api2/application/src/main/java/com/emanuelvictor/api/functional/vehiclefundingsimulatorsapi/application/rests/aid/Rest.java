@@ -4,8 +4,8 @@ public interface Rest<InputObject, OutputObject> {
 
     OutputObject create(InputObject inputObject);
 
-    OutputObject update(InputObject inputObject);
+    OutputObject update(Object id, InputObject inputObject);
 
-    void delete(InputObject inputObject);
+    void delete(Object id);
 
 }

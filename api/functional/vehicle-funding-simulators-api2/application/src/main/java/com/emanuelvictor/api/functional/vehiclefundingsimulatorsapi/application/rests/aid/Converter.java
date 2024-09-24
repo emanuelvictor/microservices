@@ -1,4 +1,4 @@
-package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.aid;
+package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.rests.aid;
 
 public interface Converter<DomainObject, InputObject, OutputObject> {
 

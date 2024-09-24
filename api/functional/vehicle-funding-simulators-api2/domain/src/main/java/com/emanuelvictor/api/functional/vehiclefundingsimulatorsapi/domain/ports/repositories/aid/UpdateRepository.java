@@ -2,5 +2,5 @@ package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.port
 
 public interface UpdateRepository<T> {
 
-    T update(T t);
+    T update(final Object id, T t);
 }
