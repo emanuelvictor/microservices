@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.brand.insert;
 
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.SpringBootTests;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.brand.BrandCommandInput;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.brand.BrandCommandOutput;
-import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.commands.brand.insert.InsertBrand;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.brand.BrandCommandInput;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.brand.BrandCommandOutput;
+import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.application.services.commands.brand.insert.InsertBrand;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.jpa.BrandJPA;
 import com.emanuelvictor.api.functional.vehiclefundingsimulatorsapi.domain.ports.repositories.jpa.BrandJPARepository;
 import org.assertj.core.api.Assertions;

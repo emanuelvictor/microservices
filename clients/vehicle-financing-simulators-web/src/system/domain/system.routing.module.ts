@@ -24,16 +24,14 @@ import {ApplicationViewComponent} from "../application/presentation/authenticate
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
-  {path: 'recuperar-senha', component: RecoveryPasswordComponent},
-  {path: 'cadastrar-senha/:codigo', component: InsertPasswordComponent},
   {
     path: '', component: AuthenticatedViewComponent, canActivate: [AuthenticationService],
     children: [
       {
-        path: '', redirectTo: 'access', pathMatch: 'full',
+        path: '', redirectTo: 'vehicle-financing-simulators', pathMatch: 'full',
       },
       {
-        path: 'access',
+        path: 'vehicle-financing-simulators',
         component: AccessViewComponent,
         children: [
           {

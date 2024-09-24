@@ -46,11 +46,6 @@
     </div>
 
     <mat-menu #menu='matMenu'>
-      <button (click)='openDialogChangePassword()'
-              *ngIf='!user?.internal' mat-menu-item
-              color='primary' style='color: #4C4C4C'>
-        <span>Alterar senha</span>
-      </button>
       <button mat-menu-item (click)='logout()' color='primary' style='color: #4C4C4C'>
         <mat-icon>power_settings_new</mat-icon>
         <span>Sair</span>
@@ -64,17 +59,6 @@
   <mat-sidenav #sidenav mode='over' [opened]='false'>
 
     <div layout='row' class='menu-top' *ngIf='user' flex>
-
-      <div layout='column' (click)='openDialogChangePassword()'
-           matTooltip='Alterar senha' [style.position]="'relative'">
-
-        <button mat-icon-button class='btn-primary'>
-          {{ user?.name  ? (user?.name | userInitials) : user?.username}}
-        </button>
-        <mat-icon matSuffix class="change-password">settings</mat-icon>
-
-      </div>
-      <horizontal-space [horizontalMargin]="5"></horizontal-space>
       <div layout='column' style="margin-left: 10px;">
         <h3 *ngIf='user?.name'>{{ user?.name }}</h3>
         <label *ngIf="user?.username?.length <= 24">{{ user?.username }}</label>

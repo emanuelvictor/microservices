@@ -21,7 +21,7 @@ logging:
   file:
     name: /${user.home}/${spring.application.name}.log
 server:
-  port: 8084
+  port: 8085
 
 # configs do eureka server
 eureka:
