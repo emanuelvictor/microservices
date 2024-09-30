@@ -16,29 +16,30 @@ import java.util.function.Consumer
  * @since 1.0.0, 25/08/2021
  */
 @jakarta.persistence.Entity
-class Choice(alternative: IntermediaryAlternative) : Entity<ChoiceId>() {
+class Choice : Entity<ChoiceId> {
+
+    constructor(alternative: IntermediaryAlternative) {
+        this.alternative = alternative
+        this.header = getHeaderFromAlternative(alternative, StringBuilder()).toString()
+        this.path = alternative.path!!
+        this.splittedPaths = splitPathsFromPath(this.path)
+    }
 
     @Column(nullable = false)
-    val date: LocalDateTime = LocalDateTime.now()
+    var date: LocalDateTime = LocalDateTime.now()
 
     @Column(nullable = false)
-    var path: String? = null
+    val path: String // TODO make only get path, for demeter low
 
     @Column(nullable = false)
-    var header: String? = null
+    val header: String
 
     @ElementCollection(fetch = FetchType.EAGER)
-    var splittedPaths: List<String> = ArrayList()
+    val splittedPaths: List<String>
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "alternative_id", nullable = false)
-    var alternative: IntermediaryAlternative? = alternative
-
-    init {
-        this.header = getHeaderFromAlternative(alternative, StringBuilder()).toString()
-        this.path = alternative.path
-        this.splittedPaths = splitPathsFromPath(this.path!!)
-    }
+    var alternative: IntermediaryAlternative // FIXME var is necessary only to convert handler. Working it.
 
     /**
      *
@@ -69,7 +70,10 @@ class Choice(alternative: IntermediaryAlternative) : Entity<ChoiceId>() {
             pathFromChoice.substring(pathFromChoice.indexOf("[") + 1, pathFromChoice.indexOf("]"))
                 .split(", ")
                 .forEach(Consumer {
-                    val extracted = (pathFromChoice.substring(0, pathFromChoice.indexOf("[")) + it + pathFromChoice.substring(pathFromChoice.indexOf("]") + 1))
+                    val extracted =
+                        (pathFromChoice.substring(0, pathFromChoice.indexOf("[")) + it + pathFromChoice.substring(
+                            pathFromChoice.indexOf("]") + 1
+                        ))
                     if (!extracted.contains("["))
                         paths.add(extracted)
                     paths.addAll(splitPathsFromPath(extracted))

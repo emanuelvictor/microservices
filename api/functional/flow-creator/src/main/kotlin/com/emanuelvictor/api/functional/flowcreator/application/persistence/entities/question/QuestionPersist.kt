@@ -8,11 +8,17 @@ import jakarta.persistence.*
  * @since 1.0.0, 25/08/2021
  */
 @Entity
-open class Question(@Column(nullable = false) var name: String, @Column(nullable = false) var message: String) { // TODO it needs to be var because the mapper framework
+open class QuestionPersist(name: String, message: String) {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     open var id: Long? = null
+
+    @Column(nullable = false)
+    var name: String? = name
+
+    @Column(nullable = false)
+    var message: String? = message
 
 }

@@ -22,7 +22,7 @@ open class Alternative(@Column(nullable = false) open var nextIsMultipleChoice: 
     open var id: Long? = null
 
     @OneToMany(targetEntity = OptionAlternative::class, mappedBy = "alternative", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
-    open var optionsAlternatives: List<OptionAlternative>? = null
+    open var optionsAlternatives: List<OptionAlternative>? = options.stream().map { OptionAlternative(it, this) }.toList()
 
     @NotNull
     @ManyToOne(optional = false)
@@ -42,10 +42,6 @@ open class Alternative(@Column(nullable = false) open var nextIsMultipleChoice: 
 
     @Column(nullable = false, unique = true)
     open var path: String? = null
-
-    init {
-        this.optionsAlternatives = options.stream().map { OptionAlternative(it, this) }.toList()
-    }
 
     constructor(question: Question, nextIsMultipleChoice: Boolean, vararg options: Option) : this(question, nextIsMultipleChoice, options.toList())
 

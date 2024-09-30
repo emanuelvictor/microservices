@@ -1,6 +1,7 @@
 package com.emanuelvictor.api.functional.flowcreator.infrastructure.beans;
 
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.*;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ports.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
 import com.emanuelvictor.api.functional.flowcreator.infrastructure.helpers.PopulateHelper;

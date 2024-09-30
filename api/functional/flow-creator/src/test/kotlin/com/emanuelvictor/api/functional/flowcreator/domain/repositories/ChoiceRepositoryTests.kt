@@ -6,6 +6,7 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.Choic
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.choice.ChoiceId
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.*
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ports.ChoiceRepository
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService
 import org.assertj.core.api.Assertions

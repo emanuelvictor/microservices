@@ -8,9 +8,9 @@ import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Compa
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.Option;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.option.PersonOption;
 import com.emanuelvictor.api.functional.flowcreator.domain.entities.question.Question;
-import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.OptionRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.repositories.QuestionRepository;
+import com.emanuelvictor.api.functional.flowcreator.domain.repositories.ports.ChoiceRepository;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.AlternativeService;
 import com.emanuelvictor.api.functional.flowcreator.domain.services.ChoiceService;
 import jakarta.annotation.PostConstruct;
