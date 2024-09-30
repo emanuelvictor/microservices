@@ -10,7 +10,8 @@
     </button>
     <a color='primary' routerLink='edit'
        class='ml-25' mat-raised-button type='button'
-       *hasPermission="['root', 'applications/put']; operation 'OR'">
+       *hasPermission="['root', 'root.access-manager' , 'root.access-manager.applications',
+       'root.access-manager.applications.update']; operation 'OR'">
       <mat-icon>edit</mat-icon>
       <span>Editar</span>
     </a>

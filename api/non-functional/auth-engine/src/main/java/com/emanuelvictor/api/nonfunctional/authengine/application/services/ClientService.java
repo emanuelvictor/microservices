@@ -4,6 +4,7 @@ import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.*;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IAccessGroupPermissionFeignRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IClientFeignRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.ClientDetails;
@@ -52,7 +53,7 @@ public class ClientService implements ClientDetailsService {
 
         final Client client = clientFeignRepository.loadClientByClientId(clientId)
                 .orElseThrow(() -> new UsernameNotFoundException("ClientId " + clientId + " não localizado!"));
-        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByGroupId(client.getGroup().getId()).getContent());
+        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByGroupId(client.getGroup().getId(), PageRequest.of(0, 100)).getContent());
         client.getGroup().setGroupPermissions(groupPermissions);
         return client;
 
