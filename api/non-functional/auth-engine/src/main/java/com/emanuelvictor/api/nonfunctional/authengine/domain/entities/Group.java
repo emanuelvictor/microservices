@@ -19,11 +19,11 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-@JsonIdentityInfo(
-        property = "id",
-        scope = Group.class,
-        generator = ObjectIdGenerators.PropertyGenerator.class
-)
+//@JsonIdentityInfo(
+//        property = "id",
+//        scope = Group.class,
+//        generator = ObjectIdGenerators.PropertyGenerator.class
+//)
 public class Group extends PersistentEntity {
 
     /**

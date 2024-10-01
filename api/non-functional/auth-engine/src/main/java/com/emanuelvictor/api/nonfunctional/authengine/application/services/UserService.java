@@ -5,6 +5,7 @@ import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IAccessGroupPermissionFeignRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IUserFeignRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,7 +35,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final User user = userFeignRepository.loadUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not founded!"));
-        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByGroupId(user.getGroup().getId()).getContent());
+        final Set<GroupPermission> groupPermissions = new HashSet<>(accessGroupPermissionFeignRepository.findAccessGroupPermissionsByGroupId(user.getGroup().getId(), PageRequest.of(0, 100)).getContent());
         user.getGroup().setGroupPermissions(groupPermissions);
         return user;
     }
