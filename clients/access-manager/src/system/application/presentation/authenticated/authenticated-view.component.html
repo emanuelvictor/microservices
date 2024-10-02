@@ -16,10 +16,11 @@
 
     <div flex hide-sm>
       <div flex layout='row' layout-align='center center' class="sistema-header">
-        <a style='margin-top: 8px; color: #003D6A'
-           routerLinkActive mat-button hide-xs #rlaAccess='routerLinkActive'
-           [ngClass]="{'menu-active': rlaAccess.isActive}" [routerLink]="'/access'"
-           *hasPermission="['root', 'users', 'users/get', 'groups', 'groups/get']; operation 'OR'">
+          <a style='margin-top: 8px; color: #003D6A'
+             routerLinkActive mat-button hide-xs #rlaAccess='routerLinkActive'
+             [ngClass]="{'menu-active': rlaAccess.isActive}" [routerLink]="'/access'"
+             *hasPermission="['root', 'root.access-manager', 'root.access-manager.applications', 'root.access-manager.users', 'root.access-manager.groups',
+             'root.access-manager.applications.read', 'root.access-manager.users.read', 'root.access-manager.groups.read']; operation 'OR'">
           <mat-icon>tune</mat-icon>
           Configurações
         </a>

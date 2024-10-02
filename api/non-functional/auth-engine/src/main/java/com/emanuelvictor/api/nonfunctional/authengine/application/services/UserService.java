@@ -1,9 +1,9 @@
 package com.emanuelvictor.api.nonfunctional.authengine.application.services;
 
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GroupPermission;
-import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IAccessGroupPermissionFeignRepository;
 import com.emanuelvictor.api.nonfunctional.authengine.application.feign.repositories.IUserFeignRepository;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.GroupPermission;
+import com.emanuelvictor.api.nonfunctional.authengine.domain.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UserDetails;
