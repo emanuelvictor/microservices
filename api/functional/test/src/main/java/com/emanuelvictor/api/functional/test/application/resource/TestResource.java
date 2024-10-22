@@ -13,34 +13,33 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/testing")
+@RequestMapping("v1")
 public class TestResource {
 
     /**
-     * @return
+     * @return {@link DTO}
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('root')")
-    public String buscarPorCodigo() {
-        return "accessed";
+    @PreAuthorize("hasAnyAuthority('root', 'root.juridico', 'root.juridico.parecer', 'root.juridico.parecer.enviar')")
+    public DTO getAccess() {
+        return new DTO("Authorized access accessed");
     }
 
     /**
-     * @return
+     * @return {@link DTO}
      */
     @GetMapping("not-access")
-//    @PreAuthorize("hasAuthority('asdfasdfasdf') AND #oauth2.hasScope('read')")
     @PreAuthorize("hasAuthority('asdfasdfasdf')")
-    public StringBuilder notAccess() {
-        return new StringBuilder("not-accessed");
+    public DTO cannotHaveAccess() {
+        return new DTO("Forbidden access accessed");
     }
 
     /**
-     * @return
+     * @return {@link DTO}
      */
     @GetMapping("public-access")
-    public StringBuilder publicAccess() {
-        return new StringBuilder("public-accessed");
+    public DTO publicAccess() {
+        return new DTO("Public access accessed");
     }
 
 }

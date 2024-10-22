@@ -21,6 +21,7 @@ import {InsertApplicationComponent} from "../application/presentation/authentica
 import {UpdateApplicationComponent} from "../application/presentation/authenticated/access/applications/update-application/update-application.component";
 import {ViewApplicationComponent} from "../application/presentation/authenticated/access/applications/view-application/view-application.component";
 import {ApplicationViewComponent} from "../application/presentation/authenticated/access/applications/application-view.component";
+import {TestComponent} from "../application/presentation/authenticated/access/test/test.component";
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -38,6 +39,9 @@ const routes: Routes = [
         children: [
           {
             path: '', redirectTo: 'users', pathMatch: 'full',
+          },
+          {
+            path: 'test', component: TestComponent,
           },
           {
             path: 'users', component: UserViewComponent,
