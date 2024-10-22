@@ -103,10 +103,13 @@ export class Interceptor implements HttpInterceptor {
 
         if (typeof res.error === 'string')
           res.error = JSON.parse(res.error)
+
+        this.error(res.error.message);
+
       }
 
-      // Show the message error
-      this.error(res.error.message);
+      if(res.status === 403)
+        this.error('Acesso negado!')
 
       return this.innerHandler(res);
     };
