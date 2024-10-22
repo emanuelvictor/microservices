@@ -21,7 +21,7 @@ public class TestResource {
      */
     @GetMapping
     @PreAuthorize("hasAnyAuthority('root', 'root.juridico', 'root.juridico.parecer', 'root.juridico.parecer.enviar')")
-    public DTO buscarPorCodigo() {
+    public DTO getAccess() {
         return new DTO("Authorized access accessed");
     }
 
@@ -30,7 +30,7 @@ public class TestResource {
      */
     @GetMapping("not-access")
     @PreAuthorize("hasAuthority('asdfasdfasdf')")
-    public DTO notAccess() {
+    public DTO cannotHaveAccess() {
         return new DTO("Forbidden access accessed");
     }
 
