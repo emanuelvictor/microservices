@@ -3,7 +3,7 @@
   "version": "1.0.2",
   "private": true,
   "scripts": {
-    "start": "ng serve system --port 4200 --open",
+    "start": "ng serve system --port 4201 --open",
     "mavenbuild": "ng build --prod system"
   },
   "dependencies": {

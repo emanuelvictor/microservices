@@ -27,7 +27,7 @@ public class BrowserInstance {
     private static final Logger LOGGER = Logger.getLogger(BrowserInstance.class.getName());
 
     @Transient
-    private final RemoteWebDriver driver;
+    private RemoteWebDriver driver;
 
     public RemoteWebDriver getDriver() {
         return driver;
@@ -43,6 +43,13 @@ public class BrowserInstance {
 
     public Collection<String> getTabIds() {
         return driver.getWindowHandles();
+    }
+
+
+    /**
+     *
+     */
+    private BrowserInstance() {
     }
 
     /**
@@ -71,6 +78,10 @@ public class BrowserInstance {
 //        final BrowserOptions browserOptions = BrowserOptions.create(sessionId, urlOfTheBrowserInstance);
 //        return new BrowserInstance(browserOptions);
 //    }
+    public static BrowserInstance createEmpty() {
+        return new BrowserInstance();
+    }
+
     public static BrowserInstance createNew(final String urlOfFirstTab) {
         final String driverHome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 
@@ -131,6 +142,7 @@ public class BrowserInstance {
 
     /**
      * return true if the browser instance is in utilizing
+     *
      * @return Boolean
      */
     boolean isBusy() {

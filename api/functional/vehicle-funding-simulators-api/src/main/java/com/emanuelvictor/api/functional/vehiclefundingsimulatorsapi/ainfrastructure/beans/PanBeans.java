@@ -12,7 +12,7 @@ public class PanBeans {
 
     @Bean
     BrowserInstance panBrowserInstance() {
-        return BrowserInstance.createNew("https://veiculos.bancopan.com.br/captura/inicio");
+        return BrowserInstance.createEmpty();
     }
 
     @Bean
